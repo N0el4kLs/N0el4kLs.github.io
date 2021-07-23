@@ -15,11 +15,11 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="description" content="本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  php 反序列化 类型的题目
-以及对题目所以需要的知识点和题目的类型进行的总结,分类,可点击 相关题目中的链接以查看题目的具体解答过程.">
+以及对此类型题目所以需要的知识点进行总结,分类,可点击 相关题目中的链接以查看题目的具体解答过程.">
   <meta name="author" content="Noel">
   <meta name="keywords" content="">
   
-  <title>php_serialize_summary - Noel&#39;s Blog</title>
+  <title>Php_serialize_summary - Noel&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -159,12 +159,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('/img/default.png') no-repeat center center;
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="php_serialize_summary">
+            <span class="h2" id="subtitle" title="Php_serialize_summary">
               
             </span>
 
@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      856 字
+      1.6k 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      11
+      22
        分钟
     </span>
   
@@ -234,17 +234,17 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">php_serialize_summary</h1>
+            <h1 style="display: none">Php_serialize_summary</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：3 分钟前
+                  本文最后更新于：2 分钟前
                 
               </p>
             
             <div class="markdown-body">
               <p>本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  <code>php 反序列化</code> 类型的题目</p>
-<p>以及对题目所以需要的知识点和题目的类型进行的总结,分类,可点击 <code>相关题目</code>中的链接以查看题目的具体解答过程.</p>
+<p>以及对此类型题目所以需要的知识点进行总结,分类,可点击 <code>相关题目</code>中的链接以查看题目的具体解答过程.</p>
 <span id="more"></span>
 
 
@@ -254,7 +254,33 @@
 
 
 <p>PHP 反序列化归纳总结</p>
-<h2 id="0x01-PHP魔法函数"><a href="#0x01-PHP魔法函数" class="headerlink" title="0x01 PHP魔法函数"></a>0x01 PHP魔法函数</h2><h3 id="1-1-construct-构造函数"><a href="#1-1-construct-构造函数" class="headerlink" title="1.1 __construct() 构造函数"></a>1.1 __construct() 构造函数</h3><h3 id="1-2-destruct-析构函数"><a href="#1-2-destruct-析构函数" class="headerlink" title="1.2  __destruct() 析构函数"></a>1.2  __destruct() 析构函数</h3><h3 id="1-3-call"><a href="#1-3-call" class="headerlink" title="1.3 __call()"></a>1.3 __call()</h3><h3 id="1-4-callStatic"><a href="#1-4-callStatic" class="headerlink" title="1.4 __callStatic()"></a>1.4 __callStatic()</h3><h3 id="1-5-get"><a href="#1-5-get" class="headerlink" title="1.5  __get()"></a>1.5  __get()</h3><h3 id="1-6-set"><a href="#1-6-set" class="headerlink" title="1.6  __set()"></a>1.6  __set()</h3><h3 id="1-7-isset"><a href="#1-7-isset" class="headerlink" title="1.7  __isset()"></a>1.7  __isset()</h3><h3 id="1-8-unset"><a href="#1-8-unset" class="headerlink" title="1.8 __unset()"></a>1.8 __unset()</h3><h3 id="1-9-sleep"><a href="#1-9-sleep" class="headerlink" title="1.9  __sleep()"></a>1.9  __sleep()</h3><h3 id="1-10-wakeup"><a href="#1-10-wakeup" class="headerlink" title="1.10   __wakeup()"></a>1.10   __wakeup()</h3><h3 id="1-11-toString"><a href="#1-11-toString" class="headerlink" title="1.11  __toString()"></a>1.11  __toString()</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*作用</span><br><span class="hljs-comment">__toString()方法用于一个类被当成字符串时应怎样回应。例如 `echo $obj;` 应该显示些什么。</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">example：*/</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo</span></span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__toString</span>(<span class="hljs-params"></span>)</span>&#123;<br>         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;helloworld&quot;</span>;<br>    &#125;<br>&#125;<br><br><span class="hljs-variable">$demo</span> = <span class="hljs-keyword">new</span> Demo();<br><span class="hljs-keyword">echo</span> <span class="hljs-variable">$demo</span>;<br><br><span class="hljs-comment">// string &quot;helloworld&quot;</span><br></code></pre></td></tr></table></figure>
+<h2 id="0x01-PHP魔法函数"><a href="#0x01-PHP魔法函数" class="headerlink" title="0x01 PHP魔法函数"></a>0x01 PHP魔法函数</h2><h3 id="1-1-construct-构造函数"><a href="#1-1-construct-构造函数" class="headerlink" title="1.1 __construct() 构造函数"></a>1.1 __construct() 构造函数</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*</span><br><span class="hljs-comment">当对象被初始化时会调用 __construct() 构造函数</span><br><span class="hljs-comment">*/</span><br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo</span></span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span>(<span class="hljs-params"></span>)</span>&#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;you called the __construct function...&#x27;</span><br>    &#125;<br>&#125;<br><br><span class="hljs-variable">$demo</span> = <span class="hljs-keyword">new</span> Demo();<br><span class="hljs-comment"># &#x27;you called the __construct funtion...&#x27;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-2-destruct-析构函数"><a href="#1-2-destruct-析构函数" class="headerlink" title="1.2  __destruct() 析构函数"></a>1.2  __destruct() 析构函数</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*</span><br><span class="hljs-comment">当对象被销毁时,会调用 __destruct() 析构函数,</span><br><span class="hljs-comment">对象销毁存在主动和被动两种情况</span><br><span class="hljs-comment">主动:例如使用 unset()函数</span><br><span class="hljs-comment">被动:当程序结束时自动销毁</span><br><span class="hljs-comment"></span><br><span class="hljs-comment"></span><br><span class="hljs-comment">example:*/</span><br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo</span></span>&#123;<br>        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>)</span>&#123;<br>            <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;you called the __destruct function..&quot;</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-variable">$demo</span> = <span class="hljs-keyword">new</span> Demo();<br>    <span class="hljs-comment">#unset($demo); ## 主动销毁</span><br>	<span class="hljs-comment">// sting &quot;you called the __destruct function..&quot;</span><br><br><br>	<span class="hljs-comment">## 程序结束自动销毁</span><br>	<span class="hljs-comment">//stirng &quot;you called the __destruct function..&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-3-call"><a href="#1-3-call" class="headerlink" title="1.3 __call()"></a>1.3 __call()</h3><h3 id="1-4-callStatic"><a href="#1-4-callStatic" class="headerlink" title="1.4 __callStatic()"></a>1.4 __callStatic()</h3><h3 id="1-5-get"><a href="#1-5-get" class="headerlink" title="1.5  __get()"></a>1.5  __get()</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*</span><br><span class="hljs-comment">面向对象编程中使用频率很高的方法.当设置和获取对象的属性不允许访问时性，此方法会被调用。一定注意是不存在或不允许被读写时才会被调用。</span><br><span class="hljs-comment">因此对于一个对象，其属性不确定时，用这个方法效果很好。</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">__get($name) 获取对象不存在的属性或无法访问的属性时调用$name表示要获取的属性名</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">example:*/</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo</span></span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-variable">$passwd</span>;<br>    funtion __get(<span class="hljs-variable">$propertyName</span>)&#123;<br>        <span class="hljs-comment"># 获取不存在的属性 $name, 调用此方法</span><br>        <span class="hljs-keyword">if</span>(<span class="hljs-variable">$propertyName</span> == <span class="hljs-string">&#x27;name&#x27;</span>)&#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;variable name is undefined...&quot;</span>;<br>        &#125;<br>        <span class="hljs-keyword">elseif</span>(<span class="hljs-variable">$propertyName</span> == <span class="hljs-string">&#x27;passwd&#x27;</span>)&#123;<br>            <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;permission deny...&quot;</span>;<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-variable">$demo</span> = <span class="hljs-keyword">new</span> Demo();<br><span class="hljs-variable">$demo</span>-&gt;name;<br><span class="hljs-comment">// string &quot;variable name is undefined...&quot;</span><br><span class="hljs-variable">$demo</span>-&gt;passwd:<br><span class="hljs-comment">// string &quot;permission deny...&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="1-6-set"><a href="#1-6-set" class="headerlink" title="1.6  __set()"></a>1.6  __set()</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*</span><br><span class="hljs-comment">面向对象编程中使用频率很高的两个方法.当设置和获取对象的属性不允许访问时性，此方法会被调用。一定注意是不存在或不允许被读写时才会被调用。</span><br><span class="hljs-comment">因此对于一个对象，其属性不确定时，用这个方法效果很好。</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">__set($name, $value) 设置对象不存在的属性或无法访问的属性时调用.$name表示要设置的属性名,$value表示要设置的值. </span><br><span class="hljs-comment"></span><br><span class="hljs-comment">example:*/</span><br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo</span></span>&#123;<br>        <span class="hljs-keyword">private</span> <span class="hljs-variable">$passwd</span>;<br>        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__set</span>(<span class="hljs-params"><span class="hljs-variable">$propertyName</span>,<span class="hljs-variable">$value</span></span>)</span>&#123;<br>            <span class="hljs-keyword">if</span>(<span class="hljs-variable">$propertyName</span> == <span class="hljs-string">&#x27;name&#x27;</span>)&#123;<br>                <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;variable name is not defined...&quot;</span>;<br>            &#125;<span class="hljs-keyword">elseif</span> (<span class="hljs-variable">$propertyName</span> == <span class="hljs-string">&#x27;passwd&#x27;</span>)&#123;<br>                <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;permission deny...&quot;</span>;<br>            &#125;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-variable">$demo</span> = <span class="hljs-keyword">new</span> Demo();<br>    <span class="hljs-variable">$demo</span>-&gt;name = <span class="hljs-string">&#x27;123&#x27;</span>;<br>	<span class="hljs-comment">//	string &quot;variable name is not defined...&quot;&quot;</span><br>    <span class="hljs-variable">$demo</span>-&gt;passwd = <span class="hljs-string">&#x27;php&#x27;</span>;<br>	<span class="hljs-comment">// string &quot;permission deny...&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-7-isset"><a href="#1-7-isset" class="headerlink" title="1.7  __isset()"></a>1.7  __isset()</h3><h3 id="1-8-unset"><a href="#1-8-unset" class="headerlink" title="1.8 __unset()"></a>1.8 __unset()</h3><h3 id="1-9-sleep"><a href="#1-9-sleep" class="headerlink" title="1.9  __sleep()"></a>1.9  __sleep()</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">当执行 serialize()操作时，会先检查是否存在 __sleep() 函数，如果存在，则在序列化之前调用 __sleep() 函数。</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">example：*/</span><br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo</span></span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$test</span>=<span class="hljs-string">&quot;helloworld&quot;</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__sleep</span>(<span class="hljs-params"></span>)</span>&#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;you called the __sleep function...&quot;</span>;<br>    &#125;<br>&#125;<br><br><span class="hljs-variable">$demo</span> = <span class="hljs-keyword">new</span> Demo();<br><span class="hljs-variable">$a</span> = serialize(<span class="hljs-variable">$demo</span>);<br><span class="hljs-comment">// string &quot;you called the __sleep function...&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-10-wakeup"><a href="#1-10-wakeup" class="headerlink" title="1.10   __wakeup()"></a>1.10   __wakeup()</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">当执行 unserialize()操作时，会先检查是否存在 __wakeup() 函数，如果存在，则优先调用 __wakeup() 函数。</span><br><span class="hljs-comment">简单理解，如果执行 unserialize() 函数，随后就会执行 __wakeup() 函数,前提是该函数存在。</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">example：*/</span><br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo</span></span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$test</span>=<span class="hljs-string">&quot;helloworld&quot;</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__wakeup</span>(<span class="hljs-params"></span>)</span>&#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;you called the __wakeup function...&quot;</span>;<br>    &#125;<br>&#125;<br><br><span class="hljs-variable">$demo</span> = <span class="hljs-keyword">new</span> Demo();<br><span class="hljs-variable">$a</span> = serialize(<span class="hljs-variable">$demo</span>);<br>unserialize(<span class="hljs-variable">$a</span>);<br><span class="hljs-comment">// string &quot;you called the __wakeup function...&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="1-10-1-考点-CVE-2016-7124"><a href="#1-10-1-考点-CVE-2016-7124" class="headerlink" title="1.10.1 考点(CVE-2016-7124)"></a>1.10.1 考点(CVE-2016-7124)</h5><p>当成员属性数目大于实际数目时可绕过wakeup方法</p>
+<h6 id="题目文章"><a href="#题目文章" class="headerlink" title="题目文章"></a>题目文章</h6><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/Mrsm1th/p/6835592.html">php反序列化漏洞绕过魔术方法 __wakeup</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/solitudi/article/details/107498944">[漏洞利用] CVE-2016-7124 漏洞复现(总结自一CTF题目)</a></p>
+<h3 id="1-11-toString"><a href="#1-11-toString" class="headerlink" title="1.11  __toString()"></a>1.11  __toString()</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/*作用</span><br><span class="hljs-comment">__toString()方法用于一个类被当成字符串时应怎样回应。例如 `echo $obj;` 应该显示些什么。</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">example：*/</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo</span></span>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__toString</span>(<span class="hljs-params"></span>)</span>&#123;<br>         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;helloworld&quot;</span>;<br>    &#125;<br>&#125;<br><br><span class="hljs-variable">$demo</span> = <span class="hljs-keyword">new</span> Demo();<br><span class="hljs-keyword">echo</span> <span class="hljs-variable">$demo</span>;<br><br><span class="hljs-comment">// string &quot;helloworld&quot;</span><br></code></pre></td></tr></table></figure>
 
 
 
@@ -346,6 +372,7 @@
 <p><img src="/images/2021-07-21-php-serialize-summary/image-20210721152537808.png" srcset="/img/loading.gif" lazyload alt="image-20210721152537808"></p>
 <h3 id="2-4-参考文章"><a href="#2-4-参考文章" class="headerlink" title="2.4 参考文章"></a>2.4 参考文章</h3><p><a target="_blank" rel="noopener" href="https://paper.seebug.org/680/">https://paper.seebug.org/680/</a></p>
 <h3 id="2-5-相关题目"><a href="#2-5-相关题目" class="headerlink" title="2.5 相关题目"></a>2.5 相关题目</h3><p><a target="_blank" rel="noopener" href="https://mochazz.github.io/2019/02/02/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%85%A5%E9%97%A8%E4%B9%8Bphar/#%E4%BE%8B%E9%A2%98%E4%BA%8C">PHP反序列化入门之phar</a></p>
+<a href="/2021/07/23/GXYCTF2019BabysqliV3-0/" title="GXYCTF2019BabysqliV3.0">GXYCTF2019BabysqliV3.0</a>
 
             </div>
             <hr>
@@ -381,6 +408,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2021/07/23/GXYCTF2019BabysqliV3-0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">GXYCTF2019BabysqliV3.0</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
