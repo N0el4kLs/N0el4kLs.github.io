@@ -340,6 +340,11 @@ Nodejs学习记录第二天.">
 <h2 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h2><p>箭头函数为 <code>es6</code> 中新的定义函数的一种方式</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">let</span> func = <span class="hljs-function">() =&gt;</span>&#123;<br>    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;hello&quot;</span>)<br>&#125;<br>func()<br><br><br><span class="hljs-comment">// 形参和默认值</span><br><span class="hljs-keyword">let</span> func = <span class="hljs-function">(<span class="hljs-params">x=<span class="hljs-number">10</span>,y=<span class="hljs-number">20</span></span>)=&gt;</span>&#123;<br>    <span class="hljs-built_in">console</span>.log(x,y)<br>&#125;<br>func();<br>func(<span class="hljs-number">30</span>,<span class="hljs-number">40</span>);<br><br><span class="hljs-comment">// 如果只存在一个形参,并且没有默认参数,则可以省略小括号</span><br><span class="hljs-keyword">let</span> func = <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span>&#123;<br>    <span class="hljs-built_in">console</span>.log(x);<br>&#125;<br>func(<span class="hljs-number">60</span>);<br><br><span class="hljs-comment">// 如果函数里面只有一个语句,可以省略大括号</span><br><span class="hljs-keyword">let</span> func = <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span><span class="hljs-built_in">console</span>.log(x);<br>func(<span class="hljs-number">10</span>);<br><br><span class="hljs-comment">// 箭头函数的返回值</span><br><span class="hljs-keyword">let</span> func = <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x+<span class="hljs-number">1</span>;<br><span class="hljs-keyword">let</span> value = func(<span class="hljs-number">99</span>);<br><span class="hljs-built_in">console</span>.log(value);<br></code></pre></td></tr></table></figure>
 
+
+
+<p>下一篇:</p>
+<a href="/2021/08/06/nodejs3/" title="nodejs(三)">nodejs(三)</a>
+
             </div>
             <hr>
             <div>
@@ -374,6 +379,12 @@ Nodejs学习记录第二天.">
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2021/08/06/nodejs3/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">nodejs(三)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
