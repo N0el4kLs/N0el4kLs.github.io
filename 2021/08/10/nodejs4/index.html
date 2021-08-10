@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>nodejs(四) - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="nodejs(四)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-10 06:05" pubdate>
+        2021年8月10日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">nodejs(四)</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：5 分钟前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>上一篇:</p>
+<a href="/2021/08/06/nodejs3/" title="nodejs(三)">nodejs(三)</a>
+
+<p><code>Nodejs</code>学习记录第四天.</p>
+<h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><p>简单理解, 对函数进行分组,分别放到不同的文件里.</p>
+<p>每个文件可以实现某种特定的功能.</p>
+<blockquote>
+<p>一个 js 文件就是一个模块</p>
+</blockquote>
+<p> 好处:</p>
+<ul>
+<li>方便项目的开发和维护</li>
+<li>可以避免函数名和变量名的冲突.</li>
+</ul>
+<h2 id="模块规范"><a href="#模块规范" class="headerlink" title="模块规范"></a>模块规范</h2><ul>
+<li>自己编写的模块,由于外部是没法使用的.所以如果我们希望别人使用,则需要导出 <code>exports</code>或<code>module.exports</code>.导出的时候,需要以对象的方式.</li>
+<li>别人需要引用某个模块时,应该使用 <code>require</code>导入某块. 导入的对象需要用一个变量来接收.</li>
+</ul>
+<h2 id="模块使用"><a href="#模块使用" class="headerlink" title="模块使用"></a>模块使用</h2><ul>
+<li>第一种</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 导出</span><br><span class="hljs-built_in">exports</span>.name = name;<br><span class="hljs-built_in">exports</span>.&lt;ClassName&gt; = &lt;ClassName&gt;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>第二种</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> num = <span class="hljs-number">10</span>;<br><br><span class="hljs-keyword">let</span> sum = <span class="hljs-function">(<span class="hljs-params">a,b</span>)=&gt;</span>&#123;<br>	<span class="hljs-keyword">return</span> a+b;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Animal</span></span>&#123;<br><span class="hljs-function"><span class="hljs-title">construct</span>(<span class="hljs-params">age</span>)</span>&#123;<br><span class="hljs-built_in">this</span>.age = age;<br>&#125;<br>&#125;<br><br><br><span class="hljs-built_in">module</span>.exports = &#123;<br> num,<br> sum1,<br> Animal,<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<blockquote>
+<p>exports 只存在是文件中  </p>
+</blockquote>
+<h2 id="模块中的-this-指向"><a href="#模块中的-this-指向" class="headerlink" title="模块中的 this 指向"></a>模块中的 this 指向</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-built_in">this</span> === <span class="hljs-built_in">exports</span><br><span class="hljs-comment">// this指向这个 模块的导出对象</span><br><span class="hljs-comment">// 只能在文件中</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在交互模式中 this 指向 global</p>
+</blockquote>
+<h2 id="nodejs-常用内置模块"><a href="#nodejs-常用内置模块" class="headerlink" title="nodejs 常用内置模块"></a>nodejs 常用内置模块</h2><h3 id="fs-文件操作模块"><a href="#fs-文件操作模块" class="headerlink" title="fs 文件操作模块"></a>fs 文件操作模块</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;fs&quot;</span>);<br><br><span class="hljs-comment">// 同步读取文件内容 : 读取文件的时候,要等到文件读取完毕后,才能执行后面的代码(sync 同步)</span><br><span class="hljs-comment">// fs.readFileSync(&lt;文件路径&gt;,decode)</span><br><span class="hljs-keyword">const</span> content = fs.readFileSync(<span class="hljs-string">&#x27;hello.txt&#x27;</span>,<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br><span class="hljs-built_in">console</span>.log(content)<br><br><br><br><span class="hljs-comment">// 异步读取文件: 读取文件的时候 不需要等待文件读取完毕,就会执行后面代码</span><br><span class="hljs-comment">// 异步  setTimeout ajax 事件  jQuery</span><br><span class="hljs-keyword">const</span> content = fs.readFile(filepath,<span class="hljs-string">&quot;utf-8&quot;</span>,<span class="hljs-function">(<span class="hljs-params">error,data</span>)=&gt;</span>&#123;<br>    <span class="hljs-built_in">console</span>.log(error); <span class="hljs-comment">// error 错误信息,如果没发生错误,就为 null</span><br>    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// data 文件读取到的内容 </span><br>&#125;)<br><br><br><span class="hljs-comment">// 异步写文件 </span><br><span class="hljs-keyword">let</span> filePath = path.join(__dirname,<span class="hljs-string">&quot;hello.txt&quot;</span>);<br><span class="hljs-comment">// fs.writeFile(&lt;文件路径&gt;,&lt;content&gt;,&quot;utf-8&quot;,回调函数)</span><br>fs.writeFile(filePath,<span class="hljs-string">&quot;hello Nodejs&quot;</span>,<span class="hljs-string">&quot;utf-8&quot;</span>,<span class="hljs-function">(<span class="hljs-params">error</span>)=&gt;</span>&#123;<br>     <span class="hljs-keyword">if</span>(error)&#123;<br>         <span class="hljs-built_in">console</span>.log(error);<br>         <span class="hljs-keyword">return</span><br>     &#125;<br>    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;写入成功!&quot;</span>);<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>详细内容参考<a target="_blank" rel="noopener" href="https://www.runoob.com/nodejs/nodejs-fs.html">菜鸟编程</a><code>nodejs</code>,搬不动了</p>
+<h3 id="http-网络操作模块"><a href="#http-网络操作模块" class="headerlink" title="http 网络操作模块"></a>http 网络操作模块</h3><h3 id="path-路径操作模块"><a href="#path-路径操作模块" class="headerlink" title="path 路径操作模块"></a>path 路径操作模块</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript">__dirname  <span class="hljs-comment">// 得到当间执行文件的绝对路径,不包括文件名</span><br>__filename <span class="hljs-comment">// 得到当前执行文件的绝对路径,包括文件名</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path&#x27;</span>);<br><br><span class="hljs-keyword">let</span> extname = path.extname(__filename) <span class="hljs-comment">// 获取指定文件的扩展名</span><br><span class="hljs-keyword">let</span> basename = path.basename(__filename) <span class="hljs-comment">// 获取指定文件的名称，包括扩展名</span><br><span class="hljs-keyword">let</span> dirname = path.dirname(__filename) <span class="hljs-comment">// 获取指定文件的所在路径</span><br><span class="hljs-keyword">let</span> parseObj = path.parse(__filename)   <span class="hljs-comment">// 把指定路径解析成一个对象，对象中包含 root  dir   base  ext  name</span><br><span class="hljs-built_in">console</span>.log(parseObj)<br><br><span class="hljs-keyword">let</span> join = path.join(__dirname,<span class="hljs-string">&#x27;path.js&#x27;</span>) <span class="hljs-comment">// 路径拼接</span><br><span class="hljs-built_in">console</span>.log(join)<br><br><span class="hljs-comment">// 如果有目录 </span><br><span class="hljs-keyword">let</span> join1 = path.join(__dirname,<span class="hljs-string">&#x27;moudules&#x27;</span>,<span class="hljs-string">&#x27;m1.js&#x27;</span>)<br><span class="hljs-built_in">console</span>.log(join1)<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="querystring-查询参数模块"><a href="#querystring-查询参数模块" class="headerlink" title="querystring 查询参数模块"></a>querystring 查询参数模块</h3><h3 id="url-解析模块"><a href="#url-解析模块" class="headerlink" title="url 解析模块"></a>url 解析模块</h3><h2 id="process-对象"><a href="#process-对象" class="headerlink" title="process() 对象"></a>process() 对象</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">let</span> comline = process.argv  <span class="hljs-comment">// 获取到执行文件时,命令行所有的参数 第一个为node 解释器  第二个为文件名 第二个之后 为额外命令行额外输入</span><br><br><span class="hljs-comment">// 命令行交互工具常用</span><br><br><br><br>process.arch  <span class="hljs-comment">// 操作系统位数</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="Buffer-数据类型"><a href="#Buffer-数据类型" class="headerlink" title="Buffer 数据类型"></a>Buffer 数据类型</h2><p><code>JavaScript</code>只有字符串数据类型, 没有二进制数据类型.</p>
+<p>但是在处理文件流(文件读写操作)或数据传输时,需要用到二进制.因此在<code>nodejs</code>中定义了一个<code>Buffer</code>类,专门用来存放二进制数据.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">let</span> buf1 = Buffer.from([<span class="hljs-number">97</span>,<span class="hljs-number">98</span>,<span class="hljs-number">99</span>]);<br><span class="hljs-built_in">console</span>.log(buf1)<span class="hljs-comment">// &lt;Buffer 61 62 63&gt;</span><br><br><span class="hljs-keyword">let</span> a = buf1.toString();<br><span class="hljs-built_in">console</span>.log(a)  <span class="hljs-comment">// &lt;a b c &gt;	</span><br><br><span class="hljs-comment">// 当看到一个 Buffer 对象时, 可以使用 toString() 将其变为字符串.</span><br><br><span class="hljs-keyword">let</span> alloc = Buffer.alloc(<span class="hljs-number">10</span>) <span class="hljs-comment">// 创建一个可以存放10个字符的 buffer 对象</span><br>alloc.write(<span class="hljs-string">&quot;abc&quot;</span>) <span class="hljs-comment">// 传二进制再转12进制</span><br></code></pre></td></tr></table></figure>
+
+<p>搬运下<a target="_blank" rel="noopener" href="https://www.runoob.com/nodejs/nodejs-buffer.html">菜鸟编程</a><code>nodejs</code>中 常见的<code>BufferApi</code> :</p>
+<ul>
+<li><strong>Buffer.alloc(size[, fill[, encoding]])：</strong> 返回一个指定大小的 Buffer 实例，如果没有设置 fill，则默认填满 0</li>
+<li><strong>Buffer.allocUnsafe(size)：</strong> 返回一个指定大小的 Buffer 实例，但是它不会被初始化，所以它可能包含敏感的数据</li>
+<li><strong>Buffer.allocUnsafeSlow(size)</strong></li>
+<li><strong>Buffer.from(array)：</strong> 返回一个被 array 的值初始化的新的 Buffer 实例（传入的 array 的元素只能是数字，不然就会自动被 0 覆盖）</li>
+<li><strong>Buffer.from(arrayBuffer[, byteOffset[, length]])：</strong> 返回一个新建的与给定的 ArrayBuffer 共享同一内存的 Buffer。</li>
+<li><strong>Buffer.from(buffer)：</strong> 复制传入的 Buffer 实例的数据，并返回一个新的 Buffer 实例</li>
+<li><strong>Buffer.from(string[, encoding])：</strong> 返回一个被 string 的值初始化的新的 Buffer 实例</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/">语言基础</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/nodejs/">nodejs</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/nodejs/">nodejs</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/06/nodejs3/">
+                        <span class="hidden-mobile">nodejs(三)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
