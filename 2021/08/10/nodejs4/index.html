@@ -237,7 +237,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：5 分钟前
+                  本文最后更新于：4 分钟前
                 
               </p>
             
@@ -280,13 +280,13 @@
 <h2 id="nodejs-常用内置模块"><a href="#nodejs-常用内置模块" class="headerlink" title="nodejs 常用内置模块"></a>nodejs 常用内置模块</h2><h3 id="fs-文件操作模块"><a href="#fs-文件操作模块" class="headerlink" title="fs 文件操作模块"></a>fs 文件操作模块</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;fs&quot;</span>);<br><br><span class="hljs-comment">// 同步读取文件内容 : 读取文件的时候,要等到文件读取完毕后,才能执行后面的代码(sync 同步)</span><br><span class="hljs-comment">// fs.readFileSync(&lt;文件路径&gt;,decode)</span><br><span class="hljs-keyword">const</span> content = fs.readFileSync(<span class="hljs-string">&#x27;hello.txt&#x27;</span>,<span class="hljs-string">&#x27;utf-8&#x27;</span>)<br><span class="hljs-built_in">console</span>.log(content)<br><br><br><br><span class="hljs-comment">// 异步读取文件: 读取文件的时候 不需要等待文件读取完毕,就会执行后面代码</span><br><span class="hljs-comment">// 异步  setTimeout ajax 事件  jQuery</span><br><span class="hljs-keyword">const</span> content = fs.readFile(filepath,<span class="hljs-string">&quot;utf-8&quot;</span>,<span class="hljs-function">(<span class="hljs-params">error,data</span>)=&gt;</span>&#123;<br>    <span class="hljs-built_in">console</span>.log(error); <span class="hljs-comment">// error 错误信息,如果没发生错误,就为 null</span><br>    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// data 文件读取到的内容 </span><br>&#125;)<br><br><br><span class="hljs-comment">// 异步写文件 </span><br><span class="hljs-keyword">let</span> filePath = path.join(__dirname,<span class="hljs-string">&quot;hello.txt&quot;</span>);<br><span class="hljs-comment">// fs.writeFile(&lt;文件路径&gt;,&lt;content&gt;,&quot;utf-8&quot;,回调函数)</span><br>fs.writeFile(filePath,<span class="hljs-string">&quot;hello Nodejs&quot;</span>,<span class="hljs-string">&quot;utf-8&quot;</span>,<span class="hljs-function">(<span class="hljs-params">error</span>)=&gt;</span>&#123;<br>     <span class="hljs-keyword">if</span>(error)&#123;<br>         <span class="hljs-built_in">console</span>.log(error);<br>         <span class="hljs-keyword">return</span><br>     &#125;<br>    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;写入成功!&quot;</span>);<br>&#125;)<br></code></pre></td></tr></table></figure>
 
 <p>详细内容参考<a target="_blank" rel="noopener" href="https://www.runoob.com/nodejs/nodejs-fs.html">菜鸟编程</a><code>nodejs</code>,搬不动了</p>
-<h3 id="http-网络操作模块"><a href="#http-网络操作模块" class="headerlink" title="http 网络操作模块"></a>http 网络操作模块</h3><h3 id="path-路径操作模块"><a href="#path-路径操作模块" class="headerlink" title="path 路径操作模块"></a>path 路径操作模块</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript">__dirname  <span class="hljs-comment">// 得到当间执行文件的绝对路径,不包括文件名</span><br>__filename <span class="hljs-comment">// 得到当前执行文件的绝对路径,包括文件名</span><br></code></pre></td></tr></table></figure>
+<h3 id="path-路径操作模块"><a href="#path-路径操作模块" class="headerlink" title="path 路径操作模块"></a>path 路径操作模块</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript">__dirname  <span class="hljs-comment">// 得到当间执行文件的绝对路径,不包括文件名</span><br>__filename <span class="hljs-comment">// 得到当前执行文件的绝对路径,包括文件名</span><br></code></pre></td></tr></table></figure>
 
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path&#x27;</span>);<br><br><span class="hljs-keyword">let</span> extname = path.extname(__filename) <span class="hljs-comment">// 获取指定文件的扩展名</span><br><span class="hljs-keyword">let</span> basename = path.basename(__filename) <span class="hljs-comment">// 获取指定文件的名称，包括扩展名</span><br><span class="hljs-keyword">let</span> dirname = path.dirname(__filename) <span class="hljs-comment">// 获取指定文件的所在路径</span><br><span class="hljs-keyword">let</span> parseObj = path.parse(__filename)   <span class="hljs-comment">// 把指定路径解析成一个对象，对象中包含 root  dir   base  ext  name</span><br><span class="hljs-built_in">console</span>.log(parseObj)<br><br><span class="hljs-keyword">let</span> join = path.join(__dirname,<span class="hljs-string">&#x27;path.js&#x27;</span>) <span class="hljs-comment">// 路径拼接</span><br><span class="hljs-built_in">console</span>.log(join)<br><br><span class="hljs-comment">// 如果有目录 </span><br><span class="hljs-keyword">let</span> join1 = path.join(__dirname,<span class="hljs-string">&#x27;moudules&#x27;</span>,<span class="hljs-string">&#x27;m1.js&#x27;</span>)<br><span class="hljs-built_in">console</span>.log(join1)<br></code></pre></td></tr></table></figure>
 
 
 
-<h3 id="querystring-查询参数模块"><a href="#querystring-查询参数模块" class="headerlink" title="querystring 查询参数模块"></a>querystring 查询参数模块</h3><h3 id="url-解析模块"><a href="#url-解析模块" class="headerlink" title="url 解析模块"></a>url 解析模块</h3><h2 id="process-对象"><a href="#process-对象" class="headerlink" title="process() 对象"></a>process() 对象</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">let</span> comline = process.argv  <span class="hljs-comment">// 获取到执行文件时,命令行所有的参数 第一个为node 解释器  第二个为文件名 第二个之后 为额外命令行额外输入</span><br><br><span class="hljs-comment">// 命令行交互工具常用</span><br><br><br><br>process.arch  <span class="hljs-comment">// 操作系统位数</span><br></code></pre></td></tr></table></figure>
+<h2 id="process-对象"><a href="#process-对象" class="headerlink" title="process() 对象"></a>process() 对象</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">let</span> comline = process.argv  <span class="hljs-comment">// 获取到执行文件时,命令行所有的参数 第一个为node 解释器  第二个为文件名 第二个之后 为额外命令行额外输入</span><br><br><span class="hljs-comment">// 命令行交互工具常用</span><br><br><br><br>process.arch  <span class="hljs-comment">// 操作系统位数</span><br></code></pre></td></tr></table></figure>
 
 
 
@@ -304,6 +304,8 @@
 <li><strong>Buffer.from(buffer)：</strong> 复制传入的 Buffer 实例的数据，并返回一个新的 Buffer 实例</li>
 <li><strong>Buffer.from(string[, encoding])：</strong> 返回一个被 string 的值初始化的新的 Buffer 实例</li>
 </ul>
+<p>下一篇:</p>
+<a href="/2021/08/12/nodejs5/" title="nodejs(五)">nodejs(五)</a>
 
             </div>
             <hr>
@@ -339,6 +341,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2021/08/12/nodejs5/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">nodejs(五)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
