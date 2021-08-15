@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      374 字
+      532 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      7
        分钟
     </span>
   
@@ -238,7 +238,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：10 天前
+                  本文最后更新于：3 分钟前
                 
               </p>
             
@@ -262,6 +262,15 @@
 <p>可以看到,使用<code>escapeshellarg</code>后,<code>fl�ag</code>变为了<code>flag</code>.这里便绕过了正则匹配.</p>
 <h5 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h5><p><a href="">2021DASCTF 7月赛</a></p>
 <h5 id="参考链接-1"><a href="#参考链接-1" class="headerlink" title="参考链接"></a>参考链接</h5><p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.escapeshellarg.php">https://www.php.net/manual/zh/function.escapeshellarg.php</a></p>
+<h1 id="preg-match"><a href="#preg-match" class="headerlink" title="preg_match"></a>preg_match</h1><h3 id="取反绕过"><a href="#取反绕过" class="headerlink" title="取反绕过"></a>取反绕过</h3><p>正则绕过在ctf比赛中还是比较常见.绕过手法也比较多,最常见的是使用 取反在<code>urlencode</code>绕过</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-keyword">echo</span> urlencode(~<span class="hljs-string">&quot;getFlag&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="异或绕过"><a href="#异或绕过" class="headerlink" title="异或绕过"></a>异或绕过</h3><h5 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h5><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/v01cano/p/11736722.html">https://www.cnblogs.com/v01cano/p/11736722.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/mochu7777777/article/details/104631142">https://blog.csdn.net/mochu7777777/article/details/104631142</a></p>
+<h1 id="原生类利用"><a href="#原生类利用" class="headerlink" title="原生类利用"></a>原生类利用</h1><h5 id="例题-1"><a href="#例题-1" class="headerlink" title="例题"></a>例题</h5><a href="/2021/08/14/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%982020Greatphp/" title="极客大挑战2020Greatphp">极客大挑战2020Greatphp</a>
+
+<h5 id="参考链接-2"><a href="#参考链接-2" class="headerlink" title="参考链接"></a>参考链接</h5><p><a target="_blank" rel="noopener" href="https://whoamianony.top/2021/03/10/Web%E5%AE%89%E5%85%A8/PHP%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E5%B0%8F%E7%BB%93/">https://whoamianony.top/2021/03/10/Web%E5%AE%89%E5%85%A8/PHP%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E5%B0%8F%E7%BB%93/</a></p>
+<p><a target="_blank" rel="noopener" href="https://troyess.com/2021/03/29/PHP%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E6%80%BB%E7%BB%93/">https://troyess.com/2021/03/29/PHP%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E6%80%BB%E7%BB%93/</a></p>
 
             </div>
             <hr>
