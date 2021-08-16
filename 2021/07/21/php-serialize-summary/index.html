@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.6k 字
+      2k 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      22
+      28
        分钟
     </span>
   
@@ -238,7 +238,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：23 天前
+                  本文最后更新于：1 分钟前
                 
               </p>
             
@@ -374,6 +374,30 @@
 <h3 id="2-5-相关题目"><a href="#2-5-相关题目" class="headerlink" title="2.5 相关题目"></a>2.5 相关题目</h3><p><a target="_blank" rel="noopener" href="https://mochazz.github.io/2019/02/02/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%85%A5%E9%97%A8%E4%B9%8Bphar/#%E4%BE%8B%E9%A2%98%E4%BA%8C">PHP反序列化入门之phar</a></p>
 <a href="/2021/07/23/GXYCTF2019BabysqliV3-0/" title="GXYCTF2019BabysqliV3.0">GXYCTF2019BabysqliV3.0</a>
 
+
+
+<h1 id="unserialize-反序列化字符逃逸"><a href="#unserialize-反序列化字符逃逸" class="headerlink" title="unserialize() 反序列化字符逃逸"></a>unserialize() 反序列化字符逃逸</h1><h3 id="反序列化字符逃逸知识"><a href="#反序列化字符逃逸知识" class="headerlink" title="反序列化字符逃逸知识"></a>反序列化字符逃逸知识</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$a</span> = <span class="hljs-keyword">array</span>(<span class="hljs-string">&quot;1&quot;</span>,<span class="hljs-string">&quot;2&quot;</span>,<span class="hljs-string">&quot;3&quot;</span>);<br><span class="hljs-variable">$b</span> = serialize(<span class="hljs-variable">$a</span>);<br>var_dump(<span class="hljs-variable">$b</span>);<br><span class="hljs-comment">// 输出: string(42) &quot;a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;3&quot;;&#125;&quot;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>我们可以看到序列化的结果是以 <code>&quot;;&#125;</code> 结尾</p>
+<p>假设我们能使上面的结果从    <code>a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;3&quot;;&#125;</code></p>
+<p>变为                                            <code>a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;2:1:&quot;4&quot;;&#125;&quot;i:2;s:1:&quot;3&quot;;&#125;</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">如果不好理解,我们假设有模板  a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;&#123;&#125;&quot;;i:2;s:1:&quot;3&quot;;&#125;<br>其中模板中的 &#123;] 可以是任何字符, 式子1为:   a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;3&quot;;&#125;   及将 2  带入模板<br>    式子2为:    a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;2:1:&quot;4&quot;;&#125;&quot;i:2;s:1:&quot;3&quot;;&#125;           及将  2&quot;;i:2;2:1:&quot;4&quot;;&#125;  带入模板<br></code></pre></td></tr></table></figure>
+
+<p>反序列化 变化后的式子</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs php">var_dump(unserialize(<span class="hljs-string">&#x27;a:3:&#123;i:0;s:1:&quot;1&quot;;i:1;s:1:&quot;2&quot;;i:2;s:1:&quot;4&quot;;&#125;&quot;i:2;s:1:&quot;3&quot;;&#125;&#x27;</span>));<br><br><span class="hljs-comment">/* 结果如下:</span><br><span class="hljs-comment">array(3) &#123;</span><br><span class="hljs-comment">  [0]=&gt;</span><br><span class="hljs-comment">  string(1) &quot;1&quot;</span><br><span class="hljs-comment">  [1]=&gt;</span><br><span class="hljs-comment">  string(1) &quot;2&quot;</span><br><span class="hljs-comment">  [2]=&gt;</span><br><span class="hljs-comment">  string(1) &quot;4&quot;</span><br><span class="hljs-comment">&#125;</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">可见 我们以及使用 新添加的内容 覆盖了原来数组的 第二个元素</span><br><span class="hljs-comment">*/</span><br><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="相关文章"><a href="#相关文章" class="headerlink" title="相关文章"></a>相关文章</h3><a href="/2021/08/12/%E5%AE%89%E6%B4%B5%E6%9D%AF2019easy-serialize-php/" title="安洵杯2019easy_serialize_php">安洵杯2019easy_serialize_php</a>
+
+
+
+<a href="/2021/07/17/0ctf2016piapiapia/" title="0ctf2016piapiapia">0ctf2016piapiapia</a>
+
+
+
+<p>持续完善中…</p>
+
             </div>
             <hr>
             <div>
@@ -392,7 +416,7 @@
                     
                       <a class="hover-with-bg" href="/tags/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">php反序列化</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%80%BB%E7%BB%93/">总结</a>
+                      <a class="hover-with-bg" href="/tags/summary/">summary</a>
                     
                   </div>
                 
