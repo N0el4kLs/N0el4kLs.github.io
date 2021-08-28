@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>Netstat</title>
+    <link href="/2021/08/28/Netstat/"/>
+    <url>/2021/08/28/Netstat/</url>
+    
+    <content type="html"><![CDATA[<p>本篇博客主要记录 <code>Netstat</code> 工具的常见使用.以方便后续使用的查询和记忆.</p><span id="more"></span><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Netstat 命令用于显示各种网络相关信息，如网络连接，路由表，接口状态 (Interface Statistics)，masquerade 连接，多播成员 (Multicast Memberships) 等等。</p><p>一般用于检验本机各端口的网络连接情况。</p><h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p><img src="/images/2021-08-28-Netstat/image-20210828023009779.png" alt="image-20210828023009779"></p><p>语法:</p><p><code>netstat [-acCeFghilMnNoprstuvVwx] [-A&lt;网络类型&gt;][--ip]</code></p><h3 id="常用选项"><a href="#常用选项" class="headerlink" title="常用选项"></a>常用选项</h3><p><code>-a</code>或<code>--all</code>:显示所有已连接的<code>socket</code></p><p><code>-l</code>: 显示所有处于监听中的<code>socket</code></p><p><code>-t</code>: 显示 <code>tcp</code> 连接</p><p><code>-u</code>: 显示 <code>udp</code>链接</p><p><code>-n</code>: 禁止使用dns反响解析ip.</p><p><code>-p</code>: 获取任务的 <code>pid</code> 和 <code>userid</code>以及相关进程名</p><p><code>-s</code>: 打印出网络统计数据,如按协议类型接受和传输的数据包总和等.</p><p><code>-r</code>: 显示路由信息</p><p><code>-i</code>: 显示网卡.使用<code>-ie</code>会使的信息更加方便阅读</p><p><code>-g</code>:显示多组播信息</p><h3 id="常用组合"><a href="#常用组合" class="headerlink" title="常用组合"></a>常用组合</h3><ul><li>查看已链接的tcp</li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">netstat -at| grep <span class="hljs-string">&#x27;ESTA&#x27;</span><br></code></pre></td></tr></table></figure><ul><li>检查服务是否正常运行</li></ul><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">netstat -aple | grep service_name<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>Tools</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Netstat</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>2021祥云杯cralwer_z</title>
     <link href="/2021/08/27/2021%E7%A5%A5%E4%BA%91%E6%9D%AFcralwer-z/"/>
     <url>/2021/08/27/2021%E7%A5%A5%E4%BA%91%E6%9D%AFcralwer-z/</url>
