@@ -247,12 +247,11 @@
 <p>以及对此类型题目所以需要的知识点进行总结,分类,可点击 <code>相关题目</code>中的链接以查看题目的具体解答过程.</p>
 <span id="more"></span>
 
+<p>[toc]</p>
+<h1 id="0x01-escapeshellarg"><a href="#0x01-escapeshellarg" class="headerlink" title="0x01 escapeshellarg()"></a>0x01 escapeshellarg()</h1><h3 id="函数作用"><a href="#函数作用" class="headerlink" title="函数作用"></a>函数作用</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment"># 官方解释</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">escapeshellarg() 将给字符串增加一个单引号并且能引用或者转码任何已经存在的单引号，这样以确保能够直接将一个字符串传入 shell 函数，并且还是确保安全的。对于用户输入的部分参数就应该使用这个函数。shell 函数包含 exec(), system() 执行运算符 。 </span><br><span class="hljs-comment">example:</span><br><span class="hljs-comment">*/</span><br><span class="hljs-variable">$s</span> = <span class="hljs-string">&#x27;hello_world&#x27;</span>;<br>var_dump(escapeshellarg(<span class="hljs-variable">$s</span>));<br><span class="hljs-comment">//   string(13) &quot;&#x27;hello_world&#x27;&quot; </span><br><br><span class="hljs-variable">$s</span> = <span class="hljs-string">&quot;hello&#x27;world&quot;</span>;<br>var_dump(escapeshellarg(<span class="hljs-variable">$s</span>));<br><span class="hljs-comment">//   string(16) &quot;&#x27;hello&#x27;\&#x27;&#x27;world&#x27;&quot; </span><br></code></pre></td></tr></table></figure>
 
-
-<h2 id="escapeshellarg"><a href="#escapeshellarg" class="headerlink" title="escapeshellarg()"></a>escapeshellarg()</h2><h3 id="函数作用"><a href="#函数作用" class="headerlink" title="函数作用"></a>函数作用</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment"># 官方解释</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">escapeshellarg() 将给字符串增加一个单引号并且能引用或者转码任何已经存在的单引号，这样以确保能够直接将一个字符串传入 shell 函数，并且还是确保安全的。对于用户输入的部分参数就应该使用这个函数。shell 函数包含 exec(), system() 执行运算符 。 </span><br><span class="hljs-comment">example:</span><br><span class="hljs-comment">*/</span><br><span class="hljs-variable">$s</span> = <span class="hljs-string">&#x27;hello_world&#x27;</span>;<br>var_dump(escapeshellarg(<span class="hljs-variable">$s</span>));<br><span class="hljs-comment">//   string(13) &quot;&#x27;hello_world&#x27;&quot; </span><br><br><span class="hljs-variable">$s</span> = <span class="hljs-string">&quot;hello&#x27;world&quot;</span>;<br>var_dump(escapeshellarg(<span class="hljs-variable">$s</span>));<br><span class="hljs-comment">//   string(16) &quot;&#x27;hello&#x27;\&#x27;&#x27;world&#x27;&quot; </span><br></code></pre></td></tr></table></figure>
-
-<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><h4 id="1-配合escapeshellcmd"><a href="#1-配合escapeshellcmd" class="headerlink" title="1.配合escapeshellcmd"></a>1.配合escapeshellcmd</h4><h5 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h5><p><a target="_blank" rel="noopener" href="https://paper.seebug.org/164/#_2">https://paper.seebug.org/164/#_2</a></p>
-<h4 id="2-非ASCII绕过"><a href="#2-非ASCII绕过" class="headerlink" title="2.非ASCII绕过"></a>2.非<code>ASCII</code>绕过</h4><p>根据官方介绍</p>
+<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><h4 id="配合escapeshellcmd"><a href="#配合escapeshellcmd" class="headerlink" title="配合escapeshellcmd"></a>配合escapeshellcmd</h4><h5 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h5><p><a target="_blank" rel="noopener" href="https://paper.seebug.org/164/#_2">https://paper.seebug.org/164/#_2</a></p>
+<h4 id="非ASCII绕过"><a href="#非ASCII绕过" class="headerlink" title="非ASCII绕过"></a>非<code>ASCII</code>绕过</h4><p>根据官方介绍</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs php">When escapeshellarg() was stripping my non-ASCII characters <span class="hljs-keyword">from</span> a UTF-<span class="hljs-number">8</span> <span class="hljs-keyword">string</span>, adding the following fixed the problem:<br><br><span class="hljs-meta">&lt;?php</span><br>setlocale(LC_CTYPE, <span class="hljs-string">&quot;en_US.UTF-8&quot;</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 
 <p>简单理解,</p>
@@ -262,7 +261,7 @@
 <p>可以看到,使用<code>escapeshellarg</code>后,<code>fl�ag</code>变为了<code>flag</code>.这里便绕过了正则匹配.</p>
 <h5 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h5><p><a href="">2021DASCTF 7月赛</a></p>
 <h5 id="参考链接-1"><a href="#参考链接-1" class="headerlink" title="参考链接"></a>参考链接</h5><p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.escapeshellarg.php">https://www.php.net/manual/zh/function.escapeshellarg.php</a></p>
-<h1 id="preg-match"><a href="#preg-match" class="headerlink" title="preg_match"></a>preg_match</h1><p>一绕过下面代码为例:</p>
+<h1 id="0x02-preg-match"><a href="#0x02-preg-match" class="headerlink" title="0x02 preg_match"></a>0x02 preg_match</h1><p>一绕过下面代码为例:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">if</span>(preg_match(<span class="hljs-string">&quot;/[A-Za-z0-9]+/&quot;</span>,<span class="hljs-variable">$code</span>))&#123;<br>                    <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;NO.&quot;</span>);<br>                    &#125;<br>            @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$code</span>);<br></code></pre></td></tr></table></figure>
 
 
@@ -308,33 +307,32 @@
 
 
 
-
-
-
-
-<h5 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h5><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/v01cano/p/11736722.html">https://www.cnblogs.com/v01cano/p/11736722.html</a></p>
+<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/v01cano/p/11736722.html">https://www.cnblogs.com/v01cano/p/11736722.html</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/mochu7777777/article/details/104631142">https://blog.csdn.net/mochu7777777/article/details/104631142</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.secpulse.com/archives/150314.html">https://www.secpulse.com/archives/150314.html</a></p>
-<h1 id="原生类利用"><a href="#原生类利用" class="headerlink" title="原生类利用"></a>原生类利用</h1><h5 id="例题-1"><a href="#例题-1" class="headerlink" title="例题"></a>例题</h5><a href="/2021/08/14/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%982020Greatphp/" title="极客大挑战2020Greatphp">极客大挑战2020Greatphp</a>
+<h1 id="0x03-原生类利用"><a href="#0x03-原生类利用" class="headerlink" title="0x03 原生类利用"></a>0x03 原生类利用</h1><h3 id="例题-1"><a href="#例题-1" class="headerlink" title="例题"></a>例题</h3><a href="/2021/08/14/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%982020Greatphp/" title="极客大挑战2020Greatphp">极客大挑战2020Greatphp</a>
 
-<h5 id="参考链接-2"><a href="#参考链接-2" class="headerlink" title="参考链接"></a>参考链接</h5><p><a target="_blank" rel="noopener" href="https://whoamianony.top/2021/03/10/Web%E5%AE%89%E5%85%A8/PHP%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E5%B0%8F%E7%BB%93/">https://whoamianony.top/2021/03/10/Web%E5%AE%89%E5%85%A8/PHP%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E5%B0%8F%E7%BB%93/</a></p>
+
+
+<h3 id="参考链接-2"><a href="#参考链接-2" class="headerlink" title="参考链接"></a>参考链接</h3><p><a target="_blank" rel="noopener" href="https://whoamianony.top/2021/03/10/Web%E5%AE%89%E5%85%A8/PHP%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E5%B0%8F%E7%BB%93/">https://whoamianony.top/2021/03/10/Web%E5%AE%89%E5%85%A8/PHP%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E5%B0%8F%E7%BB%93/</a></p>
 <p><a target="_blank" rel="noopener" href="https://troyess.com/2021/03/29/PHP%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E6%80%BB%E7%BB%93/">https://troyess.com/2021/03/29/PHP%E5%8E%9F%E7%94%9F%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8%E6%80%BB%E7%BB%93/</a></p>
-<h1 id="代码执行函数"><a href="#代码执行函数" class="headerlink" title="代码执行函数"></a>代码执行函数</h1><p>这里对 <code>php代码执行函数</code>做一个总结,可以在<code>phpinfo</code>中观察<code>disablefunction</code>是否有漏网之鱼</p>
+<h1 id="0x04-代码执行函数"><a href="#0x04-代码执行函数" class="headerlink" title="0x04 代码执行函数"></a>0x04 代码执行函数</h1><p>这里对 <code>php代码执行函数</code>做一个总结,可以在<code>phpinfo</code>中观察<code>disablefunction</code>是否有漏网之鱼</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php">passthru;<br><span class="hljs-keyword">eval</span>;<br>system;<br>assert;<br>proc_open;<br>shell_exec();<br><br><br>... 持续完善中<br></code></pre></td></tr></table></figure>
 
 
 
-<h1 id="变量覆盖"><a href="#变量覆盖" class="headerlink" title="变量覆盖"></a>变量覆盖</h1><h3 id="双刀ner变量覆盖"><a href="#双刀ner变量覆盖" class="headerlink" title="$$ 双刀ner变量覆盖"></a>$$ 双刀ner变量覆盖</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$a</span> = <span class="hljs-string">&#x27;_GET&#x27;</span>;<br><span class="hljs-variable">$$a</span>&#123;<span class="hljs-number">1</span>&#125; == <span class="hljs-variable">$$a</span>[<span class="hljs-number">1</span>] == <span class="hljs-variable">$$a</span>[<span class="hljs-string">&#x27;1&#x27;</span>] == <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;1&#x27;</span>]<br></code></pre></td></tr></table></figure>
+<h1 id="0x05-变量覆盖"><a href="#0x05-变量覆盖" class="headerlink" title="0x05 变量覆盖"></a>0x05 变量覆盖</h1><h3 id="双刀ner变量覆盖"><a href="#双刀ner变量覆盖" class="headerlink" title="$$ 双刀ner变量覆盖"></a>$$ 双刀ner变量覆盖</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$a</span> = <span class="hljs-string">&#x27;_GET&#x27;</span>;<br><span class="hljs-variable">$$a</span>&#123;<span class="hljs-number">1</span>&#125; == <span class="hljs-variable">$$a</span>[<span class="hljs-number">1</span>] == <span class="hljs-variable">$$a</span>[<span class="hljs-string">&#x27;1&#x27;</span>] == <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;1&#x27;</span>]<br></code></pre></td></tr></table></figure>
 
 
 
 
 
-<h3 id="extract-变量覆盖"><a href="#extract-变量覆盖" class="headerlink" title="extract 变量覆盖"></a>extract 变量覆盖</h3><h1 id="intval"><a href="#intval" class="headerlink" title="intval()"></a>intval()</h1><p>当字符串转换为数字时，字符串开头的数字、加号或减号以外的任何内容都应返回 0。然而，字符串开头的(某些)空格会被忽略:</p>
+<h3 id="extract-变量覆盖"><a href="#extract-变量覆盖" class="headerlink" title="extract 变量覆盖"></a>extract 变量覆盖</h3><h1 id="0x06-intval"><a href="#0x06-intval" class="headerlink" title="0x06 intval()"></a>0x06 intval()</h1><p>当字符串转换为数字时，字符串开头的数字、加号或减号以外的任何内容都应返回 0。然而，字符串开头的(某些)空格会被忽略:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">echo</span> intval(<span class="hljs-string">&quot;     3&quot;</span>);  <span class="hljs-comment">// 3</span><br><span class="hljs-keyword">echo</span> strlen(<span class="hljs-string">&quot;     3&quot;</span>);	<span class="hljs-comment">// 6</span><br><span class="hljs-keyword">echo</span> intval(<span class="hljs-string">&quot;</span><br><span class="hljs-string">3&quot;</span>);  <span class="hljs-comment">// 3</span><br></code></pre></td></tr></table></figure>
 
 
 
+<h1 id="0x07-Session-包含Getshell"><a href="#0x07-Session-包含Getshell" class="headerlink" title="0x07 Session 包含Getshell"></a>0x07 Session 包含Getshell</h1><h3 id="参考链接-3"><a href="#参考链接-3" class="headerlink" title="参考链接"></a>参考链接</h3><p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/201177">https://www.anquanke.com/post/id/201177</a></p>
 <p>持续完善中…</p>
 
             </div>

