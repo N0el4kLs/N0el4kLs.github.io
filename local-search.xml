@@ -4,6 +4,104 @@
   
   
   <entry>
+    <title>OA_Future</title>
+    <link href="/2021/10/26/OA-Future/"/>
+    <url>/2021/10/26/OA-Future/</url>
+    
+    <content type="html"><![CDATA[<p>本片博客主要记录常见oa的一些特征.不定期更新.<br>目前已搜集</p><ul><li><p><input disabled="" type="checkbox">  蓝凌oa</p></li><li><p><input disabled="" type="checkbox">  通达oa</p></li><li><p><input disabled="" type="checkbox">  泛微oa</p></li><li><p><input disabled="" type="checkbox">  致远oa</p><span id="more"></span></li></ul><h1 id="蓝凌oa"><a href="#蓝凌oa" class="headerlink" title="蓝凌oa"></a>蓝凌oa</h1><h1 id="通达oa"><a href="#通达oa" class="headerlink" title="通达oa"></a>通达oa</h1><p><strong>图标</strong></p><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211026031700171.png" alt="image-20211026031700171"></p><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211026031720255.png" alt="image-20211026031720255"></p><p><strong>内容特征</strong>:</p><p><code>北京通达信科科技有限公司</code></p><h1 id="泛微oa"><a href="#泛微oa" class="headerlink" title="泛微oa"></a>泛微oa</h1><p><strong>图标:</strong></p><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211026024509342.png" alt="image-20211026024509342"></p><p><strong>内容特征:</strong> </p><p><code>wui/common/jquery/jquery.min_wev8.js</code></p><p><code>/wui/theme/ecology8/js/jquery.fullscreenBackground.js</code></p><h1 id="致远oa"><a href="#致远oa" class="headerlink" title="致远oa"></a>致远oa</h1><p><strong>图标:</strong></p><p><strong>url特征:</strong></p><p>`/seeyon/main.do</p><p><strong>内容特征:</strong></p><p><code>/seeyon/common/images/A8/favicon.ico</code></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>SRC</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>oa</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>xss</title>
+    <link href="/2021/10/23/xss/"/>
+    <url>/2021/10/23/xss/</url>
+    
+    <content type="html"><![CDATA[<p>这篇博客主要记录 xss 靶场知识点.<br>靶场地址来自Github <a href="https://github.com/Re13orn/xss-lab">xss-lab</a></p><span id="more"></span><p>前两关比较简单,直接从第三关开始</p><h2 id="level-3"><a href="#level-3" class="headerlink" title="level 3"></a>level 3</h2><p>这关主要涉及到一个php函数<code>htmlspecialchars</code>,他的作用是把预定字符转换为<code>HTML</code>实体<br>预定字符如下</p><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-meta">&amp; （和号）成为 &amp;</span><br><span class="hljs-string">&quot; （双引号）成为 &quot;</span><br>&#x27; （单引号）成为 &#x27;<br>&lt; （小于）成为 &lt;<br>&gt; （大于）成为 &gt;<br></code></pre></td></tr></table></figure><p>在level 3中可以观察到我们的输入有一部分是出现在 <code>HTML</code>属性中的,且属性使用单引号,因此此处可以使用<code>&#39;</code>绕过<code>htmlspecialchars</code>并通过属性触发事件绕过.<a href="https://blog.csdn.net/qq_36374896/article/details/82755793">xss html触发事件</a><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/7f3c8a42960b382164d305e44534b98d.png" alt="20211023011454"><br>构造payload:<br><code>&#39; onfocusout=&#39;alert(1)</code><br>构造后完整语句<br><code>&lt;input name=keyword  value=&#39;&#39; onfocusout=&#39;alert(1)&#39;&gt;</code></p><h2 id="level-4"><a href="#level-4" class="headerlink" title="level 4"></a>level 4</h2><p>分析同<code>level 3</code><br>构造payload<br><code>&quot; onfocusout=&quot;alert(1)</code></p><h2 id="level-5"><a href="#level-5" class="headerlink" title="level 5"></a>level 5</h2><p>简单尝试发现对部分关键字进行了处理,被处理的关键字有<code>on</code>,<code>script</code><br>既然<code>js 事件</code>已经无法使用,那我们再试试 <code>HTML 标签</code><a href="https://blog.csdn.net/weixin_47306547/article/details/120340162">XSS常用标签</a><br>这里我选择使用<code>img</code>标签<br><code>&quot;/&gt;&lt;img src=&quot;javascript:alert(1)&quot;/&gt;&quot;</code></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>xss</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Django_Log_2</title>
+    <link href="/2021/10/09/Django-Log-2/"/>
+    <url>/2021/10/09/Django-Log-2/</url>
+    
+    <content type="html"><![CDATA[<p>本系列博客主要记录关于<code>python</code> web框架-<code>Django</code>的学习记录.</p><p>这是本系列第 <strong>二</strong>  篇.</p><blockquote><p>Carp diem,seize the day! 注重当下,只争朝夕.</p></blockquote><span id="more"></span><p>前篇</p><a href="/2021/10/07/Django-Log-1/" title="Django_Log_1">Django_Log_1</a><h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><p>在第一篇中我们已经创建了一个项目,接下来 我们来尝试创建一个应用.</p><blockquote><p>应用是专门做某件事的一个网络程序,而项目是一个网站使用的配置和应用的集合.一个项目能够包含一个或多个应用,而一个应用又可以被多个项目使用.</p></blockquote><p>为了方便管理项目中的应用,我们在最外层的<code>Helloworld/</code>目录下,也就是<code>manage.py</code>的同级目录下创建一个应用.</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">cd</span> Helloworld<br>$ python manage.py startapp polls <br></code></pre></td></tr></table></figure><blockquote><p>python manage.py startapp polls 命令用于在当前目录下生成一个应用目录,目录名称为 polls.这是Django为我们封装好的一个快速生成应用目录的命令,这样我们就可以专注于写代码而不是创建目录了.</p></blockquote><p>执行完命令后,查看下当前目录结构</p><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs html">├── db.sqlite3<br>├── Helloworld<br>│   ├── asgi.py<br>│   ├── __init__.py<br>│   ├── settings.py<br>│   ├── urls.py<br>│   ├── views.py<br>│   └── wsgi.py<br>├── manage.py<br>└── polls<br>    ├── admin.py<br>    ├── apps.py<br>    ├── __init__.py<br>    ├── migrations<br>    │   └── __init__.py<br>    ├── models.py<br>    ├── tests.py<br>    └── views.py<br></code></pre></td></tr></table></figure><p>可以看到 <code>polls</code>的目录结构和之前创建的<code>Helloworld</code>类似.我们来具体了解下</p><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">admin.py:</span> 应用后台管理的配置文件<br><span class="hljs-symbol">apps.py:</span> 应用的配置文件<br><span class="hljs-symbol">models:</span> 数据模块,数据库设计就需要修改次文件<br><span class="hljs-symbol">tests.py:</span> 自动化测试模块,可以在里面编写测试脚本<br><span class="hljs-symbol">views.py:</span> 视图文件<br><span class="hljs-symbol">migrations:</span> 数据迁移,移植文目录,记录数据库操作,内容生成<br></code></pre></td></tr></table></figure><p>编写应用的试图文件<code>views.py</code></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># polls/views.py</span><br><span class="hljs-keyword">from</span> django.http <span class="hljs-keyword">import</span> HttpResponse<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index</span>(<span class="hljs-params">response</span>):</span><br>    <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">&quot;Hello,You are at polls app&quot;</span>)<br></code></pre></td></tr></table></figure><p>添加路由映射,在<code>polls/</code>下创建<code>urls.py</code>,并输入一下代码</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># polls/urls.py</span><br><span class="hljs-keyword">from</span> django.urls <span class="hljs-keyword">import</span> path<br><br><span class="hljs-keyword">from</span> . <span class="hljs-keyword">import</span> views<br><br>urlpatterns = [<br>  path(<span class="hljs-string">&#x27; &#x27;</span>,views.index, name=<span class="hljs-string">&quot;index&quot;</span>),<br>]<br></code></pre></td></tr></table></figure><p>为了是项目能够正确访问到应用polls,我们还得在<code>Helloworld/urls.py</code>里添加一下代码</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># Helloworld/urls.py</span><br><span class="hljs-keyword">from</span> django.urls <span class="hljs-keyword">import</span> include<br><br>urlpattern = [<br>  path(<span class="hljs-string">&#x27;polls/&#x27;</span>, include(<span class="hljs-string">&#x27;polls.urls&#x27;</span>)),<br>]<br></code></pre></td></tr></table></figure><p>先不用管<code>path</code>以及<code>inclue</code>的具体用法,等会我会说明,让我们先看看效果.<br><code>python manage.py runserver</code><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/d29864d52092e23d33e221c922bc2eda.png" alt="20211009070203"></p><p>可以看到我们已经能成功访问到我们创建的应用了.</p><p>在具体介绍上述代码中的一些函数是,让我们先来了解 django是如何处理一个请求的.</p><h1 id="URL调度器"><a href="#URL调度器" class="headerlink" title="URL调度器"></a>URL调度器</h1><h2 id="URLconf"><a href="#URLconf" class="headerlink" title="URLconf"></a>URLconf</h2><p><code>URLconf(url config)</code> 是django中的一个模块(<code>urls.py</code>),主要用来将url与资源进行对应,也就是所谓的路由.来看一个简单的URLconf例子:</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.urls <span class="hljs-keyword">import</span> path<br><br><span class="hljs-keyword">from</span> . <span class="hljs-keyword">import</span> views<br><br>urlpatterns = [<br>  path(<span class="hljs-string">&quot;&quot;</span>, views.index)<br>  path(<span class="hljs-string">&quot;article/&lt;int:year&gt;&quot;</span>, views.index<br>]<br></code></pre></td></tr></table></figure><p>由上例子,</p><ul><li>url模式的字符串不需要以<code>/</code>开始,即是<code>article</code>而不是<code>/article</code></li></ul><p><strong>path()</strong></p><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">使用方法:path(route, <span class="hljs-keyword">view</span>, kwargs=<span class="hljs-keyword">None</span>, <span class="hljs-type">name</span>=<span class="hljs-keyword">None</span>)<br>其中: <br>route: 此参数应该是一个包含url模式的字符串,或包含url模式的gettext_lazy()<br><br></code></pre></td></tr></table></figure><p><strong>include</strong></p><p>后篇</p><a href="#">Post not found: Django-Log-3</a>]]></content>
+    
+    
+    <categories>
+      
+      <category>语言基础</category>
+      
+      <category>django</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>django</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Django_Log_1</title>
+    <link href="/2021/10/07/Django-Log-1/"/>
+    <url>/2021/10/07/Django-Log-1/</url>
+    
+    <content type="html"><![CDATA[<p>本系列博客主要记录关于<code>python</code> web框架-<code>Django</code>的学习记录.</p><p>这是本系列第    <strong>一</strong>   篇.</p><blockquote><p>学习,必定是一个持久的过程</p></blockquote><span id="more"></span><blockquote><p>很不幸,这篇文章出了点问题导致内容大部分丢失, </p></blockquote><h1 id="预备环境"><a href="#预备环境" class="headerlink" title="预备环境"></a>预备环境</h1><p>为了避免开发环境同日常使用环境产生奇怪冲突,以及第三方资源包的混乱,本系列所有代码均在<code>python</code>的虚拟环境下完成.本人主要使用<code>requests</code>库作者<code>Kenneth Reitz</code>编写的<code>pipenv</code></p><h2 id="pipenv-vscode"><a href="#pipenv-vscode" class="headerlink" title="pipenv + vscode"></a>pipenv + vscode</h2><p><strong>pipenv</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># install by pip</span><br>pip(<span class="hljs-number">3</span>) install pipenv<br><span class="hljs-comment"># you can only install pipev for current user by</span><br>pip(<span class="hljs-number">3</span>) install -user pipenv<br></code></pre></td></tr></table></figure><p>后篇</p><a href="#">Post not found: nodejs</a>]]></content>
+    
+    
+    <categories>
+      
+      <category>语言基础</category>
+      
+      <category>django</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>django</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>ezeval</title>
     <link href="/2021/09/23/tianyibei/"/>
     <url>/2021/09/23/tianyibei/</url>
