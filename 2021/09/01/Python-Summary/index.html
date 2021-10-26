@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      155 字
+      169 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      2
        分钟
     </span>
   
@@ -238,7 +238,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2 个月前
+                  本文最后更新于：21 分钟前
                 
               </p>
             
@@ -249,7 +249,13 @@
 
 
 
-<h1 id="0x01-Flask-SSTI"><a href="#0x01-Flask-SSTI" class="headerlink" title="0x01 Flask SSTI"></a>0x01 Flask SSTI</h1><h2 id="1-1"><a href="#1-1" class="headerlink" title="1.1"></a>1.1</h2><h2 id="1-2"><a href="#1-2" class="headerlink" title="1.2"></a>1.2</h2><h1 id="0x02-Bypass"><a href="#0x02-Bypass" class="headerlink" title="0x02 Bypass"></a>0x02 Bypass</h1><h2 id="2-1-os-path-join"><a href="#2-1-os-path-join" class="headerlink" title="2.1 os.path.join"></a>2.1 os.path.join</h2><p>不恰当的使用<code>os.path.join</code>可能会造成任意路经构造</p>
+<h1 id="0x01-Flask-SSTI"><a href="#0x01-Flask-SSTI" class="headerlink" title="0x01 Flask SSTI"></a>0x01 Flask SSTI</h1><p>关于ssti的内容我单独写了一篇文章.</p>
+<a href="/2021/10/26/flaskssti/" title="flaskssti">flaskssti</a>
+
+
+
+
+<h1 id="0x02-Bypass"><a href="#0x02-Bypass" class="headerlink" title="0x02 Bypass"></a>0x02 Bypass</h1><h2 id="2-1-os-path-join"><a href="#2-1-os-path-join" class="headerlink" title="2.1 os.path.join"></a>2.1 os.path.join</h2><p>不恰当的使用<code>os.path.join</code>可能会造成任意路经构造</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 假设 传入的 path1 可控</span><br>path = os.path.join(<span class="hljs-string">&#x27;static&#x27;</span>,path1)<br><br><span class="hljs-comment"># 当构造的 path1 以 / 开头便可以实现任意路径构造</span><br></code></pre></td></tr></table></figure>
 
 <p><img src="/images/2021-09-01-Python-Summary/image-20210901041140726.png" srcset="/img/loading.gif" lazyload alt="image-20210901041140726"></p>
