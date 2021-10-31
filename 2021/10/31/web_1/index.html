@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="本次实验环境都在虚拟机中搭建,操作系统内核为:Linux ubuntu 5.11.0-40-generic #44~20.04.1-Ubuntu SMP Wed Oct 20 19:04:34 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+本篇博客主要是一次web server环境(unbuntu+Nginx+fpm+mysql)的搭建记录.">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>web_1 - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="web_1">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-10-31 23:44" pubdate>
+        2021年10月31日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      28
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">web_1</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：22 分钟前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>本次实验环境都在虚拟机中搭建,操作系统内核为:<br><code>Linux ubuntu 5.11.0-40-generic #44~20.04.1-Ubuntu SMP Wed Oct 20 19:04:34 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</code></p>
+<p>本篇博客主要是一次web server环境(unbuntu+Nginx+fpm+mysql)的搭建记录.</p>
+<span id="more"></span>
+
+<h1 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h1><p><strong>安装Nginx</strong><br>这里我使用了<code>apt-get</code>安装<code>nginx</code><br><code>sudo apt-get install nginx</code><br>安装完成后,使用<br><code>nginx -v</code><br>确认安装完成并查看当前<code>nginx</code>版本<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/8ef981481b9fd90892af9440aed71e20.png" srcset="/img/loading.gif" lazyload alt="20211027082212"><br>使用<code>systemctl status nginx</code>查看下服务状态<br>在使用<code>curl 本地ip</code>访问,看到<code>welcome to nginx</code>字样,成功!<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/f53535e9569b8a303457165e2ef609b5.png" srcset="/img/loading.gif" lazyload alt="20211027102624"></p>
+<p>思考:web服务器的选择有很多,比如apache,iis,,但良哥在任务平台上推荐使用nginx.为什么呢?<br>后来通过百度,我获取到<code>nginx</code>相比与其他服务器拥有一下优势:</p>
+<ol>
+<li><code>nginx</code> 加载静态资源的速度快.</li>
+<li><code>nginx</code>的抗高并发能力强.在面对同样条件下的高并发时,<code>nginx</code>能保持低消耗高性能,而<code>apache</code> 可能此时已经出现拒绝服务</li>
+<li><code>nginx</code>配置简易.</li>
+</ol>
+<h1 id="php"><a href="#php" class="headerlink" title="php"></a>php</h1><p><strong>安装php</strong><br>这里我们的后端语言选择的是<code>php</code>,由于<code>php</code>与<code>ningx</code>的通信是用过<code>fastcgi</code>实现的,而<code>php-fpm</code>实现了对<code>fastcgi</code>的进程管理,所以我们这里还需要安装<code>php-fpm</code>.<br>为了避免地版本<code>php</code>所带来的安全问题,这里直接使用<br><code>sudo apt-get install php-fpm</code><br>下载最新版本的<code>php</code>以及其对应版本的<code>php-fpm</code><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/8a180dfb51d5e7596f6cff6c85b196ec.png" srcset="/img/loading.gif" lazyload alt="20211027084408"></p>
+<p>使用<br><code>php -v</code><br>判断<code>php</code>是否安装成功,并查看当前安装的<code>php</code>版本<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/13e686818229a9ab457b0b3c83beb8c2.png" srcset="/img/loading.gif" lazyload alt="20211027084710"><br>可以看到我这带机器上安装的<code>php</code>版本为<code>7.4.3</code><br>由于后续我们还会使用<code>php</code>实现<code>mysql</code>的相关操作,所以在这里也顺便吧<code>php-mysql</code>安装了<br>使用<br><code>sudo apt-get install php-mysql</code><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/9364d743e93d24bb8284cf9d0ef483bf.png" srcset="/img/loading.gif" lazyload alt="20211027085429"></p>
+<h1 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h1><p><strong>安装mysql</strong><br>使用命令安装mysql<br><code>sudo apt-get install mysql</code><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/56c9a6561cb55d4cb345a08cfa6bea5e.png" srcset="/img/loading.gif" lazyload alt="20211027092516"></p>
+<p>安装完成之后可以使用如下命令来检查是否安装成功：<br><code>netstat -tap | grep mysql</code><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/0e5a98e122c2ed17fb623144e16f4385.png" srcset="/img/loading.gif" lazyload alt="20211027093102"><br>出现以上状态则表示安装成功</p>
+<blockquote>
+<p>在MySQL 8.0上，auth_socket默认情况下，root用户通过插件进行身份验证。<br>该auth_socket插件对localhost通过Unix套接字文件从进行连接的用户进行身份验证。这意味着您不能通过提供密码来以root用户身份进行身份验证。</p>
+</blockquote>
+<p>所以第一次登录mysql时,就不能直接使用<br><code>mysql -u root -p</code><br>进行登录,要以<code>root</code>用户的身份登录,<br><code>sudo mysql</code><br>在输入<code>root</code>密码登录进mysql服务器<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/6dbe1bc031cb695963b9d836965162cb.png" srcset="/img/loading.gif" lazyload alt="20211027094546"></p>
+<p>然后进行一下操作,就可以使用 <code>mysql -u root -p</code>的格式登录了</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql">mysql<span class="hljs-operator">&gt;</span> use mysql;<br>mysql<span class="hljs-operator">&gt;</span> use mysql;<br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">USER</span> <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="hljs-keyword">WITH</span> mysql_native_password <span class="hljs-keyword">BY</span> <span class="hljs-string">&#x27;密码&#x27;</span>;<br>mysql<span class="hljs-operator">&gt;</span> flush privileges;<br></code></pre></td></tr></table></figure>
+<p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/672e78115b23f6399077bca221d6d46b.png" srcset="/img/loading.gif" lazyload alt="20211027101420"><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/e644277bd834b6664a29b92597d88c78.png" srcset="/img/loading.gif" lazyload alt="20211027101642"></p>
+<h1 id="PHP-Nginx-mysql"><a href="#PHP-Nginx-mysql" class="headerlink" title="PHP+Nginx+mysql"></a>PHP+Nginx+mysql</h1><p>独立应用已经下载完成,接下来就需要将他们配置在一起了</p>
+<h2 id="PHP-Nginx"><a href="#PHP-Nginx" class="headerlink" title="PHP+Nginx"></a>PHP+Nginx</h2><h3 id="php-fpm"><a href="#php-fpm" class="headerlink" title="php-fpm"></a>php-fpm</h3><p>在安装<code>php-fpm</code>的时候简单提了一下为什么要安装他.下面我们通过一个简单的历史来了解一下<code>php-fpm</code>的出现以及其所解决的问题.</p>
+<p>早期的互联网提供的web服务只是一些静态信息,包括图片,样式文件以及html等.但随着科技的发展,用户们对web通信的需求已不仅仅只是普通的静态文件,他们想要更加丰富的内容,更加有趣的交互等等.随后,<code>cgi</code>便在这种背景下出现.他能满足动态语言与webserver的通信,从而实现简单的动态页面.<br>但<code>cgi</code>有个问题.假设我们的后端语言是<code>php</code>.当webserver没收到一个请求时,都需要去<code>fork</code>一个<code>cig</code>进程,响应结束后还需要再释放进程.当请求过多时,大量的创建线程以及释放线程是极其耗费资源的.那有没有办法优化呢.于是就出现了<code>fastcgi</code>.<code>fastcgi</code>在请求结束后不会立刻删除进程,他会对进程进行保留,使这个进程能够一次处理多个请求.他是一个协议规范.<br><code>php-fpm</code>的全称是<code>php fastcgi process manager</code>,他是<code>Fastcgi</code>的实现.他提供了进程管理,包括master进程以及woker进程.其中,master进程只有一个,主要负责监听来自webserver的请求,他只有一个进程;而woker进程主要负责php代码的执行,他可以有多个.</p>
+<p>接下来就是通过配置Nginx,实现反向代理.</p>
+<p><strong>配置Nginx.conf文件</strong><br>这是<code>Nginx</code>的主要配置文件.由于他在加载时会自动加载<code>sites-enables/</code>的所有文件,为了方便管理不同站点的解析配置,所以我们对<code>sites-enables/default</code>进行设置.<br>修改后完整的配置如下:</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-section">server</span> &#123;<br>	<span class="hljs-attribute">listen</span> <span class="hljs-number">80</span> default_server;<br>	<span class="hljs-attribute">listen</span> [::]:<span class="hljs-number">80</span> default_server;<br><br>	<span class="hljs-attribute">root</span> /var/www/html;<br><br>	<span class="hljs-comment"># Add index.php to the list if you are using PHP</span><br>	<span class="hljs-attribute">index</span> index.html index.htm index.nginx-debian.html index.php;<br><br>	<span class="hljs-attribute">server_name</span> noel.local.cn;<br><br>	<span class="hljs-attribute">location</span> / &#123;<br>		<span class="hljs-comment"># First attempt to serve request as file, then</span><br>		<span class="hljs-comment"># as directory, then fall back to displaying a 404.</span><br>		<span class="hljs-attribute">try_files</span> $uri $uri/ =<span class="hljs-number">404</span>;<br>	&#125;<br><br>	<span class="hljs-comment"># pass PHP scripts to FastCGI server</span><br>	<span class="hljs-comment">#</span><br>	<span class="hljs-attribute">location</span> <span class="hljs-regexp">~ \.php$</span> &#123;<br>		<span class="hljs-attribute">include</span> snippets/fastcgi-php.conf;<br>		<span class="hljs-comment">#fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;</span><br>		<span class="hljs-attribute">fastcgi_pass</span> <span class="hljs-number">127.0.0.1:9000</span>;<br>		<span class="hljs-attribute">include</span> fastcgi_params;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>再对<code>php-fpm</code>设置一个监听端口.<br>编辑文件<code>/etc/php/7.4/fpm/pool.d/www.conf</code><br>更改<code>listen = 127.0.0.1:9000</code></p>
+<p>完成以上操作后,重启服务<br><code>systemctl restart nginx</code><br><code>systemctl restart php7.4-fpm</code></p>
+<p>在<code>/var/www/html/</code>创建一个<code>index.php</code>,并写入以下内容</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>	<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;helloworld&quot;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>访问<code>127.0.0.1/index.php</code>,看到页面显示<code>helloworld</code>,表示设置完成.<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/a8e56e689550f7a870711f429ce9c3ed.png" srcset="/img/loading.gif" lazyload alt="20211029035151"></p>
+<h2 id="PHP-Mysql"><a href="#PHP-Mysql" class="headerlink" title="PHP+Mysql"></a>PHP+Mysql</h2><p>接下来实现使用<code>php</code>对数据库进行操作.<br>操作之前,先初始化一下咱们刚下载的<code>mysql</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> DATABASE IF <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">EXISTS</span> `demodbs`;<br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> users(<br>`id` <span class="hljs-type">int</span> unsigned zerofill <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span> auto_increment  <span class="hljs-keyword">PRIMARY</span> KEY,<br>`username` <span class="hljs-type">varchar</span>(<span class="hljs-number">25</span>) <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span>,<br>`passwd` <span class="hljs-type">varchar</span>(<span class="hljs-number">25</span>) <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>);<br><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> users(username,passwd) <span class="hljs-keyword">values</span>(<span class="hljs-string">&#x27;admin&#x27;</span>,<span class="hljs-string">&#x27;ADm1n&#x27;</span>);<br></code></pre></td></tr></table></figure>
+<p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/2d2d1e4af2256ab42e33de1d36bbc87e.png" srcset="/img/loading.gif" lazyload alt="20211031141048"></p>
+<p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/3282cb962ae63122fac80296033d02b5.png" srcset="/img/loading.gif" lazyload alt="20211031141118"><br>以上是数据库的简单结构.<br>接下来就是<code>php</code>操作数据库的实例,这里我使用了一个简单的注册和创建场景实现.<br>核心代码为 <code>db_con.php</code>,主要是实现数据库的链接</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>	<span class="hljs-variable">$server</span> = <span class="hljs-string">&#x27;localhost&#x27;</span>;<br>	<span class="hljs-variable">$db_username</span> = <span class="hljs-string">&#x27;root&#x27;</span>;<br>	<span class="hljs-variable">$db_password</span> = <span class="hljs-string">&#x27;xxxx&#x27;</span>;<br>	<span class="hljs-variable">$db_name</span> = <span class="hljs-string">&#x27;demodbs&#x27;</span>;<br>	<span class="hljs-variable">$conn</span> = <span class="hljs-keyword">new</span> mysqli(<span class="hljs-variable">$server</span>,<span class="hljs-variable">$db_username</span>,<span class="hljs-variable">$db_password</span>,<span class="hljs-variable">$db_name</span>);<br>	<span class="hljs-keyword">if</span> (<span class="hljs-variable">$conn</span> -&gt;connect_error)&#123;<br>		<span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;Connetion Falied&quot;</span>.<span class="hljs-variable">$conn</span>-&gt;connect_error);<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>login.php</code> 主要实现登录操作,登录时使用了数据库的查询</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>	header(<span class="hljs-string">&#x27;Content-Type: text/html&#x27;</span>);<br>	session_start();<br>	<span class="hljs-keyword">include_once</span> <span class="hljs-string">&#x27;db_con.php&#x27;</span>;<br><br>	<span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;login&#x27;</span>]))&#123;<br>		<span class="hljs-variable">$username</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;username&#x27;</span>];<br>		<span class="hljs-variable">$password</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;password&#x27;</span>];<br>		<span class="hljs-keyword">if</span>(<span class="hljs-variable">$username</span> ==<span class="hljs-string">&#x27;&#x27;</span> || <span class="hljs-variable">$password</span> ==<span class="hljs-string">&#x27;&#x27;</span>)&#123;<br>			header(<span class="hljs-string">&#x27;refresh:3; url=index.html&#x27;</span>);<br>			<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Wrong username or password.&quot;</span>;<br>			<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Please input valid username or password&quot;</span>;<br>			<span class="hljs-keyword">exit</span>;<br>		&#125;<br>		<span class="hljs-variable">$sql</span> = <span class="hljs-string">&quot;SELECT passwd from users where username=&#x27;<span class="hljs-subst">$username</span>&#x27;&quot;</span>;<br>		<span class="hljs-variable">$result</span> = <span class="hljs-variable">$conn</span>-&gt;query(<span class="hljs-variable">$sql</span>);<br>		<span class="hljs-variable">$row</span> = mysqli_fetch_assoc(<span class="hljs-variable">$result</span>);<br>		<span class="hljs-keyword">if</span> (<span class="hljs-variable">$row</span>[<span class="hljs-string">&#x27;passwd&#x27;</span>] === <span class="hljs-variable">$password</span>)&#123;<br>			<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Welcome in&quot;</span>;<br>		&#125;<span class="hljs-keyword">else</span>&#123;<br>			header(<span class="hljs-string">&quot;refresh:3;url=index.html&quot;</span>);<br>			<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Wrong password or username&quot;</span>;<br>			<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Please try again..&quot;</span>;<br>		&#125;<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>register.php</code> 主要实现注册操作,会首先判断是是否存在用户名,如果不存在在出将数据写入到数据库</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>	header(<span class="hljs-string">&quot;Content-type:text/html; charset=utf-8&quot;</span>);<br>	<span class="hljs-variable">$username</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&quot;username&quot;</span>];<br>	<span class="hljs-variable">$password</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-string">&quot;password&quot;</span>];<br>	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$username</span> &amp;&amp; <span class="hljs-variable">$password</span>)&#123;<br>		<span class="hljs-keyword">include_once</span> <span class="hljs-string">&quot;db_con.php&quot;</span>;<br>		<br>		<span class="hljs-variable">$sql_check</span> = <span class="hljs-string">&quot;SELECT * from users where username=&#x27;<span class="hljs-subst">$username</span>&#x27;&quot;</span>;<br>		<span class="hljs-variable">$sql_insert</span> = <span class="hljs-string">&quot;INSERT INTO users(username,passwd)value(&#x27;<span class="hljs-subst">$username</span>&#x27;,&#x27;<span class="hljs-subst">$password</span>&#x27;)&quot;</span>;<br>		<span class="hljs-variable">$result</span> = <span class="hljs-variable">$conn</span>-&gt;query(<span class="hljs-variable">$sql_check</span>);<br>		<span class="hljs-keyword">if</span>(<span class="hljs-variable">$result</span>-&gt;num_rows&gt;<span class="hljs-number">0</span>)&#123;<br>			<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;The Username exsits.Please try another..&quot;</span>;<br>			header(<span class="hljs-string">&quot;refresh:3;url=register.html&quot;</span>);<br>			<span class="hljs-keyword">exit</span>;<br>		&#125;<span class="hljs-keyword">else</span>&#123;<br>			<span class="hljs-keyword">if</span>(<span class="hljs-variable">$conn</span>-&gt;query(<span class="hljs-variable">$sql_insert</span>) === <span class="hljs-literal">TRUE</span>)&#123;<br>				<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Register Successfully.&quot;</span>;<br>			&#125;<span class="hljs-keyword">else</span>&#123;<br>				<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Unexcept error..&quot;</span>;<br>			&#125;<br>		&#125;<br>	&#125;<span class="hljs-keyword">else</span>&#123;<br>		<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Invalid Input!!&quot;</span>;<br>		<span class="hljs-keyword">exit</span>;<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>登录实现：<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/f5b88b1e824f30b43ca98f0db7db532a.png" srcset="/img/loading.gif" lazyload alt="20211031165126"><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/2b2ff068cad83df97914ce7cf97cdec7.png" srcset="/img/loading.gif" lazyload alt="20211031165148"></p>
+<p>注册实现：<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/b0b146114b3155e6270af3bb1d9180bc.png" srcset="/img/loading.gif" lazyload alt="20211031165247"><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/faa7a56d5b6798716671c342bfd891f8.png" srcset="/img/loading.gif" lazyload alt="20211031165432"></p>
+<p><strong>web 基本运行环境……完成！</strong></p>
+<h1 id="Linux-系统加固（部分）"><a href="#Linux-系统加固（部分）" class="headerlink" title="Linux 系统加固（部分）"></a>Linux 系统加固（部分）</h1><h2 id="帐号安全"><a href="#帐号安全" class="headerlink" title="帐号安全"></a>帐号安全</h2><ol>
+<li>检查询问本台机器上的用户是否存在用口令,有其实管理员用户.</li>
+<li>检查是否有用户存在空口令.使用<code>awk -F: &#39;($2 == &quot;&quot;) &#123; print $1 &#125;&#39; /etc/shadow</code>进行检测.</li>
+<li>检查是否存在除 root 之外 UID 为 0 的用户.使用<code>awk -F: &#39;($3 == 0) &#123; print $1 &#125;&#39; /etc/passwd</code>进行检测。</li>
+<li>禁止root用户进行远程登录.这里主要通过禁止远程通过ssh登录实现.修改｀sshd_config<code>x下的｀PermitRootLogin</code>为｀no`.</li>
+</ol>
+<h2 id="文件权限"><a href="#文件权限" class="headerlink" title="文件权限"></a>文件权限</h2><ol>
+<li>文件权限管理.所有文件都应该设定特定对象访问，避免文件被所有用户都有写的权限．</li>
+<li>文件属主．任何文件都有起属主,当发现文件没有属于时,可以怀疑服务器被攻击.<blockquote>
+<p>　发现没有属主的文件往往就意味着有黑客入侵你的系统了</p>
+</blockquote>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 检查不存在属主的文件</span><br><span class="hljs-keyword">for</span> PART <span class="hljs-keyword">in</span> `grep -v ^# /etc/fstab | awk <span class="hljs-string">&#x27;($6 != &quot;0&quot;) &#123;print $2 &#125;&#x27;</span>`; <span class="hljs-keyword">do</span><br><span class="hljs-builtin-name">find</span> <span class="hljs-variable">$PART</span> -nouser -o -nogroup -<span class="hljs-builtin-name">print</span><br>done<br></code></pre></td></tr></table></figure></li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Web%E5%9F%BA%E7%A1%80/">Web基础</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/web%E5%9F%BA%E7%A1%80/">web基础</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/26/OA-Future/">
+                        <span class="hidden-mobile">OA_Future</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
