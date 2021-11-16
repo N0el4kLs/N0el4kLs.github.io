@@ -1,0 +1,553 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="本篇博客主要记录 搜索引擎 的常见使用.以方便后续使用的查询和记忆.">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>searchEngine - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="searchEngine">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-11 05:00" pubdate>
+        2021年11月11日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">searchEngine</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：4 小时前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>本篇博客主要记录 <code>搜索引擎</code> 的常见使用.以方便后续使用的查询和记忆.</p>
+<span id="more"></span>
+
+<h1 id="0x01Google-Hacking"><a href="#0x01Google-Hacking" class="headerlink" title="0x01Google Hacking"></a>0x01Google Hacking</h1><h2 id="逻辑搜索"><a href="#逻辑搜索" class="headerlink" title="逻辑搜索"></a>逻辑搜索</h2><p>在开始学习Google Hacking之前,得对Google搜索有些前提了解:</p>
+<ol>
+<li>Google 搜索是<strong>不区分大小写的</strong></li>
+<li>Google 搜索有32个输入词限制</li>
+</ol>
+<p>hellp</p>
+<p>Google  搜索引擎是支持逻辑搜索的,包括逻辑与,逻辑或和逻辑非</p>
+<p><code>and</code>: 逻辑与.举例:<code>A AND B</code> 表示搜索A 与 B的交集部分.也可以用<code>A*B</code>表示</p>
+<p><code>or</code> : 逻辑或.举例:<code>A OR B</code>,表示检索关键词A 或 B或两者都有.也可以用<code>A + B</code>表示.</p>
+<p><code>not</code>:逻辑非,这个选项在我们平时使用中较多.举例:<code>A -B</code> 表示在检索结果中强制不出现B关键字.</p>
+<p>除此之外,Google 搜索还提供了完整匹配以及模糊匹配.</p>
+<p><code>&quot;&quot;</code>:完整匹配,使用引号包围检索内容,表示搜索结果中不会将关键字进行切割.</p>
+<p>“*”: 通配符,必须在完整匹配的内部使用,表示关键内容中无法确定的部分.</p>
+<h2 id="进阶搜索"><a href="#进阶搜索" class="headerlink" title="进阶搜索"></a>进阶搜索</h2><h3 id="site"><a href="#site" class="headerlink" title="site"></a>site</h3><p>使用:<code>site:domain</code></p>
+<p>作用:搜索特定服务器或特定域名的网页</p>
+<h3 id="intitle"><a href="#intitle" class="headerlink" title="intitle"></a>intitle</h3><p>使用:<code>intitle:keyword</code></p>
+<p>作用:搜索标题中含有关键词的网页</p>
+<h3 id="inurl"><a href="#inurl" class="headerlink" title="inurl"></a>inurl</h3><p>使用:<code>inurl:keyword</code></p>
+<p>作用:搜索url中带有搜索关键词的网页</p>
+<h3 id="filetype"><a href="#filetype" class="headerlink" title="filetype"></a>filetype</h3><p>用法:<code>filetype:pdf</code></p>
+<p>作用:搜索指定文件类型</p>
+<h3 id="link"><a href="#link" class="headerlink" title="link"></a>link</h3><p>用法: <code>link:url</code></p>
+<p>作用:搜索包含指定链接的网页.其中,url可以包含路径以及参数,这样会使的搜索结果更加准确</p>
+<p>此运算符不能和其他运算符一起使用</p>
+<h3 id="inanchor"><a href="#inanchor" class="headerlink" title="inanchor"></a>inanchor</h3><p>用于寻找链接中的锚点,也就是超链接的文字.</p>
+<h3 id="intext"><a href="#intext" class="headerlink" title="intext"></a>intext</h3><p>用法:<code>intext:keyword</code></p>
+<p>作用:搜索正文中存在关键字的网页</p>
+<h3 id="related"><a href="#related" class="headerlink" title="related"></a>related</h3><p>搜索页面布局与所给地址相似的网页</p>
+<h3 id="cache"><a href="#cache" class="headerlink" title="cache"></a>cache</h3><p>在谷歌历史页面中搜索</p>
+<h3 id="info"><a href="#info" class="headerlink" title="info"></a>info</h3><p>返回站点的指定信息</p>
+<h3 id="define"><a href="#define" class="headerlink" title="define"></a>define</h3><p>搜索某个词的定义</p>
+<h3 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h3><p>如果仅仅使用单一的Google Hacking,得到的结果依然是庞大的.这里更建议大家配合使用多种Google Hacking 语法.</p>
+<p>举例:</p>
+<p><strong>使用site在特定域名下搜索信息</strong></p>
+<p><code>site:domain keyword</code></p>
+<p><strong>查找网络中的目录列表</strong></p>
+<p><code>intitle:index.of</code></p>
+<p><code>.</code>休止符表示匹配单个字母或字符</p>
+<p><strong>查找特定目录</strong></p>
+<p><code>intitle:index.of.admin</code></p>
+<p><strong>查找特定文件</strong></p>
+<p><code>filetype:log inurl:ws_ftp.log</code></p>
+<p>更多内容可前往<a target="_blank" rel="noopener" href="https://github.com/K0rz3n/GoogleHacking-Page/blob/master/Basic%20knowledge.md">Gihub Google Hacking</a>进行查看. </p>
+<h3 id="Google-Hacking-Database"><a href="#Google-Hacking-Database" class="headerlink" title="Google Hacking Database"></a><a target="_blank" rel="noopener" href="https://www.exploit-db.com/google-hacking-database">Google Hacking Database</a></h3><p>在这里你可以学习到别人关于<code>Google Hacking</code>的用法.</p>
+<h1 id="0x02-Fofa"><a href="#0x02-Fofa" class="headerlink" title="0x02 Fofa"></a>0x02 Fofa</h1><p>不会还有人不知道<code>fofa</code>吧!? SRC捡垃圾全靠的它.它是一个网络空间引擎.可以用来搜索网络资产,包括但不限于:路由器,CMS,操作系统等等.</p>
+<p><a target="_blank" rel="noopener" href="https://fofa.so/help_articles/list?id=6">官方</a>详细描述为:</p>
+<blockquote>
+<p>FOFA（网络空间资产检索系统）是世界上数据覆盖更完整的IT设备搜索引擎，拥有全球联网IT设备更全的DNA信息。探索全球互联网的资产信息，进行资产及漏洞影响范围分析、应用分布统计、应用流行度态势感知等。</p>
+</blockquote>
+<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><p>这里之列举一些常见的</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">title</span>=<span class="hljs-string">&quot;abc&quot;</span>  <span class="hljs-comment"># 从标题中搜索abc</span><br><span class="hljs-attr">header</span>=<span class="hljs-string">&quot;abc&quot;</span> <span class="hljs-comment"># 从http头中搜索abc</span><br><span class="hljs-attr">body</span>=<span class="hljs-string">&quot;abc&quot;</span> <span class="hljs-comment"># 从html内容中搜索abc</span><br><span class="hljs-attr">domain</span>=<span class="hljs-string">&quot;qq.com&quot;</span> <span class="hljs-comment"># 搜索qq.com 的子域名</span><br><span class="hljs-attr">ip</span>=<span class="hljs-string">&quot;1.1.1.1&quot;</span> <span class="hljs-comment"># 搜索ip为 1.1.1.1 的网站,如果要查询c段 可以使用 ip=&quot;1.1.1.1/24&quot;</span><br><span class="hljs-attr">js_name</span>=<span class="hljs-string">&quot;js/jquery.js&quot;</span> <span class="hljs-comment"># 查找正文中包含js/jquery.js的资产的网站</span><br><span class="hljs-attr">app</span>=<span class="hljs-string">&quot;Microsoft-Exchange&quot;</span> <span class="hljs-comment"># 搜索Microsoft-Exchange设备</span><br></code></pre></td></tr></table></figure>
+
+<p>更多语法请前往fofa<a target="_blank" rel="noopener" href="https://fofa.so/">官网</a>进行查看</p>
+<p>fofa还支持使用逻辑表达式<code>&amp;&amp; || !=  == </code>满足多种多少条件</p>
+<p>在帮助中心的最后,官方还留下了这么一句话:</p>
+<blockquote>
+<p>​    注意事项: </p>
+<p>​    * 如果查询表达式有多个与或关系，尽量在外面用（）包含起来 </p>
+<p>​    剩下来，就是发挥你想象力的时候了 ；）</p>
+</blockquote>
+<h3 id="常用语法"><a href="#常用语法" class="headerlink" title="常用语法"></a>常用语法</h3><p>下面介绍介绍几个我经常使用的语法案例</p>
+<ol>
+<li>搜索四川省内的高校</li>
+</ol>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">host</span>=<span class="hljs-string">&quot;.edu.cn&quot;</span> &amp;&amp; region=<span class="hljs-string">&quot;Sichuan&quot;</span><br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>某oa漏洞,假设漏洞特征为html正文内有内容 <code>/xxxtal/logoutA8.jsp</code></li>
+</ol>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">body</span>=<span class="hljs-string">&quot;/xxxtal/logoutA8.jsp&quot;</span><br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>搜索某学校站的子域名</li>
+</ol>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">domain</span>=<span class="hljs-string">&quot;xxxx.edu.cn&quot;</span><br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>某些摄像头最近爆出漏洞,</li>
+</ol>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">app</span>=<span class="hljs-string">&quot;海康威视-视频监控&quot;</span> <span class="hljs-comment"># 搜索海康威视设备</span><br></code></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>由于大多数人都没有fofa会员,非会员一次展示的数据有限,我们可以使用<code>after</code>和<code>before</code>进行时间段限制</li>
+</ol>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">domain</span>=&quot;xxxx.edu.cn&quot; &amp;&amp;<span class="hljs-keyword">after</span>=&quot;2019&quot; &amp;&amp;<span class="hljs-keyword">before</span>=&quot;2021&quot;<br></code></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>除此之外还有一个强大的规则fid,它能够针对网站生成唯一的特征id（也就是fid）；通过对相同的fid进行聚合，来实现用户的查询需求；最终解决未知资产发现、自动聚类网站、资产指纹扩充等需求。</li>
+</ol>
+<p>使用案例可参考<a target="_blank" rel="noopener" href="https://nosec.org/home/detail/4824.html">文章</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Tools/">Tools</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/redteam/">redteam</a>
+                    
+                      <a class="hover-with-bg" href="/tags/src/">src</a>
+                    
+                      <a class="hover-with-bg" href="/tags/googlehacking/">googlehacking</a>
+                    
+                      <a class="hover-with-bg" href="/tags/tools/">tools</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/15/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">代码审计总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/31/web_1/">
+                        <span class="hidden-mobile">web_1</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

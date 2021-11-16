@@ -1,0 +1,541 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="1、理解红蓝对抗是什么？红队的目标和技能是什么？
+2、对于攻击方来说，应该注意哪些法律法规，具体处罚措施是什么？">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>redteam_1 - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="redteam_1">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-15 23:02" pubdate>
+        2021年11月15日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      39
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">redteam_1</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：4 小时前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>1、理解红蓝对抗是什么？红队的目标和技能是什么？</p>
+<p>2、对于攻击方来说，应该注意哪些法律法规，具体处罚措施是什么？</p>
+<span id="more"></span>　
+
+<h1 id="理论研究"><a href="#理论研究" class="headerlink" title="理论研究"></a>理论研究</h1><h2 id="红蓝对抗概念以及相关技能"><a href="#红蓝对抗概念以及相关技能" class="headerlink" title="红蓝对抗概念以及相关技能"></a>红蓝对抗概念以及相关技能</h2><p>红蓝对抗的概念来自与早期美国的军事演练.演练中分为红军和蓝军,其中蓝军扮演敌方部队,而红军则扮演我方部队.</p>
+<p>网络安全中的红蓝对抗来源于此.其中红军(蓝队)通常作为企业的防守方,主要通过安全加固应急处理等手段保护企业安全.蓝军(红队)作为攻击方,主要模拟黑客进行网络攻击.</p>
+<blockquote>
+<p>“未知攻.焉知防”</p>
+</blockquote>
+<p>红蓝对抗的主要目的是用来评估企业的安全性,有助于找出企业安全中最脆弱的环节，提升企业安全能力的建设.</p>
+<p>红队的目标主要是模拟黑客攻击突破蓝队的防御.</p>
+<p>关于红队技术,我参考了<code>Github</code>上<a target="_blank" rel="noopener" href="https://github.com/yeyintminthuhtut/Awesome-Red-Teaming">一个关于红对技术学习路线的仓库</a>,大概总结出以下两点:</p>
+<ol>
+<li><p>打点.<br>打点主要目的是通过各种信息搜集,web漏洞,钓鱼,社工,Nday,0day等各种手段达到内部某台机器的初始访问(InitialAccess)</p>
+</li>
+<li><p>内网渗透<br>内网渗透是个很广泛的概念,他主要概述拿到内网机器权限后的一切操作.包括但不限于内网的信息搜集,主机的权限提升,留存后门的维持,横向拓等.</p>
+<p>虽然只简单列了两条,但每一条路线内所需要的知识点都是庞大的.</p>
+<p>以<code>打点</code>为例:<br>作为程序员,第一要点是得熟悉编程语言.像网络安全中<code>python</code>和<code>golang</code>,代码审计的<code>java</code>以及<code>php</code>,还有各种工具脚本<code>ruby</code>等等<br>接着就是信息收集.<code>Google</code>得会,各种网络空间测绘引擎<code>fofa shodan quake 全球鹰 zoomeye</code>得会一点.开源信息工具得会一点.<br>其次,常见的web漏洞<code>owasptop10</code>得熟悉.其中又包括各种数据库语法,前端语言,浏览器跨域策略等等.<br>接着又是各种day.0day就不提了,常见的nday得知道漏洞原理,懂了原理还得写工具批量探测.<br>之后为了提高效率,又得要么写工具要么用工具.工具中最常见的且功能强大的,包括但不限于<code>Burpsuit</code>,<code>Sqlmap</code>,<code>Nmap</code>,<code>Xray</code>,<code>Goby</code>等就必须要学会使用.<br>打点后又得<code>内网渗透</code>,这时你又需要扎实的计算机网络知识来熟悉内网的拓扑图.在拿到一台机器的权限后你又得学习提全,提全过程中又离不开免杀等等等.<br>总而言之,红队需要的技术很多.需要我们静下心来踏踏实实的学习以及慢慢沉淀.</p>
+</li>
+</ol>
+<h2 id="法律法规"><a href="#法律法规" class="headerlink" title="法律法规"></a>法律法规</h2><h3 id="网络安全法"><a href="#网络安全法" class="headerlink" title="网络安全法"></a>网络安全法</h3><p>在网络安全相关的群里,时不时会冒出一两个<code>真刑啊</code>之类的表情包或调侃语句.<br>确实,干我们这一行的,一旦心术不正,就能瞬间黑化,由白转黑.</p>
+<p>网络安全中最有名的应该是<code>2017年6月1日</code>实施的<code>&lt;&lt;中华人民共和国网络安全法&gt;&gt;</code>了.<br>&lt;&lt;网络安全法&gt;&gt;的颁布,意味着网络不是发外之地.他为网络公民划定了活动范围以及规定了行为规范.为网络安全工作提供了切实的法律保障.<br>下面举一些经常遇到的法律:</p>
+<ol>
+<li>网络安全法 第三章 第二十二条</li>
+</ol>
+<blockquote>
+<p>网络产品、服务应当符合相关国家标准的强制性要求。网络产品、服务的提供者不得设置恶意程序；发现其网络产品、服务存在安全缺陷、漏洞等风险时，应当立即采取补救措施，按照规定及时告知用户并向有关主管部门报告。网络产品、服务的提供者应当为其产品、服务持续提供安全维护；在规定或者当事人约定的期限内，不得终止提供安全维护。</p>
+</blockquote>
+<p>很多程序员在为客户开发产品时,都会忽略客户对软件的使用方式.可能是处于保护客户隐私的目的.可能只有当后来无缘无故被警察请喝茶时才能明白,那不是保护客户隐私,而是助纣为虐,属于同某.所以建议程序员们为了保护自己,尽量摸清楚客户的意图,若发现端倪,及时停手.</p>
+<ol start="2">
+<li>网络安全法 第三章 第二十七条</li>
+</ol>
+<blockquote>
+<p>任何个人和组织不得从事非法侵入他人网络、干扰他人网络正常功能、窃取网络数据等危害网络安全的活动；不得提供专门用于从事侵入网络、干扰网络正常功能及防护措施、窃取网络数据等危害网络安全活动的程序、工具；明知他人从事危害网络安全的活动的，不得为其提供技术支持、广告推广、支付结算等帮助。</p>
+</blockquote>
+<p>这条法律应该是接触得比较多的.我相信很多新手在学习之初,喜欢拿着各种扫描器去寻找快感,由于对扫描器原理的不熟悉从而将网络服务扫崩的人大有人在.光这一点,就已经是属于违法行为了.在加内网环境的arp欺骗或者nday打摄像头,这都属于 入侵网络,干扰网络正常功能范畴.所以还是希望新手在接触实战之前,最好拿到甲方的红皮书在开始操作流程,以免定个非法入侵计算机系统的罪名.</p>
+<p>最后在提一句,很多人接触网络安全都是以其中灰色产业链带来的高利润为目的的.为了这个高利润,我们也不能确定这些人的边界行为.唯一能做的只有提高从事网络安全人员的道德品质.</p>
+<h3 id="个人信息保护法"><a href="#个人信息保护法" class="headerlink" title="个人信息保护法"></a>个人信息保护法</h3><p>个人信息保护法是在如今信息化,数字化社会,非法买卖个人信息猖獗的背景下发布的.其发布的意义不仅是对&lt;&lt;网络安全法&gt;&gt;的补充,也为普通公民添加了维护个人权益的武器.</p>
+<p>生活中最常见的就是垃圾短信以及推广电话,那都是之前某些企业或者公司搜集后无用处然后卖给电信诈骗团伙的.<br>在网络安全领域,存在一种名叫社工库的数据库.他里面就主要存放了公民个人的一些相关信息,轻则只有姓名与电话号码,严重则有身份证号,开放记录以及家庭地址等.社工库给黑客们以及非法分子进行非法诈骗以及社会工程学带来了极大的方便性.<br>除此之外,某些程序的验证性较差,会导致任意用户调用api接口获取批量信息.也会导致相关信息的严重泄漏.</p>
+<p>列举一些可能用的上以及需要注意的:</p>
+<ol>
+<li>个人信息保护法 第一章 第四条</li>
+</ol>
+<blockquote>
+<p>个人信息是以电子或者其他方式记录的与已识别或者可识别的自然人有关的各种信息，不包括匿名化处理后的信息.个人信息的处理包括个人信息的收集、存储、使用、加工、传输、提供、公开、删除等。</p>
+</blockquote>
+<p>这条法律在法律层面明确了<code>个人信息</code>以及<code>个人信息处理</code>相关的概念.只有明确相关概念,才能更好的理解与个人信息相关的权益.这是&lt;&lt;个人信息保护法&gt;&gt;的基本.</p>
+<ol start="2">
+<li>个人信息保护法 第一章 第十条</li>
+</ol>
+<blockquote>
+<p>任何组织、个人不得非法收集、使用、加工、传输他人个人信息，不得非法买卖、提供或者公开他人个人信息；不得从事危害国家安全、公共利益的个人信息处理活动。</p>
+</blockquote>
+<p>可能信息非法买卖在我们身边涉及的还比较少,但是个人信息收集我相信大多数人都干过.此条法律中提到<code>非法</code>搜集.我上网大概查询了一下<code>非法</code>的判定:</p>
+<ol>
+<li>违背信息所有人的意愿或真实意思表示</li>
+<li>信息获取着无权了解,接触相关公民个人信息.</li>
+<li>信息获取手段违反了法律禁止规定性或社会公序良俗</li>
+</ol>
+<p>如果以上判定内容准确无误,那我相信绝大部分个人信息收集都是属于非法行为.因为绝大多数人收集个人信息的目的都不满足以上的第一例判断.我不相信有谁能够请求别人收集自己的个人信息,有那也只是极少部分</p>
+<ol start="3">
+<li>个人信息保护法 第四章 第四十四条</li>
+</ol>
+<blockquote>
+<p>个人对其个人信息的处理享有知情权、决定权，有权限制或者拒绝他人对其个人信息进行处理；法律、行政法规另有规定的除外。</p>
+</blockquote>
+<ol start="4">
+<li>个人信息保护法 第四章 第四十七条</li>
+</ol>
+<blockquote>
+<p>有下列情形之一的，个人信息处理者应当主动删除个人信息；个人信息处理者未删除的，个人有权请求删除：（一）处理目的已实现、无法实现或者为实现处理目的不再必要；<br>（二）个人信息处理者停止提供产品或者服务，或者保存期限已届满；<br>（三）个人撤回同意；<br>（四）个人信息处理者违反法律、行政法规或者违反约定处理个人信息；<br>（五）法律、行政法规规定的其他情形。<br>法律、行政法规规定的保存期限未届满，或者删除个人信息从技术上难以实现的，个人信息处理者应当停止除存储和采取必要的安全保护措施之外的处理。</p>
+</blockquote>
+<p>最后,这里夹带一些私货.自<code>11.1 &lt;&lt;中华人民共和国个人信息保护法&gt;&gt;</code>正式实施后,国内tx游戏更新了一例条款如下:<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/fac09da507fb9d9cc5e377f296d1f094.png" srcset="/img/loading.gif" lazyload alt="20211109224458"></p>
+<p>这就好比之前是悄悄秘密的偷你钱,现在就光明正大的头你钱了,就问你服不服,不服就别玩游戏.我查了一下,能够确定这种做法是违法的(&lt;&lt;中华人民共和国个人信息保护法&gt;&gt;第十六条 个人信息处理者不得以个人不同意处理其个人信息或者撤回同意为由，拒绝提供产品或者服务；处理个人信息属于提供产品或者服务所必需的除外。),其次,条例里也没有提及具体需要使用到个人哪些信息,有点含糊的说 我要你全部信息一样.抛开这些不谈,tx作为国内大厂,这里条例的流氓程度能够从侧面一定程度上体现tx对利益和道德的态度.我只能说作为大厂我很遗憾.</p>
+<blockquote>
+<p>注:由于本人不属于法律专业,所有的分析都是通过上网查询后,在加之自己的片面认识总结出来的,不具有专业性,仅供参考.若有不对希望各位大佬能够指正.</p>
+</blockquote>
+<h1 id="实践测试"><a href="#实践测试" class="headerlink" title="实践测试"></a>实践测试</h1><h2 id="MSF-安装"><a href="#MSF-安装" class="headerlink" title="MSF 安装"></a>MSF 安装</h2><p>安装过程参考了这篇<a target="_blank" rel="noopener" href="https://www.cnblogs.com/tomyyyyy/p/12813299.html">文章</a><br>使用一键部署命令<br><code>curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb &gt; msfinstall &amp;&amp; \chmod 755 msfinstall &amp;&amp; \./msfinstall </code><br>主要记录一下安装过程中遇到的问题。</p>
+<p><strong>坑一</strong><br>使用<code> curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb &gt; msfinstall &amp;&amp; \chmod 755 msfinstall &amp;&amp; \./msfinstall</code> 出现<br><code>curl: (7) Failed to connect to raw.githubusercontent.com port 443: Connection refused</code></p>
+<p>通过网络寻找到的解决方案是修改hosts文件.<br>通用<code>https://www.ipaddress.com/</code> 搜索<code>raw.githubusercontent.com</code>解析到的ip.然后在<code>/etc/hosts</code>文件的末尾添加一个配置,如这里我的是<code>185.199.108.133 raw.githubusercontent.com</code></p>
+<p><strong>坑二</strong><br>更改后还是会报一个错误<br><code>curl: (35) OpenSSL SSL_connect: Connection reset by peer in connection to raw.githubusercontent.co</code><br>这个问题搜索了很久都没有解决，后来听朋友建议，直接开代理,果然解决.</p>
+<h2 id="MSF-的基本使用"><a href="#MSF-的基本使用" class="headerlink" title="MSF 的基本使用"></a>MSF 的基本使用</h2><p>不管你是一键日卫星的大佬还是一把梭的脚=本小子,<code>msf</code>都将会是一个不错的工具.好久没用过了,来复习一下.</p>
+<p><strong>本次复习内容为使用 msf 打 Metasploitable2 靶机</strong></p>
+<p>靶机地址为:<code>192.168.3.32</code><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/e0d74636046f857a3f470e91bd64852b.png" srcset="/img/loading.gif" lazyload alt="20211107205125"></p>
+<p>先用<code>nmap</code>对靶机进行端口扫描<code>db_nmap -sS 192.168.3.32</code>,得到以下结果<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/dc826bdd9a9ec281202fb77d17891151.png" srcset="/img/loading.gif" lazyload alt="20211108100726"></p>
+<p><code>21</code>端口开放,探测下此端口下的详细内容<code>db_nmap -A -p 21 192.168.3.32</code><br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/c59f5d4350250e7e9b26c8fd44ce072c.png" srcset="/img/loading.gif" lazyload alt="20211108114200"></p>
+<p>发现<code>nmap</code>探测到此端口开启<code>vsftpd</code>服务,历史上此服务的<code>v2.3.4</code>版本存在恶意后门.利用msf的加载模块进行攻击.<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/00ac8ae1340dc83d9a0d27da9d059f58.png" srcset="/img/loading.gif" lazyload alt="20211108120654"></p>
+<p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img/05c7a0ca03204d30ff579fb527861a3b.png" srcset="/img/loading.gif" lazyload alt="20211108120730"></p>
+<p>成功拿到shell</p>
+<h1 id="总结陈述"><a href="#总结陈述" class="headerlink" title="总结陈述"></a>总结陈述</h1><p>当时写第一篇报告的时候还没看良哥在b站视频.导致那篇文章的质量不是很好.我承认当时是有一点着急的心态.</p>
+<p>不过看了良哥的视频后,又转变了宁一种心态来书写报告.”直到没有内容可写了,才上交报告”,而不再是一味的着急完成报告而忽视报告中的知识点.</p>
+<p>通过本篇章节,最主要的是了解到了一些法律常识.包括&lt;&lt;网络安全法&gt;&gt;以及&lt;&lt;个人信息保护法&gt;&gt;.也许有一天当我的个人信息受到侵害时,我或许能够鼓起勇气指出对方触犯来哪条法律,以此来保护自己.有或者当自己在学习过程中收集到的别人信息,我清楚的知道边界,知道适可而止.</p>
+<p>其次就是红蓝对抗的一些理论知识以及红队常用工具msf的使用.这两方面叙述的较为简略,但蕴含的知识却很庞大,包括之列举的法律,都只列举了最常见最基本的,如果仔细写的话,那文章可能也没有尽头,我也还没到那个实力.不过我会随着自己学习的深度将文章内容渐渐深入下去.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/redteam/">redteam</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/15/GoogleDork%E5%8F%91%E7%8E%B0%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E6%BC%8F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">GoogleDork发现的信息泄漏</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/11/15/beescms%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="hidden-mobile">beescms代码审计</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
