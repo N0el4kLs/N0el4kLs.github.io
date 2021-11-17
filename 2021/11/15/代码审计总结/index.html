@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      594 字
+      684 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7
+      8
        分钟
     </span>
   
@@ -256,6 +256,7 @@
 <th align="center"></th>
 <th align="center">sql注入</th>
 <th align="center">文件上传</th>
+<th align="center">变量覆盖</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -263,14 +264,17 @@
 <td align="center">2021/11/16</td>
 <td align="center">3</td>
 <td align="center">1</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">Willphp</td>
+<td align="center">2021/11/17</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
 </tr>
 <tr>
 <td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -280,6 +284,7 @@
 <td align="center">总计</td>
 <td align="center"></td>
 <td align="center">3</td>
+<td align="center">1</td>
 <td align="center">1</td>
 </tr>
 </tbody></table>
@@ -313,7 +318,11 @@
 </li>
 </ol>
 <p>如果只判断了MIME类型,比如上面这个案例,可以直接通过bp抓包修改<code>Content-Type</code>的内容为<code>image/png</code>直接绕过,从而实现恶意文件上传</p>
-<h2 id="3-2"><a href="#3-2" class="headerlink" title="3.2"></a>3.2</h2>
+<h2 id="3-2"><a href="#3-2" class="headerlink" title="3.2"></a>3.2</h2><h1 id="0x04-变量覆盖"><a href="#0x04-变量覆盖" class="headerlink" title="0x04 变量覆盖"></a>0x04 变量覆盖</h1><h2 id="4-1-extract-引起的变量覆盖"><a href="#4-1-extract-引起的变量覆盖" class="headerlink" title="4.1 extract 引起的变量覆盖"></a>4.1 extract 引起的变量覆盖</h2><p>extract引起的变量覆盖大多数是因为传入extract内的变量可控,且后面跟着危险函数.</p>
+<p>案例:willphp</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117172308070.png" srcset="/img/loading.gif" lazyload alt="image-20211117172308070"></p>
+<p>由于<code>$_vars</code>可控,导致传入的变量能够直接覆盖<code>$cfile</code>,从而导致任意文件包含.</p>
+
             </div>
             <hr>
             <div>

