@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.3k 字
+      1.6k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      14
+      20
        分钟
     </span>
   
@@ -237,7 +237,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：1 天前
+                  本文最后更新于：12 天前
                 
               </p>
             
@@ -287,6 +287,12 @@
 <p><code>intitle:index.of.admin</code></p>
 <p><strong>查找特定文件</strong></p>
 <p><code>filetype:log inurl:ws_ftp.log</code></p>
+<p><strong>其他</strong></p>
+<blockquote>
+<p>来源于<a target="_blank" rel="noopener" href="https://tools.zjun.info/googlehacking/#">https://tools.zjun.info/googlehacking/#</a></p>
+</blockquote>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs vim">目录遍历: site:$site intitle:<span class="hljs-built_in">index</span>.of<br>配置文件泄露: site:$site <span class="hljs-keyword">ex</span><span class="hljs-variable">t:xml</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:conf</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:cnf</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:reg</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:inf</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:rdp</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:cfg</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:txt</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:ora</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:ini</span><br>数据库文件泄露: site:$site <span class="hljs-keyword">ex</span><span class="hljs-variable">t:sql</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:dbf</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:mdb</span><br>日志文件泄露: site:$site <span class="hljs-keyword">ex</span><span class="hljs-variable">t:log</span><br>备份和历史文件: site:$site <span class="hljs-keyword">ex</span><span class="hljs-variable">t:bkf</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:bkp</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:bak</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:old</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:backup</span><br>登录页面: site:$site inur<span class="hljs-variable">l:login</span><br>SQL错误: site:$site intex<span class="hljs-variable">t:</span><span class="hljs-string">&quot;sql syntax near&quot;</span> | intex<span class="hljs-variable">t:</span><span class="hljs-string">&quot;syntax error has occurred&quot;</span> | intex<span class="hljs-variable">t:</span><span class="hljs-string">&quot;incorrect syntax near&quot;</span> | intex<span class="hljs-variable">t:</span><span class="hljs-string">&quot;unexpected end of SQL command&quot;</span> | intex<span class="hljs-variable">t:</span><span class="hljs-string">&quot;Warning: mysql_connect()&quot;</span> | intex<span class="hljs-variable">t:</span><span class="hljs-string">&quot;Warning: mysql_query()&quot;</span> | intex<span class="hljs-variable">t:</span><span class="hljs-string">&quot;Warning: pg_connect()&quot;</span><br>公开文件信息: site:$site <span class="hljs-keyword">ex</span><span class="hljs-variable">t:doc</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:docx</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:odt</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:pdf</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:rtf</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:sxw</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:psw</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:ppt</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:pptx</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:pps</span> | <span class="hljs-keyword">ex</span><span class="hljs-variable">t:csv</span><br>phpinfo(): site:$site <span class="hljs-keyword">ex</span><span class="hljs-variable">t:php</span> intitle:phpinfo <span class="hljs-string">&quot;published by the PHP Group&quot;</span><br>搜索粘贴站点: site:pastebin.<span class="hljs-keyword">com</span> | site:paste2.org | site:pastehtml.<span class="hljs-keyword">com</span> | site:slexy.org | site:snipplr.<span class="hljs-keyword">com</span> | site:snipt.net | site:textsnip.<span class="hljs-keyword">com</span> | site:bitpaste.app | site:justpaste.it | site:heypasteit.<span class="hljs-keyword">com</span> | site:hastebin.<span class="hljs-keyword">com</span> | site:dpaste.org | site:dpaste.<span class="hljs-keyword">com</span> | site:codepad.org | site:jsitor.<span class="hljs-keyword">com</span> | site:codepen.io | site:jsfiddle.net | site:dotnetfiddle.net | site:phpfiddle.org | site:ide.geeksforgeeks.org | site:repl.it | site:ideone.<span class="hljs-keyword">com</span> | site:paste.debian.net | site:paste.org | site:paste.org.<span class="hljs-keyword">ru</span> | site:codebeautify.org | site:codeshare.io | site:trello.<span class="hljs-keyword">com</span> $site<br>搜索Github、Gitla<span class="hljs-variable">b:</span> site:github.<span class="hljs-keyword">com</span> | site:gitlab.<span class="hljs-keyword">com</span> $site.<br></code></pre></td></tr></table></figure>
+
 <p>更多内容可前往<a target="_blank" rel="noopener" href="https://github.com/K0rz3n/GoogleHacking-Page/blob/master/Basic%20knowledge.md">Gihub Google Hacking</a>进行查看. </p>
 <h3 id="Google-Hacking-Database"><a href="#Google-Hacking-Database" class="headerlink" title="Google Hacking Database"></a><a target="_blank" rel="noopener" href="https://www.exploit-db.com/google-hacking-database">Google Hacking Database</a></h3><p>在这里你可以学习到别人关于<code>Google Hacking</code>的用法.</p>
 <h1 id="0x02-Fofa"><a href="#0x02-Fofa" class="headerlink" title="0x02 Fofa"></a>0x02 Fofa</h1><p>不会还有人不知道<code>fofa</code>吧!? SRC捡垃圾全靠的它.它是一个网络空间引擎.可以用来搜索网络资产,包括但不限于:路由器,CMS,操作系统等等.</p>
