@@ -14,12 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  Sqli 类型的题目
-以及对题目的类型进行的总结和分类,可点击 相关题目中的链接以查看题目的具体解答过程.">
+  <meta name="description" content="一道phar反序列化的题目的记录,这里就直接搬一下tao师傅的wp,记录下利用思路.">
   <meta name="author" content="Noel">
   <meta name="keywords" content="">
   
-  <title>Sql Injection_summary - Noel&#39;s Blog</title>
+  <title>pharser - Noel&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -164,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Sql Injection_summary">
+            <span class="h2" id="subtitle" title="pharser">
               
             </span>
 
@@ -174,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-07-18 04:23" pubdate>
-        2021年7月18日 凌晨
+      <time datetime="2021-12-12 16:40" pubdate>
+        2021年12月12日 下午
       </time>
     </span>
   
@@ -186,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      473 字
+      1.4k 字
     </span>
   
 
@@ -196,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      6
+      16
        分钟
     </span>
   
@@ -234,58 +233,35 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Sql Injection_summary</h1>
+            <h1 style="display: none">pharser</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：25 天前
+                  本文最后更新于：几秒前
                 
               </p>
             
             <div class="markdown-body">
-              <p>本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  <code>Sqli</code> 类型的题目</p>
-<p>以及对题目的类型进行的总结和分类,可点击 <code>相关题目</code>中的链接以查看题目的具体解答过程.</p>
+              <p>一道phar反序列化的题目的记录,这里就直接搬一下tao师傅的wp,记录下利用思路.</p>
 <span id="more"></span>
 
+<h1 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h1><p>Prize Problem - 已解决<br>正文解析<br>源码如下<br>很有意思的一道题目，一开始我以为是简单的通过Phar文件进行反序列化然后就可以拿到flag，没想到<br>不行。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <br>    highlight_file(<span class="hljs-keyword">__FILE__</span>); <br>	<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">getflag</span> </span>&#123; <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>) </span>&#123; <span class="hljs-keyword">echo</span> getenv(<span class="hljs-string">&quot;FLAG&quot;</span>); &#125; &#125;<br>	<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> </span>&#123; <br>        <span class="hljs-keyword">public</span> <span class="hljs-variable">$config</span>; <br>        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>) </span><br><span class="hljs-function">   		 </span>&#123; <span class="hljs-keyword">if</span> (<span class="hljs-keyword">$this</span>-&gt;config == <span class="hljs-string">&#x27;w&#x27;</span>) &#123; <span class="hljs-variable">$data</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-number">0</span>]; <br>               <span class="hljs-keyword">if</span> (preg_match(<span class="hljs-string">&#x27;/get|flag|post|php|filter|base64|rot13|read|data/i&#x27;</span>, <span class="hljs-variable">$data</span>)) &#123; <br>                   <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;我知道你想干吗，我的建议是不要那样做。&quot;</span>); &#125;file_put_contents(<span class="hljs-string">&quot;./tmp/a.txt&quot;</span>, <span class="hljs-variable">$data</span>); &#125; 			<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">$this</span>-&gt;config == <span class="hljs-string">&#x27;r&#x27;</span>) &#123; <br>             <span class="hljs-variable">$data</span> = <span class="hljs-variable">$_POST</span>[<span class="hljs-number">0</span>]; <br>             <span class="hljs-keyword">if</span> (preg_match(<span class="hljs-string">&#x27;/get|flag|post|php|filter|base64|rot13|read|data/i&#x27;</span>, <span class="hljs-variable">$data</span>)) &#123; <br>                 <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;我知道你想干吗，我的建议是不要那样做。&quot;</span>); <br>             &#125;<br>             <span class="hljs-keyword">echo</span> file_get_contents(<span class="hljs-variable">$data</span>); &#125; <br>         &#125; <br>    &#125;<br><span class="hljs-keyword">if</span> (preg_match(<span class="hljs-string">&#x27;/get|flag|post|php|filter|base64|rot13|read|data/i&#x27;</span>, <span class="hljs-variable">$_GET</span>[<span class="hljs-number">0</span>])) &#123; <br>    <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;我知道你想干吗，我的建议是不要那样做。&quot;</span>);<br>&#125;<br>unserialize(<span class="hljs-variable">$_GET</span>[<span class="hljs-number">0</span>]); <br><span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&quot;那么就从这里开始起航吧&quot;</span>);<br></code></pre></td></tr></table></figure>
 
+<p>很有意思的一道题目，一开始我以为是简单的通过Phar文件进行反序列化然后就可以拿到flag，没想到<br>不行</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <br>    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">getflag</span> </span>&#123; &#125;$<br>    exp = <span class="hljs-keyword">new</span> getflag(); <br>@unlink(<span class="hljs-string">&quot;atao.phar&quot;</span>); <br><span class="hljs-variable">$phar</span> = <span class="hljs-keyword">new</span> Phar(<span class="hljs-string">&quot;atao.phar&quot;</span>);<br><span class="hljs-variable">$phar</span>-&gt;startBuffering(); <br><span class="hljs-variable">$phar</span>-&gt;setStub(<span class="hljs-string">&quot;GIF89a&quot;</span>.<span class="hljs-string">&quot;&lt;?php __HALT_COMPILER(); ?&gt;&quot;</span>); <br><span class="hljs-variable">$phar</span>-&gt;setMetadata(<span class="hljs-variable">$exp</span>); <br><span class="hljs-variable">$phar</span>-&gt;addFromString(<span class="hljs-string">&quot;test.txt&quot;</span>, <span class="hljs-string">&quot;test&quot;</span>);<br></code></pre></td></tr></table></figure>
 
-<h1 id="1-Bool-注入"><a href="#1-Bool-注入" class="headerlink" title="1. Bool 注入"></a>1. Bool 注入</h1><h2 id="1-1-逻辑注入"><a href="#1-1-逻辑注入" class="headerlink" title="1.1 逻辑注入"></a>1.1 逻辑注入</h2><h4 id="相关题目"><a href="#相关题目" class="headerlink" title="相关题目"></a>相关题目</h4><h2 id="1-2-正则注入"><a href="#1-2-正则注入" class="headerlink" title="1.2 正则注入"></a>1.2 正则注入</h2><h3 id="相关注意事项和总结"><a href="#相关注意事项和总结" class="headerlink" title="相关注意事项和总结"></a>相关注意事项和总结</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs mysql">#与正则注入相关的关键字<br>regexp<br>like<br>binary<br><br># 常用语句<br>select * from tables where username regexp &quot;^&#123;&#125;&quot;;<br>select * from tables where username like &quot;&#123;&#125;%&quot;;	<br># 注意这两条语句没有 binary 关键字,所以是对大小写不敏感的<br><br># 如果要对大小写敏感 应加上 binary <br><br>select * from tables where username regexp binary &quot;^&#123;&#125;&quot;;<br>select * from tables where username like binary &quot;&#123;&#125;%&quot;;	<br></code></pre></td></tr></table></figure>
-
-<h3 id="相关题目-1"><a href="#相关题目-1" class="headerlink" title="相关题目"></a>相关题目</h3><a href="/2021/07/18/NCTF2019SQLi/" title="NCTF2019SQLi">NCTF2019SQLi</a>
-
-
-
-<h2 id="1-3-无列名注入"><a href="#1-3-无列名注入" class="headerlink" title="1.3 无列名注入"></a>1.3 无列名注入</h2><h4 id="相关题目-2"><a href="#相关题目-2" class="headerlink" title="相关题目"></a>相关题目</h4><h1 id="2-二次注入"><a href="#2-二次注入" class="headerlink" title="2. 二次注入"></a>2. 二次注入</h1><h4 id="相关题目-3"><a href="#相关题目-3" class="headerlink" title="相关题目"></a>相关题目</h4><h1 id="3-报错注入"><a href="#3-报错注入" class="headerlink" title="3. 报错注入"></a>3. 报错注入</h1><h3 id="必备知识"><a href="#必备知识" class="headerlink" title="必备知识"></a>必备知识</h3><ul>
-<li>Xpath 报错注入 (较为常用)</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs mysql">/*  extractvalue() 介绍<br>extractvalue（XML_document，xpath_string) <br>作用: 对 XML 文档进行查询<br>其中<br>XML_document:	代表 xml 文档对象的名称<br>xpath_string:	xml路径<br><br># 常用构造语句<br>select * from table where id=1 || extractvalue(1,concat(0x7e,(select database()),0x7e))<br>*/<br><br><br>/* updatexml() 介绍<br>updatexml(XML_document,XPath_string,new_value)<br>作用: 更新 xml 文档<br>其中<br>XML_document:	代表 xml 文档对象的名称<br>XPath_string:	xml路径<br>new_value:		替换查找到的符合条件的数据,跟新的内容<br><br># 常用构造语句<br>select * from table where id=1 || updatexml(1,concat(0x7e,(select database()),0x7e),1)<br>*/<br></code></pre></td></tr></table></figure>
-
-<blockquote>
-<p>以上两个函数需要 Mysql 版本&gt;5.1</p>
-</blockquote>
-<h3 id="相关题目-4"><a href="#相关题目-4" class="headerlink" title="相关题目"></a>相关题目</h3><a href="/2021/07/19/RCTF2015EasySQL/" title="RCTF2015EasySQL">RCTF2015EasySQL</a>
-
-
-
-<h3 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zpy1998zpy/article/details/80631036">https://blog.csdn.net/zpy1998zpy/article/details/80631036</a></p>
-<h1 id="4-堆叠注入"><a href="#4-堆叠注入" class="headerlink" title="4. 堆叠注入"></a>4. 堆叠注入</h1><p>挺简单的,利用<code>;</code>注入 <code>sql</code> 代码就行了.关键是绕过一些关键字的过滤</p>
-<h1 id="Mysql-注入中的一些关键字"><a href="#Mysql-注入中的一些关键字" class="headerlink" title="Mysql 注入中的一些关键字"></a>Mysql 注入中的一些关键字</h1><p>搜集一些注入中的关键字,方便在测试的决定payload的构造方法</p>
-<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs excel">union<br><span class="hljs-built_in">or</span><br><span class="hljs-built_in">and</span><br>handler<br>;<br>`<br>extractvalue<br>updatexml<br>regex<br>like<br>=<br>&#x27;<br>information_schema<br>tables<br><span class="hljs-built_in">columns</span><br>.<br>where<br>set<br>show<br>variables<br>%<br>slow_query_log<br>file<br>sleep<br>select<br>setglobal<br></code></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<p>持续完善中…</p>
+<p>根据上面的方式先生成了一个Phar文件，但是这个肯定是绕不过waf的，因为它的序列化字符串是以明<br>文的形式进行显示的，但是根据这篇文章：<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/240007">从一道题再看phar的利用 - 安全客</a>，知道了通过gzip命令可以对其进行压缩成为乱码，如下</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211212165000523.png" srcset="/img/loading.gif" lazyload alt="image-20211212165000523"></p>
+<p>全乱码了！！！这回应该可以绕过了，然后我就去尝试了，但是打了好几次都没有效果。还跑去问群主<br>是不是题目坏了。群主就叫我注意throw，于是我就本地起了环境开始Debug。<br>发现当文件phar反序列化结束后，并没有执行getflag的__destruct，而是直接跳到throw结束了。<br>冲浪鸭！找到了一篇文章：<a target="_blank" rel="noopener" href="https://irq5.io/2019/01/07/35c3-ctf-write-up-php/">https://irq5.io/2019/01/07/35c3-ctf-write-up-php/</a><br>这道题目与我们后面的步骤类似，存在throw，所以需要我们提前处理getflag类，这里给出的方法是：<br>使用一个array数组，数据的第一部分为getflag类，在后面填塞脏数据。因为在反序列化时是由内而外<br>的，也就是先反序列化属性然后把他们拼在一起。这里反序列化了getflag类后，对于后面的脏数据无法<br>反序列化成功，导致强制GC了(直接把这个内容销毁了)，这时候已经反序列化成功的getflag就会执行<br>__</p>
+<p>可以看出这是两个考点（Phar反序列化 和强制GC销毁类 ）结合在了一起，一开始我的想法是直接修改<br>Phar文件，直接把内容换成了脏数据，但是发现不行。因为在利用Phar协议进行反序列化时，会先验证<br>SHA1的加密值，如果验证失败则不进行反序列化。这就导致了简单的修改文件是不行的，Xenny师傅的<br>做法：修改文件，然后通过学习文件格式，重新生成一个新的签名。<br>不过这里有另外一种做法，来源于guoke师傅的博客：<a target="_blank" rel="noopener" href="https://guokeya.github.io/post/uxwHLckwx/%EF%BC%8C">https://guokeya.github.io/post/uxwHLckwx/，</a><br>主要就是Phar是可以丢弃签名的，直接利用它的文件格式生成一个文件，如下</p>
+<p>可以看出这是两个考点（Phar反序列化 和强制GC销毁类 ）结合在了一起，一开始我的想法是直接修改<br>Phar文件，直接把内容换成了脏数据，但是发现不行。因为在利用Phar协议进行反序列化时，会先验证<br>SHA1的加密值，如果验证失败则不进行反序列化。这就导致了简单的修改文件是不行的，Xenny师傅的<br>做法：修改文件，然后通过学习文件格式，重新生成一个新的签名。<br>不过这里有另外一种做法，来源于guoke师傅的博客：<a target="_blank" rel="noopener" href="https://guokeya.github.io/post/uxwHLckwx/">https://guokeya.github.io/post/uxwHLckwx/</a><br>主要就是Phar是可以丢弃签名的，直接利用它的文件格式生成一个文件，如下</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211212165244574.png" srcset="/img/loading.gif" lazyload alt="image-20211212165244574"></p>
+<p>这里我就是利用了这种方式</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211212165302058.png" srcset="/img/loading.gif" lazyload alt="image-20211212165302058"></p>
+<p>创建相应的格式，然后使用tar -cf test.phar .phar/进行压缩，然后再套一层gzip或者bzip2都可以（后<br>面再一次的压缩是为了使得内容乱码）<br>思路以及相关文章已经介绍完了，希望你能亲自动手试试<br>思考补充<br>最后讲一下后续和Xenny师傅一些讨论<br>第一点<br>为啥第一步unserialize($_GET[0])可以触发__destruct()方法，但是在使用phar协议反序列化后就没有触<br>发。因为这里的第一层的反序列化没有赋值，所以在被反序列化后就会第一时间被销毁了，但是第二层<br>通过phar协议的反序列化是赋值了，那么它不会第一时间被销毁了。</p>
+<p>第二点</p>
+<p>file_put_contents($file,$data)中$data变量是可以为数组形式的，所以这里通过数组就可以很快绕过<br>waf了<br>第三点<br>好像没有了，如果还有什么奇思妙想，欢迎师傅们私聊我进行补充。</p>
 
             </div>
             <hr>
@@ -303,9 +279,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Sql-Injection-Summary/">Sql Injection Summary</a>
+                      <a class="hover-with-bg" href="/tags/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">php反序列化</a>
                     
-                      <a class="hover-with-bg" href="/tags/summary/">summary</a>
+                      <a class="hover-with-bg" href="/tags/php/">php</a>
                     
                   </div>
                 
@@ -322,18 +298,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/07/19/RCTF2015EasySQL/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">RCTF2015EasySQL</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/07/18/NCTF2019SQLi/">
-                        <span class="hidden-mobile">NCTF2019SQLi</span>
+                      <a href="/2021/11/23/%E8%A5%BF%E6%B9%96%E8%AE%BA%E5%89%91%E5%A4%8D%E7%9B%98-%E4%BF%A1%E5%91%BC%E4%BB%BB%E6%84%8Fphp%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%AE%A1%E8%AE%A1%E8%BF%87%E7%A8%8B/">
+                        <span class="hidden-mobile">西湖论剑复盘-信呼任意php文件包含审计过程</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
