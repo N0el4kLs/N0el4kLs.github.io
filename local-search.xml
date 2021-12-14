@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>奇安信面试</title>
+    <link href="/2021/12/14/%E5%A5%87%E5%AE%89%E4%BF%A1%E9%9D%A2%E8%AF%95/"/>
+    <url>/2021/12/14/%E5%A5%87%E5%AE%89%E4%BF%A1%E9%9D%A2%E8%AF%95/</url>
+    
+    <content type="html"><![CDATA[<p>复习差点睡着了,突然接到了奇安信那边的面试电话.面了大概半个多小时.</p><span id="more"></span><p>主要问题:</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plain">谈一谈你影响深刻的一次渗透测试<br>信息搜集常用的工具,相关原理以及优缺点<br>php伪协议<br>常见的解析漏洞<br>sql注入绕waf  文件上传绕waf<br>xss利用手法,除了打cookie<br>oracle 以及 sqlserver 相关的利用<br>mysql udf提权原理,读写文件的一些方法, 报错注入常见的函数以及原理<br>代码审计流程方法,常见的危险函数,你关注的危险函数<br>谈谈python中你利用较多的第三库<br>目标机器不出网的利用手法<br>最近爆出的jndi是否有过了解以及利用,谈谈你的利用流程,背后jar包的原理<br></code></pre></td></tr></table></figure><p>其实面到一般心里大概知道结果了,因为问到sqlserver以及oracle还有java相关的知识完全不怎么会.不过还是感谢面试官的耐心,最后也和面试官谈了下,面试官给出的评价是只会mysql和php相关,作为一个红对的话攻击面太窄了.(我寻思着我也没有面红对啊,就一实习).不过还是了解的自身的缺陷和不足.</p><p>最后,谢谢奇安信面试的师傅了</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>面试分享</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>pharser</title>
     <link href="/2021/12/12/pharser/"/>
     <url>/2021/12/12/pharser/</url>
