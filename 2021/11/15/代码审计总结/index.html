@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      809 字
+      1.1k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      10
+      12
        分钟
     </span>
   
@@ -237,7 +237,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：20 天前
+                  本文最后更新于：3 分钟前
                 
               </p>
             
@@ -250,6 +250,7 @@
 <li><input checked="" disabled="" type="checkbox"> BEESCMS <a href="/2021/11/15/beescms%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="beescms代码审计">beescms代码审计</a></li>
 <li><input checked="" disabled="" type="checkbox"> Willphp <a href="/2021/11/17/willphp%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="willphp代码审计">willphp代码审计</a></li>
 <li><input checked="" disabled="" type="checkbox"> 信呼oa v2.3.1 <a href="#">Post not found: 西湖论剑复盘-信呼任意php文件包含审计过程</a></li>
+<li><input checked="" disabled="" type="checkbox"> emlog_pro 1.8 <a href="/2022/01/11/emlog-pro%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="emlog_pro代码审计">emlog_pro代码审计</a></li>
 </ul>
 <table>
 <thead>
@@ -260,6 +261,7 @@
 <th align="center">文件上传</th>
 <th align="center">变量覆盖</th>
 <th align="center">文件包含</th>
+<th align="center">任意文件删除</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -269,6 +271,7 @@
 <td align="center">1</td>
 <td align="center">0</td>
 <td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr>
 <td align="center">Willphp</td>
@@ -276,6 +279,7 @@
 <td align="center">0</td>
 <td align="center">0</td>
 <td align="center">1</td>
+<td align="center"></td>
 <td align="center"></td>
 </tr>
 <tr>
@@ -285,11 +289,22 @@
 <td align="center"></td>
 <td align="center"></td>
 <td align="center">1</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">emlog_pro</td>
+<td align="center">2022/1/12</td>
+<td align="center"></td>
+<td align="center">1</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">1</td>
 </tr>
 <tr>
 <td align="center">总计</td>
 <td align="center"></td>
 <td align="center">3</td>
+<td align="center">2</td>
 <td align="center">1</td>
 <td align="center">1</td>
 <td align="center">1</td>
@@ -325,14 +340,18 @@
 </li>
 </ol>
 <p>如果只判断了MIME类型,比如上面这个案例,可以直接通过bp抓包修改<code>Content-Type</code>的内容为<code>image/png</code>直接绕过,从而实现恶意文件上传</p>
-<h2 id="3-2"><a href="#3-2" class="headerlink" title="3.2"></a>3.2</h2><h1 id="0x04-变量覆盖"><a href="#0x04-变量覆盖" class="headerlink" title="0x04 变量覆盖"></a>0x04 变量覆盖</h1><h2 id="4-1-extract-引起的变量覆盖"><a href="#4-1-extract-引起的变量覆盖" class="headerlink" title="4.1 extract 引起的变量覆盖"></a>4.1 extract 引起的变量覆盖</h2><p>extract引起的变量覆盖大多数是因为传入extract内的变量可控,且后面跟着危险函数.</p>
+<h2 id="3-2-模板上传的设计缺陷"><a href="#3-2-模板上传的设计缺陷" class="headerlink" title="3.2 模板上传的设计缺陷"></a>3.2 模板上传的设计缺陷</h2><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130140036087.png" srcset="/img/loading.gif" lazyload alt="image-20211130140036087"></p>
+<p>可以发现这里只判断了上传的<code>.zip</code>文件内是否存在<code>header.php</code>,并没有对<code>header.php</code>的内容以即是否存在其他恶意文件进行检测.这里可以直接将🐎写在<code>header.php</code>内进行绕过.</p>
+<h1 id="0x04-变量覆盖"><a href="#0x04-变量覆盖" class="headerlink" title="0x04 变量覆盖"></a>0x04 变量覆盖</h1><h2 id="4-1-extract-引起的变量覆盖"><a href="#4-1-extract-引起的变量覆盖" class="headerlink" title="4.1 extract 引起的变量覆盖"></a>4.1 extract 引起的变量覆盖</h2><p>extract引起的变量覆盖大多数是因为传入extract内的变量可控,且后面跟着危险函数.</p>
 <p>案例:willphp</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211117172308070.png" srcset="/img/loading.gif" lazyload alt="image-20211117172308070"></p>
 <p>由于<code>$_vars</code>可控,导致传入的变量能够直接覆盖<code>$cfile</code>,从而导致任意文件包含.</p>
-<h1 id="0x05-文件包含"><a href="#0x05-文件包含" class="headerlink" title="0x05 文件包含"></a>0x05 文件包含</h1><h2 id="5-1"><a href="#5-1" class="headerlink" title="5.1"></a>5.1</h2><p>例子:信呼oa 任意.php文件包含</p>
+<h1 id="0x05-文件包含-删除"><a href="#0x05-文件包含-删除" class="headerlink" title="0x05 文件包含/删除"></a>0x05 文件包含/删除</h1><h2 id="5-1-包含"><a href="#5-1-包含" class="headerlink" title="5.1 包含"></a>5.1 包含</h2><p>例子:信呼oa 任意.php文件包含</p>
 <p>引起漏洞的主要是存在一个任意调用类方法,并且还存在一个有漏洞的<code>base64decode</code>方法.漏洞点在于现将先检查字符再进行解码</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211123231707747.png" srcset="/img/loading.gif" lazyload alt="image-20211123231707747"></p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211123232402106.png" srcset="/img/loading.gif" lazyload alt="image-20211123232402106"></p>
+<h2 id="5-2-emlog-pro任意文件删除"><a href="#5-2-emlog-pro任意文件删除" class="headerlink" title="5.2 emlog_pro任意文件删除"></a>5.2 emlog_pro任意文件删除</h2><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211126085554241.png" srcset="/img/loading.gif" lazyload alt="image-20211126085554241"></p>
+<p>可以看到用户传入的<code>$tplName</code>的值可以通过<code>$_GET[&#39;tpl&#39;]</code>进行控制,且只进行了一个简单的<code>addslashes()</code>的过滤.由于这里的变量<code>$tplName</code>并没有带入数据库操作,所以对我们的限制几乎没有.于是可以通过<code>../</code>实现目录穿越.不过在第<code>66</code>行还存在一个变量<code>$noce_tmplet</code>,根据第<code>68</code>行的提示,应该能判断变量<code>$nonce_templet$</code>的值为当前模板的名称.这里只要咱们上传一个新模板就能绕过了.</p>
 
             </div>
             <hr>

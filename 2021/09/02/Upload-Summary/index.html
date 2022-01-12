@@ -186,7 +186,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      583 字
+      1k 字
     </span>
   
 
@@ -196,7 +196,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7
+      12
        分钟
     </span>
   
@@ -291,7 +291,25 @@
 <p><strong>影响版本</strong></p>
 <p>Apache2.0.x&lt;=2.0.59</p>
 <p>Apache2.2.x&lt;=2.2.17</p>
-<h3 id="htaccess"><a href="#htaccess" class="headerlink" title=".htaccess"></a>.htaccess</h3><h2 id="2-2-IIS"><a href="#2-2-IIS" class="headerlink" title="2.2 IIS"></a>2.2 IIS</h2><h2 id="2-3-Nginx"><a href="#2-3-Nginx" class="headerlink" title="2.3 Nginx"></a>2.3 Nginx</h2><h1 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h1><h2 id="3-1"><a href="#3-1" class="headerlink" title="3.1"></a>3.1</h2><h2 id="3-2"><a href="#3-2" class="headerlink" title="3.2"></a>3.2</h2><h1 id="0x03-php临时文件包含"><a href="#0x03-php临时文件包含" class="headerlink" title="0x03 php临时文件包含"></a>0x03 php临时文件包含</h1><p>先献上从p神那嫖过来的一张图片<br><img src="https://storage.tttang.com/media/attachment/2021/11/01/728ac837-fd5a-4ecc-abbb-2294784374e1.png" srcset="/img/loading.gif" lazyload><br>这张图片很好的说明了php从使用post请求上传文件到完成响应的期间内临时文件的生命周期.以至于可以使用竞争脚本写入文件从而实现php本地包含.不过还是有一定的条件显示,如得回去到<code>phpinfo</code>信息,存在写入权限,以及还可能存在<code>open_basedir</code>的限制.</p>
+<h2 id="2-2-IIS"><a href="#2-2-IIS" class="headerlink" title="2.2 IIS"></a>2.2 IIS</h2><h2 id="2-3-Nginx"><a href="#2-3-Nginx" class="headerlink" title="2.3 Nginx"></a>2.3 Nginx</h2><h1 id="0x03-user-ini"><a href="#0x03-user-ini" class="headerlink" title="0x03 .user.ini"></a>0x03 .user.ini</h1><h2 id="3-1-前言"><a href="#3-1-前言" class="headerlink" title="3.1 前言"></a>3.1 前言</h2><p>.user.ini  的作用和 .htaccess 的作用类似,不同之处在于 <code>.htaccess</code>是针对 <code>Apache</code>的配置文件,而 <code>.user.ini</code>是针对 <code>php.ini</code>的配置文件.</p>
+<p><strong>不过前提是服务器必须要以<code>fastcgi</code>的方式启动运行</strong></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211224003100545.png" srcset="/img/loading.gif" lazyload alt="image-20211224003100545"></p>
+<p>和php.ini不同的是，<code>.user.ini</code>是一个能被动态加载的ini文件。也就是说我修改了.user.ini后，<strong>不需要重启服务器中间件</strong>，只需要等待user_ini.cache_ttl所设置的时间（默认为300秒），即可被重新加载.</p>
+<p>.user.ini 可以设置php.ini 的相关开关,但不是每个开关都能进行设置.但实际上，只要不是PHP_INI_SYSTEM模式下的属性，均可以在.user.ini中设置.通常利用的两个属性分别为: <code>auto_append_file</code>以及 <code>auto_prepend_file</code>.</p>
+<h2 id="3-2-利用"><a href="#3-2-利用" class="headerlink" title="3.2 利用"></a>3.2 利用</h2><p><code>auto_append_file</code>和<code>auto_prepend_file</code>的作用类似,都是定义一个<code>require</code>文件包含,不同指出在于 <code>auto_append_file</code>是在文<strong>件最后进行包含</strong>,而<code>auto_prepend_file</code>实在<strong>php代码执行之前进行包含.</strong></p>
+<p>既然是文件包含,那就利用文件包含的姿势拿下webshell.</p>
+<p>假设我们目标服务器我们能够上传一个jpg文件和一个<code>.user.ini</code>的文件,且<strong>目标服务器是以 <code>fastcgi</code>的形式启动</strong>.我们首先上传一个<code>1.jpg</code>,其内容为下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> phpinfo()；<br></code></pre></td></tr></table></figure>
+
+<p>在上传一个<code>.user.ini</code>,内容为下</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">auto_prepend_file</span>=<span class="hljs-number">1</span>.jpg<br></code></pre></td></tr></table></figure>
+
+<p>再次访问user.ini 同目录下的php文件,则可以显示phpinfo()的信息.</p>
+<blockquote>
+<p>注意:这里访问不会立即得到 phpinfo() 相关的信息,因为 .user.ini 的配置会默认等待300秒才会刷新</p>
+</blockquote>
+<h2 id="3-3-参考"><a href="#3-3-参考" class="headerlink" title="3.3 参考"></a>3.3 参考</h2><p><a target="_blank" rel="noopener" href="https://wooyun.js.org/drops/user.ini%E6%96%87%E4%BB%B6%E6%9E%84%E6%88%90%E7%9A%84PHP%E5%90%8E%E9%97%A8.html">.user.ini构成php的后门</a></p>
+<h1 id="0x04-php临时文件包含"><a href="#0x04-php临时文件包含" class="headerlink" title="0x04 php临时文件包含"></a>0x04 php临时文件包含</h1><p>先献上从p神那嫖过来的一张图片<br><img src="https://storage.tttang.com/media/attachment/2021/11/01/728ac837-fd5a-4ecc-abbb-2294784374e1.png" srcset="/img/loading.gif" lazyload><br>这张图片很好的说明了php从使用post请求上传文件到完成响应的期间内临时文件的生命周期.以至于可以使用竞争脚本写入文件从而实现php本地包含.不过还是有一定的条件显示,如得回去到<code>phpinfo</code>信息,存在写入权限,以及还可能存在<code>open_basedir</code>的限制.</p>
 <p><a target="_blank" rel="noopener" href="https://tttang.com/archive/1312/">php lfi 综述</a></p>
 
             </div>

