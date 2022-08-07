@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="漏洞挖掘技巧系列的主要内容为搜集,总结和归纳自己所遇,所见的一些关于 src 中的一些奇淫技巧.同时也给大家推荐一个关于 SRC 技巧的项目,地址: https:&#x2F;&#x2F;github.com&#x2F;Wh0ale&#x2F;SRC-experience,希望大家天天挖到高危!  0x00正文0x01 压缩包上传解压路径猜测技巧很多 cms 的后台中都允许模板或者主题类的压缩包上传,并且大多数情况下这个功能点都能成为我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漏洞挖掘技巧篇1-文件上传">
+<meta property="og:url" content="http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/index.html">
+<meta property="og:site_name" content="Noel&#39;s Blog">
+<meta property="og:description" content="漏洞挖掘技巧系列的主要内容为搜集,总结和归纳自己所遇,所见的一些关于 src 中的一些奇淫技巧.同时也给大家推荐一个关于 SRC 技巧的项目,地址: https:&#x2F;&#x2F;github.com&#x2F;Wh0ale&#x2F;SRC-experience,希望大家天天挖到高危!  0x00正文0x01 压缩包上传解压路径猜测技巧很多 cms 的后台中都允许模板或者主题类的压缩包上传,并且大多数情况下这个功能点都能成为我">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://particles.oss-cn-beijing.aliyuncs.com/img%5Cd288eedecf693e03afd8e990af47bc15.png">
+<meta property="og:image" content="http://particles.oss-cn-beijing.aliyuncs.com/img%5C58a4f5d8db14b7983ae5eab6b869a8e0.png">
+<meta property="article:published_time" content="2022-04-24T06:05:36.000Z">
+<meta property="article:modified_time" content="2022-05-26T13:10:32.191Z">
+<meta property="article:author" content="Noel">
+<meta property="article:tag" content="文件上传">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://particles.oss-cn-beijing.aliyuncs.com/img%5Cd288eedecf693e03afd8e990af47bc15.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>漏洞挖掘技巧篇1-文件上传</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/05/11/2022-05-11-bugbountytios-login/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/04/24/Interview/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&text=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&is_video=false&description=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=漏洞挖掘技巧篇1-文件上传&body=Check out this article: http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&name=漏洞挖掘技巧篇1-文件上传&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&t=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x00%E6%AD%A3%E6%96%87"><span class="toc-number">1.</span> <span class="toc-text">0x00正文</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%8E%8B%E7%BC%A9%E5%8C%85%E4%B8%8A%E4%BC%A0%E8%A7%A3%E5%8E%8B%E8%B7%AF%E5%BE%84%E7%8C%9C%E6%B5%8B%E6%8A%80%E5%B7%A7"><span class="toc-number">1.1.</span> <span class="toc-text">0x01 压缩包上传解压路径猜测技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02%E4%B8%80%E4%BA%9B%E7%BB%95%E8%BF%87"><span class="toc-number">1.2.</span> <span class="toc-text">0x02一些绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">0x02-1</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-Windows%E5%90%8E%E7%BC%80%E7%BB%95%E8%BF%87-%E5%9F%BA%E6%9C%AC"><span class="toc-number">1.3.</span> <span class="toc-text">0x03 Windows后缀绕过(基本)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-1-%E7%A9%BA%E6%A0%BC%E7%BB%95%E8%BF%87"><span class="toc-number">1.3.1.</span> <span class="toc-text">0x03-1 空格绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-2-%E7%82%B9%E7%BB%95%E8%BF%87"><span class="toc-number">1.3.2.</span> <span class="toc-text">0x03-2 点绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-3-DATA-%E7%BB%95%E8%BF%87"><span class="toc-number">1.3.3.</span> <span class="toc-text">0x03-3 ::$DATA 绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-4-x2F-%E7%AC%A6%E5%8F%B7%E5%88%A9%E7%94%A8"><span class="toc-number">1.3.4.</span> <span class="toc-text">0x03-4 &#x2F; \ 符号利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.</span> <span class="toc-text">0x04 解析漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x04-1-IIS-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.1.</span> <span class="toc-text">0x04-1 IIS 解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x04-2-Apache-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.2.</span> <span class="toc-text">0x04-2 Apache 解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x04-3-Nginx-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.3.</span> <span class="toc-text">0x04-3 Nginx 解析漏洞</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        漏洞挖掘技巧篇1-文件上传
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Noel</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-04-24T06:05:36.000Z" itemprop="datePublished">2022-04-24</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">漏洞挖掘</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" rel="tag">文件上传</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <blockquote>
+<p>漏洞挖掘技巧系列的主要内容为搜集,总结和归纳自己所遇,所见的一些关于 src 中的一些奇淫技巧.<br>同时也给大家推荐一个关于 SRC 技巧的项目,地址: <a target="_blank" rel="noopener" href="https://github.com/Wh0ale/SRC-experience">https://github.com/Wh0ale/SRC-experience</a>,<br>希望大家天天挖到高危!</p>
+</blockquote>
+<h1 id="0x00正文"><a href="#0x00正文" class="headerlink" title="0x00正文"></a>0x00正文</h1><h2 id="0x01-压缩包上传解压路径猜测技巧"><a href="#0x01-压缩包上传解压路径猜测技巧" class="headerlink" title="0x01 压缩包上传解压路径猜测技巧"></a>0x01 压缩包上传解压路径猜测技巧</h2><p>很多 <code>cms</code> 的后台中都允许模板或者主题类的压缩包上传,并且大多数情况下这个功能点都能成为我们 <code>Getshell</code> 的入口点.不过有时候上传成功后并不会显示解压后的文件地址,这时候就需要我们去猜测路径.</p>
+<p>上传压缩包的时候，有些文件解压后可能出现<strong>双重目录名的情况</strong>.比如我们上传的压缩文件为 <code>1.zip</code>, 里面有个 <code>2.txt</code>.这种情况可以去猜测路径为 <code>1/1/2.txt</code>.<br>(忘记截图了,抱歉)</p>
+<h2 id="0x02一些绕过"><a href="#0x02一些绕过" class="headerlink" title="0x02一些绕过"></a>0x02一些绕过</h2><h3 id="0x02-1"><a href="#0x02-1" class="headerlink" title="0x02-1"></a>0x02-1</h3><p>我们在头像处上传发现没有办法上传除了jpg以外的图片，我们可以尝试在–后面多加入一个-如下图。（由于是比较敏感的项目，不公开了具体细节之放一张细节图并且打上厚码）并成功解析</p>
+<p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5Cd288eedecf693e03afd8e990af47bc15.png" alt="20220424150455"></p>
+<p>来源:<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/BSvl_ZHiKlnaX7QhqJhXyw">深夜笔记本</a></p>
+<h2 id="0x03-Windows后缀绕过-基本"><a href="#0x03-Windows后缀绕过-基本" class="headerlink" title="0x03 Windows后缀绕过(基本)"></a>0x03 Windows后缀绕过(基本)</h2><h3 id="0x03-1-空格绕过"><a href="#0x03-1-空格绕过" class="headerlink" title="0x03-1 空格绕过"></a>0x03-1 空格绕过</h3><p>服务器为Windows平台，在对用户上传的文件名进行处理时，没有使用trim()函数去除字符串收尾处的空白字符。</p>
+<p>利用方式：用户上传图片马时，用Burp拦截，在文件尾部加入空格。例如：<code>xxx.jpg空格</code>。带有空格的后缀可以绕过黑名单的检测，而文件存在在Windows服务器上，会自动去除后缀中的空格。</p>
+<h3 id="0x03-2-点绕过"><a href="#0x03-2-点绕过" class="headerlink" title="0x03-2 点绕过"></a>0x03-2 点绕过</h3><p>Windows平台，服务端没有使用deldot()删除文件名末尾的点。</p>
+<p>利用方式：上传名为 <code>assert.php.</code>的文件。在Windows服务器中，后缀名之后的点，在保存时，会被自动忽略。</p>
+<h3 id="0x03-3-DATA-绕过"><a href="#0x03-3-DATA-绕过" class="headerlink" title="0x03-3 ::$DATA 绕过"></a>0x03-3 ::$DATA 绕过</h3><p>原理: 在 <code>Window系统</code> 中,如果文件名 + <code>&quot;::$DATA&quot;</code> 会把 <code>::$DATA</code> 之后的数据当成文件流处理,不会检测后缀名，且保持 <code>::$DATA</code> 之前的文件名，他的目的就是不检查后缀名.</p>
+<p>利用方式: 如果后台对上传的文件做了后缀名黑名单限制,假如后缀黑名单为: <code>.php .php3</code>, 则我们可以通过上传 <code>1.php::$DATA</code> 绕过黑名单,成功上传,而系统中保存的文件名却是 <code>1.php</code>.</p>
+<h3 id="0x03-4-x2F-符号利用"><a href="#0x03-4-x2F-符号利用" class="headerlink" title="0x03-4 &#x2F; \ 符号利用"></a>0x03-4 &#x2F; \ 符号利用</h3><p>在文件名中使用 <code>/</code> 或 <code>\</code> 会忽略 <code>\</code> 或 <code>/</code> 前的名字.比如上传的文件名为 <code>1.png/1.php</code>,实际上使用 <code>$_FILE[&#39;NAME&#39;][&#39;name&#39;]</code> 获取到的文件名为 <code>1.php</code>. <code>\</code>也同理.</p>
+<h2 id="0x04-解析漏洞"><a href="#0x04-解析漏洞" class="headerlink" title="0x04 解析漏洞"></a>0x04 解析漏洞</h2><h3 id="0x04-1-IIS-解析漏洞"><a href="#0x04-1-IIS-解析漏洞" class="headerlink" title="0x04-1 IIS 解析漏洞"></a>0x04-1 IIS 解析漏洞</h3><p><strong>version 6.0</strong></p>
+<ol>
+<li><code>;</code> 截断</li>
+</ol>
+<p>在IIS 6.0版本中，<code>;</code>号的功能类似于<code>%00</code>截断，例如我们上传一个恶意脚本<code>yijuhua.asp;.jpg</code>，文件后缀为jpg，<br>可以绕过服务器检测，当我们访问这个文件时，分号后面的内容会被截断，就相当于我们访问的是<code>yijuhua.asp</code>。</p>
+<ol start="2">
+<li><strong>文件夹</strong> 命名为 <code>xxx.asp</code></li>
+</ol>
+<p>如果一个目录以 <code>xxx.asp</code> 的格式命名，那么该目录下的所有类型的文件都会被当作 <code>asp</code> 文件来解析执行.</p>
+<p>很明显普通用户不会创建类似于 <code>xxx.asp</code> 目录,这时候我们就可以自己想办法创建.在上面 <code>Windows</code> 特性中还有一点没有提到, 上传文件名使用 <code>xxx.php::$INDEX_ALLOCATION</code> 其实会创建一个以 <code>xxx.php</code> 为文件名的文件夹,如果我们将其改为 <code>xxx.jsp::$INDEX_ALLOCATION</code> 就可以创建一个以 <code>.jsp</code> 为后缀目录名,接下来想办法将图片传入到这个文件夹下就好了.</p>
+<p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C58a4f5d8db14b7983ae5eab6b869a8e0.png" alt="20220526202149"></p>
+<p><strong>version 7.5</strong></p>
+<p>原理: 当 <code>IIS 7.5</code> 在 <code>Fast-CGI</code> 运行模式下时，如果服务器开启了 <code>cgi.fix_pathinfo</code> 功能，且去掉了<code>php-cgi.exe</code> 程序的 <code>Invoke handler only if request is mapped to</code> 勾选。那么当访问的文件路径不存在时，会对路径进行修剪。</p>
+<p>例如: <code>test.jpg</code> 是我们上传的图片马，直接访问 <code>/test.jpg</code> 无法被php解析。</p>
+<p>但是利用路径修剪功能，我们可以访问 <code>/webshell.jpg/.php</code> ，服务器发现为 <code>.php</code> 后缀，便交给php解析。</p>
+<p>php发现无法访问该路径后，便会对路径进行修剪，最终解析的是test.jpg文件。</p>
+<h3 id="0x04-2-Apache-解析漏洞"><a href="#0x04-2-Apache-解析漏洞" class="headerlink" title="0x04-2 Apache 解析漏洞"></a>0x04-2 Apache 解析漏洞</h3><p>原理: <code>Apache</code>认为，一个文件可以有多个后缀，如：<code>werner.txt.png.mp3</code>。这一文件，放在 <code>Windows</code> 里，毫无疑问，就是个<code>mp3</code>文件，<br><code>Windows</code>只认最后一个 <code>.</code> 及其后面的字符 <code>mp3</code> ，觉得该文件后缀为 <code>.mp3</code>，这也是大多数操作系统、应用软件的处理方式、是正常人习惯。<br>而在Apache中，则可能有所不同，如果有必要，Apache会从后（右）往前（左），一一辨别后缀。何时有必要？当Apache不认识某个后缀时，便有必要。如某文件名为：<code>werner.mp3.html.qwe.arex</code>，<code>Apache</code> 在处理时，先读取最后一个后缀，为<code>.arex</code> ，一看，这啥玩意啊，不认识，继续读取下一个后缀 <code>.qwe</code> ，一看，呀，这又是啥，还是不认识，继续读下一个后缀 <code>.html</code>，一看，哦，这是个超文本标记语言文件，俗称网页文件，这回认识了，也就不继续读下一个后缀了。若是所有后缀都看完了没有一个认识怎么办？此时就会把该文件当做默认类型进行处理了，一般来说，默认类型是 <code>text/plain</code>。据说在<code>Apache</code> 的配置文件中搜索<code>DefaultType</code>就能看到默认类型的明确定义了，但我却不知为何，没有找到。</p>
+<p>哪些后缀 <code>Apache</code> 认识，哪些不认识？有一个名为 <code>mime.types</code> 的文件，其中记录着 <code>Apache</code> 认识的后缀。在 <code>Ubuntu</code> 下，该文件位于 <code>/etc/mime.types</code>，在 <code>Windows</code>下，该文件位于 <code>C:/apache/conf/mime.types（类似这样的，注意Apache的安装路径）</code></p>
+<p>利用: 因此,我们可以上传类似于  <code>1.php.xxx</code> 的文件绕过 <code>Apache</code> 的解析.</p>
+<p><strong>.htaccess</strong></p>
+<p><code>.htaccess</code> 是 <code>Apache</code>的又一特色。一般来说，配置文件的作用范围都是全局的，但 <code>Apache</code> 提供了一种很方便的、可作用于当前目录及其子目录的配置文件——<code>.htaccess（分布式配置文件）。</code></p>
+<p>要想使.htaccess文件生效，需要两个条件，一是在Apache的配置文件中写上：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AllowOverride All</span><br></pre></td></tr></table></figure>
+<p>二是Apache要加载mod_Rewrite模块。加载该模块，需要在Apache的配置文件中写上：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LoadModule rewrite_module /usr/lib/apache2/modules/mod_rewrite.so</span><br></pre></td></tr></table></figure>
+
+<p><code>.htaccess</code>文件可以配置很多事情，如是否开启站点的图片缓存、自定义错误页面、自定义默认文档、设置WWW域名重定向、设置网页重定向、设置图片防盗链和访问权限控制。<br>但我们这里只关心 <code>.htaccess</code>文件的一个作用——MIME类型修改。如在 <code>.htaccess</code> 文件中写入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AddType application/x-httpd-php xxx</span><br></pre></td></tr></table></figure>
+
+<p>就成功地使该<code>.htaccess</code>文件所在目录及其子目录中的后缀为.xxx的文件被Apache当做php文件。另一种写法是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;FilesMatch &quot;shell.jpg&quot;&gt;</span><br><span class="line">  SetHandler application/x-httpd-php</span><br><span class="line">&lt;/FilesMatch&gt;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="0x04-3-Nginx-解析漏洞"><a href="#0x04-3-Nginx-解析漏洞" class="headerlink" title="0x04-3 Nginx 解析漏洞"></a>0x04-3 Nginx 解析漏洞</h3><p>该漏洞与<code>nginx</code>、<code>php</code>版本无关,属于用户配置不当造成的解析漏洞</p>
+<p>原理: 由于<code>nginx.conf</code>的如下配置导致<code>nginx</code>把以<code>.php</code>结尾的文件交给<code>fastcgi</code>处理,为此可以构造<code>http://ip/uploadfiles/test.png/.php</code> (url结尾不一定是<code>.php</code>,任何服务器端不存在的php文件均可,比如<code>a.php</code>),其中<code>test.png</code>是我们上传的包含PHP代码的照片文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">配置</span><br><span class="line">server &#123;</span><br><span class="line">     listen       80;</span><br><span class="line">     server_name  test.local;</span><br><span class="line"></span><br><span class="line">     access_log  /work/www/logs/test.access.log  main;</span><br><span class="line">     error_log  /work/www/logs/test.error.log;</span><br><span class="line"></span><br><span class="line">     location / &#123;</span><br><span class="line">         root   /work/www/test;</span><br><span class="line">         index  index.html index.htm index.php;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     location ~ \.php$ &#123;</span><br><span class="line">         root           /work/www/test;</span><br><span class="line">         fastcgi_index  index.php;</span><br><span class="line">         fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;</span><br><span class="line">         include        fastcgi_params;</span><br><span class="line">         fastcgi_pass   unix:/tmp/php-fpm.sock;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是，在<code>php-fpm.conf</code>配置文件中的<code>security.limit_extensions</code>配置项限制了<code>fastcgi</code>要解析的文件类型（如果该选项未开启，默认只解析<code>.php</code>）</p>
+<p><code>cgi.fix_pathinfo</code></p>
+<p>该选项位于配置文件<code>php.ini</code>中，默认值为<code>1</code>，表示开启。当<code>php</code>遇到文件路径<code>/test.png/x.php</code>时，若<code>/test.png/x.php</code>不存在，则会去掉最后的<code>/x.php</code>，然后判断<code>/test.png</code>是否存在，若存在，则把<code>/test.png</code>当做文件&#x2F;<code>test.png/x.php</code>解析，如若<code>test.png</code>还不存在如果在其前面还有后缀，继续前面的步骤，以此类推。若是关闭该选项，访问<code>/test.jpg/x.php</code> 只会返回找不到文件。</p>
+<p><code>security.limit_extensions</code></p>
+<p>在我的配置文件中，它位于<code>/etc/php-fpm.d/www.conf</code>中<br>这个选项开始是被注释了的也就是默认只允许执行php文件，可以在后面添加其它后缀，比如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">security.limit_extensions .jpg .php</span><br></pre></td></tr></table></figure>
+<p>像这样添加 <code>.jpg</code>之后，<code>.jpg</code>文件也能以<code>php</code>格式来执行<br>修改了后需要 <code>service php-fpm restart</code>重启php</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/265245.html">https://www.freebuf.com/articles/web/265245.html</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/categories/">categories</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x00%E6%AD%A3%E6%96%87"><span class="toc-number">1.</span> <span class="toc-text">0x00正文</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%8E%8B%E7%BC%A9%E5%8C%85%E4%B8%8A%E4%BC%A0%E8%A7%A3%E5%8E%8B%E8%B7%AF%E5%BE%84%E7%8C%9C%E6%B5%8B%E6%8A%80%E5%B7%A7"><span class="toc-number">1.1.</span> <span class="toc-text">0x01 压缩包上传解压路径猜测技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02%E4%B8%80%E4%BA%9B%E7%BB%95%E8%BF%87"><span class="toc-number">1.2.</span> <span class="toc-text">0x02一些绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">0x02-1</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-Windows%E5%90%8E%E7%BC%80%E7%BB%95%E8%BF%87-%E5%9F%BA%E6%9C%AC"><span class="toc-number">1.3.</span> <span class="toc-text">0x03 Windows后缀绕过(基本)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-1-%E7%A9%BA%E6%A0%BC%E7%BB%95%E8%BF%87"><span class="toc-number">1.3.1.</span> <span class="toc-text">0x03-1 空格绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-2-%E7%82%B9%E7%BB%95%E8%BF%87"><span class="toc-number">1.3.2.</span> <span class="toc-text">0x03-2 点绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-3-DATA-%E7%BB%95%E8%BF%87"><span class="toc-number">1.3.3.</span> <span class="toc-text">0x03-3 ::$DATA 绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-4-x2F-%E7%AC%A6%E5%8F%B7%E5%88%A9%E7%94%A8"><span class="toc-number">1.3.4.</span> <span class="toc-text">0x03-4 &#x2F; \ 符号利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.</span> <span class="toc-text">0x04 解析漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x04-1-IIS-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.1.</span> <span class="toc-text">0x04-1 IIS 解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x04-2-Apache-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.2.</span> <span class="toc-text">0x04-2 Apache 解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x04-3-Nginx-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.3.</span> <span class="toc-text">0x04-3 Nginx 解析漏洞</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&text=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&is_video=false&description=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=漏洞挖掘技巧篇1-文件上传&body=Check out this article: http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&title=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&name=漏洞挖掘技巧篇1-文件上传&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/04/24/2022-04-24-bugbountytips-upload/&t=漏洞挖掘技巧篇1-文件上传"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2022
+    Noel
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

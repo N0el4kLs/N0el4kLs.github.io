@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="基础知识是决定上层技术的关键因素。本章博客记录遇到的面试题以此来补充自己的基础知识。  2022&#x2F;05&#x2F;28微步厂商护网面试题：  sql注入报错注入函数 文件包含里include，includeonce，require，requireonce用法区别 中间件的解析漏洞，问了iis，apache，nginx 溯源的过程，说一次你的溯源（从捕获攻击源开始，到最后） window">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面经记录">
+<meta property="og:url" content="http://n0el4kls.github.io/2022/04/24/Interview/index.html">
+<meta property="og:site_name" content="Noel&#39;s Blog">
+<meta property="og:description" content="基础知识是决定上层技术的关键因素。本章博客记录遇到的面试题以此来补充自己的基础知识。  2022&#x2F;05&#x2F;28微步厂商护网面试题：  sql注入报错注入函数 文件包含里include，includeonce，require，requireonce用法区别 中间件的解析漏洞，问了iis，apache，nginx 溯源的过程，说一次你的溯源（从捕获攻击源开始，到最后） window">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-04-24T06:05:36.000Z">
+<meta property="article:modified_time" content="2022-06-09T11:26:51.286Z">
+<meta property="article:author" content="Noel">
+<meta property="article:tag" content="面试">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>面经记录</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/04/24/2022-04-24-bugbountytips-upload/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/01/11/2022-01-11-emlog-pro%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2022/04/24/Interview/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2022/04/24/Interview/&text=面经记录"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2022/04/24/Interview/&is_video=false&description=面经记录"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=面经记录&body=Check out this article: http://n0el4kls.github.io/2022/04/24/Interview/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/04/24/Interview/&name=面经记录&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/04/24/Interview/&t=面经记录"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2022-x2F-05-x2F-28"><span class="toc-number">1.</span> <span class="toc-text">2022&#x2F;05&#x2F;28</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2022-x2F-06-x2F-4"><span class="toc-number">2.</span> <span class="toc-text">2022&#x2F;06&#x2F;4</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2022-x2F-6-x2F-9-%E9%9D%92%E8%97%A4%E4%BA%91"><span class="toc-number">3.</span> <span class="toc-text">2022&#x2F;6&#x2F;9 青藤云</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        面经记录
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Noel</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-04-24T06:05:36.000Z" itemprop="datePublished">2022-04-24</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <blockquote>
+<p>基础知识是决定上层技术的关键因素。本章博客记录遇到的面试题以此来补充自己的基础知识。</p>
+</blockquote>
+<h1 id="2022-x2F-05-x2F-28"><a href="#2022-x2F-05-x2F-28" class="headerlink" title="2022&#x2F;05&#x2F;28"></a>2022&#x2F;05&#x2F;28</h1><p>微步厂商护网面试题：</p>
+<ol>
+<li>sql注入报错注入函数</li>
+<li>文件包含里include，includeonce，require，requireonce用法区别</li>
+<li>中间件的解析漏洞，问了iis，apache，nginx</li>
+<li>溯源的过程，说一次你的溯源（从捕获攻击源开始，到最后）</li>
+<li>windows应急响应，怎么排查，windows日志常见错误序号</li>
+<li>linux应急响应  如何排查，awk，sed</li>
+<li>内网中横向移动，进行密码爆破的工具是什么</li>
+<li>内网中常见的代理是什么，如果内网告警，发现是frp告警，有什么特征，<br>应该怎么做（用户错误的行为引发的告警和误报不同，要打电话询问客户）.如果特征不明显，隐式的编码加密，怎么做</li>
+<li>正像代理反向代理的区别</li>
+<li>如何区分一个dns流量是正常的，还是dns隧道做出来的</li>
+<li>内网中，你如何提权</li>
+<li>最后，你印象最深的一次项目经历，什么都行，从中学到了什么，有什么意义</li>
+</ol>
+<h1 id="2022-x2F-06-x2F-4"><a href="#2022-x2F-06-x2F-4" class="headerlink" title="2022&#x2F;06&#x2F;4"></a>2022&#x2F;06&#x2F;4</h1><p>整理</p>
+<ol>
+<li>证书透明</li>
+<li>Windows的Redis主从RCE</li>
+<li>PTH怎么利用和NTML验证端口是什么</li>
+<li>CS怎么联动C#来进程注入</li>
+<li>JNDI有哪些利用协议</li>
+<li>fastjson有哪些gadget</li>
+<li>Shiro有哪些常见漏洞，Padding Oracle的利用条件是什么，加密方式是什么</li>
+<li>RMI的漏洞有没有接触过</li>
+<li>Linux和Windows有什么提权方式，Windows令牌窃取普通用户可以利用吗，为什么不能利用</li>
+<li>ThinkPHP3有哪些漏洞，ThinkPHP5的路由控制不严谨导致的RCE有没有利用过</li>
+<li>有没有钓鱼经历，如果和室友同在一台路由器下，有什么横向移动方法</li>
+<li>不出网有什么方法，正向shel l 方法除了reg之类的，还有什么？ </li>
+<li>域内委派</li>
+<li>dpapi机制说下，能干嘛</li>
+<li>fastjson 不出网</li>
+<li>shiro漏洞类型，721原理，721利用要注意什么？</li>
+<li>weblogic 漏洞类型都有啥,原理</li>
+<li>dll劫持，dll注入</li>
+<li>内网优先爆破测试的端口、为什么；如果只有3389开放，爆破3389的实际影响</li>
+<li>window2003 frp nps为神马用不了</li>
+<li>钓鱼方法姿势…除了exe这种双击的，还有什么</li>
+<li>redis window shell方法</li>
+<li>bypass uac 技巧，方法 ，原理</li>
+<li>内存马 filter shell </li>
+<li>PTH深度原理，利用条件</li>
+<li>抓hash方法,有杀软抓不到尼</li>
+<li>Windows defender安全机制</li>
+<li>有的时候抓到的hash不是明文为啥</li>
+<li>hvv三大洞挨个说</li>
+<li>cs是否有二次开发过,cna脚本有没有写过</li>
+<li>一台内网主机  不属于域，但是明确被告知内网环境有域，这台主机只能ping通其他主机，请问怎么获取域信息<br>​33. 怎么用python编写一个通过icmp通信的远控</li>
+<li>免杀的方法</li>
+<li>文本框存在注入，怎么绕过对，和空格的过滤</li>
+<li>windows不能使用漏洞的情况下怎么提权<br>​​37. linux持久化 </li>
+<li>报错注入函数<br>​39. xss注入  注入位置在标签名里，服务器返回的时候会进行过滤，怎么绕过</li>
+</ol>
+<h1 id="2022-x2F-6-x2F-9-青藤云"><a href="#2022-x2F-6-x2F-9-青藤云" class="headerlink" title="2022&#x2F;6&#x2F;9 青藤云"></a>2022&#x2F;6&#x2F;9 青藤云</h1><ol>
+<li>Php危险函数</li>
+<li>权限维持</li>
+<li>PAM</li>
+<li>Tcp wrapper</li>
+<li>Redis 进程到端口</li>
+<li>实时查看日志tail&#x3D;f</li>
+<li>ssrf 三种利用协议</li>
+<li>shiro 反序列化</li>
+<li>常见webshell 管理工具的流量特征</li>
+<li>cs流量特征</li>
+<li>应急响应流程</li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/categories/">categories</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2022-x2F-05-x2F-28"><span class="toc-number">1.</span> <span class="toc-text">2022&#x2F;05&#x2F;28</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2022-x2F-06-x2F-4"><span class="toc-number">2.</span> <span class="toc-text">2022&#x2F;06&#x2F;4</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2022-x2F-6-x2F-9-%E9%9D%92%E8%97%A4%E4%BA%91"><span class="toc-number">3.</span> <span class="toc-text">2022&#x2F;6&#x2F;9 青藤云</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2022/04/24/Interview/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2022/04/24/Interview/&text=面经记录"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2022/04/24/Interview/&is_video=false&description=面经记录"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=面经记录&body=Check out this article: http://n0el4kls.github.io/2022/04/24/Interview/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/04/24/Interview/&title=面经记录"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/04/24/Interview/&name=面经记录&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/04/24/Interview/&t=面经记录"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2022
+    Noel
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

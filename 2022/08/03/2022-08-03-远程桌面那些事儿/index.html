@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="前言正文连接记录当前用户的的RDP连接记录保存在注册表的一下位置: 1HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers  可以通过以下powershell命令查看当前用户的所有连接记录地址 1dir &quot;Registry::HKEY_CURRENT_USER\Software\Microsoft\Term">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows RDP那些事儿">
+<meta property="og:url" content="http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/index.html">
+<meta property="og:site_name" content="Noel&#39;s Blog">
+<meta property="og:description" content="前言正文连接记录当前用户的的RDP连接记录保存在注册表的一下位置: 1HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers  可以通过以下powershell命令查看当前用户的所有连接记录地址 1dir &quot;Registry::HKEY_CURRENT_USER\Software\Microsoft\Term">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220803113100012.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220803113859393.png">
+<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-5957324/4cf29f401d440cb2e671745a6c56b0cd.png?imageView2/2/w/1620">
+<meta property="article:published_time" content="2022-08-02T18:08:39.000Z">
+<meta property="article:modified_time" content="2022-08-03T11:27:52.100Z">
+<meta property="article:author" content="Noel">
+<meta property="article:tag" content="权限维持">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="RDP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220803113100012.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Windows RDP那些事儿</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/08/01/2022-08-01-CS%E9%85%8D%E7%BD%AECDN/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&text=Windows RDP那些事儿"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&is_video=false&description=Windows RDP那些事儿"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Windows RDP那些事儿&body=Check out this article: http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&name=Windows RDP那些事儿&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&t=Windows RDP那些事儿"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AD%A3%E6%96%87"><span class="toc-number">2.</span> <span class="toc-text">正文</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E8%AE%B0%E5%BD%95"><span class="toc-number">2.1.</span> <span class="toc-text">连接记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%AD%E6%8D%AE"><span class="toc-number">2.2.</span> <span class="toc-text">凭据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDP-%E5%8A%AB%E6%8C%81"><span class="toc-number">2.3.</span> <span class="toc-text">RDP 劫持</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.4.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Windows RDP那些事儿
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Noel</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-08-02T18:08:39.000Z" itemprop="datePublished">2022-08-03</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/RDP/" rel="tag">RDP</a>, <a class="tag-link-link" href="/tags/Windows/" rel="tag">Windows</a>, <a class="tag-link-link" href="/tags/%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/" rel="tag">权限维持</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="连接记录"><a href="#连接记录" class="headerlink" title="连接记录"></a>连接记录</h2><p>当前用户的的<code>RDP</code>连接记录保存在注册表的一下位置:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers</span><br></pre></td></tr></table></figure>
+
+<p>可以通过以下<code>powershell</code>命令查看当前用户的所有连接记录地址</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dir</span> <span class="string">&quot;Registry::HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers&quot;</span> <span class="literal">-Name</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以在<code>cmd</code>中执行:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell -Command &quot;&amp;&#123;dir &#x27;Registry::HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers&#x27; -Name&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>powershell</code>查看指定地址的连接用户名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Get-ItemProperty -Path &quot;Registry::HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers\192.168.0.30&quot;).UsernameHint</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用<code>ps1</code>脚本进行遍历:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$RegPath</span> = <span class="string">&quot;Registry::HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers\&quot;</span><span class="variable">$QueryPath</span> = <span class="built_in">dir</span> <span class="variable">$RegPath</span> <span class="literal">-Nameforeach</span>(<span class="variable">$Name</span> <span class="keyword">in</span> <span class="variable">$QueryPath</span>)&#123;       <span class="keyword">Try</span>      &#123;          <span class="variable">$User</span> = (<span class="built_in">Get-ItemProperty</span> <span class="literal">-Path</span> <span class="variable">$RegPath</span><span class="variable">$Name</span> <span class="literal">-ErrorAction</span> Stop | <span class="built_in">Out-Null</span>).UsernameHint            <span class="built_in">Write-Host</span> <span class="string">&quot;Server:&quot;</span><span class="variable">$Name</span>            <span class="built_in">Write-Host</span> <span class="string">&quot;User:&quot;</span><span class="variable">$User</span><span class="string">&quot;`n&quot;</span>        &#125;        <span class="keyword">Catch</span>          &#123;        <span class="built_in">Write-Host</span> <span class="string">&quot;No RDP Connections History&quot;</span>        &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所有脚本:<a target="_blank" rel="noopener" href="https://github.com/3gstudent/List-RDP-Connections-History">https://github.com/3gstudent/List-RDP-Connections-History</a></p>
+<h2 id="凭据"><a href="#凭据" class="headerlink" title="凭据"></a>凭据</h2><p>查看 <code>Windows</code>凭据: 使用 <code>win + s</code> 调出搜索框,输入 <code>凭据管理器</code>,选择 <code>windows凭据</code></p>
+<p>凭据默认是保存在磁盘的一下位置:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\&lt;用户名&gt;\AppData\Local\Microsoft\Credentials</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220803113100012.png" alt="image-20220803113100012"></p>
+<p>图示显示目录下不存在文件,是因为文件被隐藏了,我们使用<code>dir /a</code> 查看一下.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220803113859393.png" alt="image-20220803113859393"></p>
+<p>当然,我们也可以通过<code>cmd</code> 查看当前主机上保存的连接凭据</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmdkey /list</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dir /a %userprofile%\AppData\Local\Microsoft\Credentials\*</span><br></pre></td></tr></table></figure>
+
+<p>不过可以看到凭据是加密了的,</p>
+<p>我们尝试使用 <code>Mimikatz </code> 导出远程桌面的凭据.</p>
+<h2 id="RDP-劫持"><a href="#RDP-劫持" class="headerlink" title="RDP 劫持"></a>RDP 劫持</h2><p><strong>原理:</strong></p>
+<blockquote>
+<p>系统管理员和用户通常可以通过 RDP 远程桌面登录指定<a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/cvm?from=10680">服务器</a> 3389 远程桌面，而攻击者可以通过可以特权提升至 SYSTEM 权限的用户，可以在不知道其他用户登录凭据的情况下，用来劫持其他用户的 RDP 会话，该漏洞在 2017 年由以色列安全研究员 Alexander Korznikov 在个人博客中披露。利用条件只需要获取机器 SYSTEM 权限执行 tscon 命令。</p>
+</blockquote>
+<p>在<code>Windows</code>系统中,如果多用户同时登录,则会产生多个会话.</p>
+<p>我们可以通过以下命令查看当前系统存在的登录会话(有哪些用户在线)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">query user</span><br></pre></td></tr></table></figure>
+
+<p>假设存在以下结果:</p>
+<p><img src="https://ask.qcloudimg.com/http-save/yehe-5957324/4cf29f401d440cb2e671745a6c56b0cd.png?imageView2/2/w/1620" alt="图片来自https://cloud.tencent.com/developer/article/1838765?from=article.detail.1861370"></p>
+<p>在知道用户<code>buuny</code>密码的情况下,可以使用 <code>tscon</code>进行登录用户切换:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tscon 2 /PASSWORD:Bunny2021</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>tscon 命令提供了一个切换用户会话的功能，并且，在正常情况下，切换会话时需要提供目标用户的登录密码。但这并不能完全确保会话安全，攻击者通过特殊的利用方法完全能够绕过验证，不输入密码即可切换到目标会话，从而实现目标用户的未授权登录。</p>
+<p>而这里所讲的特殊的利用方法便是在 SYSTEM 权限下直接执行 tscon 会话切换命令：</p>
+<p>特别注意的是，即使远程连接的用户关闭了远程连接窗口，也不会劫持该回话，只是在后台显示 “已断开连接”（Disconnected）：</p>
+<p>此时，仍能在 SYSTEM 权限下通过 <code>tscon</code> 实现未授权连接</p>
+</blockquote>
+<p>当我们拥有<code>system</code>权限后,直接使用以下命令,就能直接切换了登陆了.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tscon 2</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1861370">https://cloud.tencent.com/developer/article/1861370</a></p>
+<p><a target="_blank" rel="noopener" href="https://3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-%E8%8E%B7%E5%BE%97Windows%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E8%BF%9E%E6%8E%A5%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95">https://3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-%E8%8E%B7%E5%BE%97Windows%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E8%BF%9E%E6%8E%A5%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1838765">https://cloud.tencent.com/developer/article/1838765</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.mdsec.co.uk/2019/11/rdpthief-extracting-clear-text-credentials-from-remote-desktop-clients/">https://www.mdsec.co.uk/2019/11/rdpthief-extracting-clear-text-credentials-from-remote-desktop-clients/</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/categories/">categories</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AD%A3%E6%96%87"><span class="toc-number">2.</span> <span class="toc-text">正文</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E8%AE%B0%E5%BD%95"><span class="toc-number">2.1.</span> <span class="toc-text">连接记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%AD%E6%8D%AE"><span class="toc-number">2.2.</span> <span class="toc-text">凭据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDP-%E5%8A%AB%E6%8C%81"><span class="toc-number">2.3.</span> <span class="toc-text">RDP 劫持</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.4.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&text=Windows RDP那些事儿"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&is_video=false&description=Windows RDP那些事儿"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Windows RDP那些事儿&body=Check out this article: http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&title=Windows RDP那些事儿"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&name=Windows RDP那些事儿&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/08/03/2022-08-03-%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E9%82%A3%E4%BA%9B%E4%BA%8B%E5%84%BF/&t=Windows RDP那些事儿"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2022
+    Noel
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
