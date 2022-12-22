@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="前言本篇文章主要记录有关 WIFI 的部分概念以及其相关的攻击向量.  Notice: This passage is for educational and informational purposes only.  正文概念AP or Access Point无线接入点,他是一个转发器.或许你对他的另一个名字: 路由器 更为熟悉. STD(Station) 站点,也就是客户端.所有连接到 AP">
+    <meta name="description" content="前言本篇文章主要记录有关 WIFI 的部分概念以及其相关的攻击向量.  Notice: This passage is for educational and informational purposes only.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="常见WIFI攻击">
 <meta property="og:url" content="http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/index.html">
 <meta property="og:site_name" content="Noel&#39;s Blog">
-<meta property="og:description" content="前言本篇文章主要记录有关 WIFI 的部分概念以及其相关的攻击向量.  Notice: This passage is for educational and informational purposes only.  正文概念AP or Access Point无线接入点,他是一个转发器.或许你对他的另一个名字: 路由器 更为熟悉. STD(Station) 站点,也就是客户端.所有连接到 AP">
+<meta property="og:description" content="前言本篇文章主要记录有关 WIFI 的部分概念以及其相关的攻击向量.  Notice: This passage is for educational and informational purposes only.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220926105155840.png">
 <meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220917215235164.png">
@@ -24,7 +24,7 @@
 <meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220925205332599.png">
 <meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220925200516347.png">
 <meta property="article:published_time" content="2022-09-25T04:38:36.000Z">
-<meta property="article:modified_time" content="2022-09-26T07:05:56.439Z">
+<meta property="article:modified_time" content="2022-11-20T14:32:04.459Z">
 <meta property="article:author" content="Noel">
 <meta property="article:tag" content="phishing">
 <meta property="article:tag" content="wifi">
@@ -61,6 +61,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -75,19 +85,21 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
     <br/>
     <span id="actions">
       <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/09/25/2022-10-08-Reverse_one/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" aria-label="Next post" href="/2022/09/05/2022-09-05-phishing/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -112,7 +124,10 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&title=常见WIFI攻击"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&title=常见WIFI攻击"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&title=常见WIFI攻击"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&name=常见WIFI攻击&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&name=常见WIFI攻击&description=&lt;h1 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;本篇文章主要记录有关 &lt;strong&gt;WIFI&lt;/strong&gt; 的部分概念以及其相关的攻击向量.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Notice: This passage is for educational and informational purposes only.&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&t=常见WIFI攻击"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
@@ -171,6 +186,8 @@
 <blockquote>
 <p>Notice: This passage is for educational and informational purposes only.</p>
 </blockquote>
+<span id="more"></span>
+
 <h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p><strong>AP or Access Point</strong><br>无线接入点,他是一个转发器.或许你对他的另一个名字: 路由器 更为熟悉.</p>
 <p><strong>STD(Station)</strong></p>
 <p>站点,也就是客户端.所有连接到 AP 的终端设备都可以称之为 station.</p>
@@ -215,38 +232,51 @@
 <p>因此,爆破WPA加密的关键在于获取 Station 和 AP连接前的认证信息包,也就是 <strong>握手包</strong>.</p>
 <p>实验测试: 使用aircrack-ng 工具套件爆破WPA密码</p>
 <p>查看扩展网卡</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo airmon-ng</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">sudo airmon-ng</code></pre>
 
 <p>开启网卡监听模式</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo airmon-ng start &lt;网卡名称&gt;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">sudo airmon-ng start &lt;网卡名称&gt;</code></pre>
 
 <p>确实是否已经开启监听模式</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iwconfig</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">iwconfig</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220922121342735.png" alt="image-20220922121342735"></p>
 <blockquote>
 <p>开启监听模式后无线网卡无法继续连接 wifi，如需使用WIFI, 在使用后需要关闭监听模式即可.</p>
 </blockquote>
 <p>扫描附近的无线网络信号</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo airodump-ng &lt;网卡名称&gt;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">sudo airodump-ng &lt;网卡名称&gt;</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220922121729163.png" alt="image-20220922121729163"></p>
 <p>对上述命令显示的部分字段进行说明:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">BSSID:AP的mac地址</span><br><span class="line">PWR: 无线网络的信号,强信号约为-40。平均一个约为-55，一个弱的开始在-70左右。Wi-Fi适配器下限（又称接收灵敏度）通常约为-80/-90。</span><br><span class="line">#Data: 捕获的数据包</span><br><span class="line">ENC: 加密方式</span><br><span class="line">MB: AP支持的最大传输速率</span><br><span class="line">CH: 传输信道</span><br><span class="line">ESSID: 无线网络名称</span><br><span class="line">https://www.aircrack-ng.org/doku.php?id=airodump-ng</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">BSSID:AP的mac地址
+PWR: 无线网络的信号,强信号约为-40。平均一个约为-55，一个弱的开始在-70左右。Wi-Fi适配器下限（又称接收灵敏度）通常约为-80/-90。
+#Data: 捕获的数据包
+ENC: 加密方式
+MB: AP支持的最大传输速率
+CH: 传输信道
+ESSID: 无线网络名称
+https://www.aircrack-ng.org/doku.php?id=airodump-ng</code></pre>
 
 <p>抓取WiFi认证握手包(关键步骤)</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo airodump-ng -c channel -w write_path --bssid ap_mac &lt;网卡名称&gt;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell">sudo airodump-ng -c channel -w write_path --bssid ap_mac &lt;网卡名称&gt;</code></pre>
 
 <p>当出现 <code>WPA handshake </code>字样时,表示已经成功抓取到认证握手包.</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220922135445384.png" alt="image-20220922135445384"></p>
 <p>握手包会以 <code>.cap</code> 后缀结尾,保存在你所指定的目录,如下:</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220922135958559.png" alt="image-20220922135958559"></p>
 <p>为了快速获取握手包,我们可以使用 <code>aireplay-ng</code> 工具向 station 发送 <code>Deauthentication</code> 数据包,将在线用户进行强制下线处理:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo aireplay-ng -0 0 -a ap_mac -c station_mac &lt;网卡名称&gt;</span><br><span class="line">参数说明:</span><br><span class="line">-0 表示使用 Deauthentication 取消认证攻击,后面跟的 0 表示把发送数据包的数量, 0 表示不断发送</span><br><span class="line">-a 表示 ap 的mac 地址,我们就输入前面 airdump-ng --bssid 指定的 ap地址</span><br><span class="line">-c 表示要攻击取消认证的station, 在左边可以看到又两个 station, 这里我们选择测试机 AC:... 作为受害者,进行 deauthentication 攻击</span><br><span class="line"></span><br><span class="line">详细描述:https://www.aircrack-ng.org/doku.php?id=aireplay-ng</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">sudo aireplay-ng -0 0 -a ap_mac -c station_mac &lt;网卡名称&gt;
+参数说明:
+-0 表示使用 Deauthentication 取消认证攻击,后面跟的 0 表示把发送数据包的数量, 0 表示不断发送
+-a 表示 ap 的mac 地址,我们就输入前面 airdump-ng --bssid 指定的 ap地址
+-c 表示要攻击取消认证的station, 在左边可以看到又两个 station, 这里我们选择测试机 AC:... 作为受害者,进行 deauthentication 攻击
+
+详细描述:https://www.aircrack-ng.org/doku.php?id=aireplay-ng</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220922143240568.png" alt="image-20220922143240568"></p>
 <p>在获取到握手包后,就可以通过字典进行密码爆破操作:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo aircrack-ng -w dict_path demo.cap</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">sudo aircrack-ng -w dict_path demo.cap</code></pre>
 
 <p>如果字典中存在该SSID所对应的密码,您将会得到以下结果.</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220922140922662.png" alt="image-20220922140922662"></p>
@@ -282,7 +312,7 @@
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220925205332599.png" alt="image-20220925205332599"></p>
 <p>踩坑:</p>
 <p>我在使用<code>fluxion</code>进行测试的时候,在最后一步时出现了以下报错</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cannot find device fluxwl0v.</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">Cannot find device fluxwl0v.</code></pre>
 
 <p>我在原项目也发现了同样的 <a target="_blank" rel="noopener" href="https://github.com/FluxionNetwork/fluxion/issues/864">issue</a>.</p>
 <p>也尝试了重启, 以及使用 <code>sudo airmon-ng check kill</code> 命令,但都未能得到解决方案.</p>
@@ -329,13 +359,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -355,7 +385,10 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&title=常见WIFI攻击"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&title=常见WIFI攻击"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&title=常见WIFI攻击"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&name=常见WIFI攻击&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&name=常见WIFI攻击&description=&lt;h1 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;本篇文章主要记录有关 &lt;strong&gt;WIFI&lt;/strong&gt; 的部分概念以及其相关的攻击向量.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Notice: This passage is for educational and informational purposes only.&lt;/p&gt;
+&lt;/blockquote&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2022/09/25/2022-09-12-WiFiAttack/&t=常见WIFI攻击"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
@@ -386,13 +419,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

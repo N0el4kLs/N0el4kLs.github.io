@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  Python 类型的题目 以及对此类型题目所以需要的知识点进行总结,分类,可点击 相关题目中的链接以查看题目的具体解答过程. 这些Trick在代码审计中帮助了我很多.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python_Summary">
+<meta property="og:url" content="http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Noel&#39;s Blog">
+<meta property="og:description" content="本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  Python 类型的题目 以及对此类型题目所以需要的知识点进行总结,分类,可点击 相关题目中的链接以查看题目的具体解答过程. 这些Trick在代码审计中帮助了我很多.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://n0el4kls.github.io/images/2021-09-01-Python-Summary/image-20210901041140726.png">
+<meta property="og:image" content="http://n0el4kls.github.io/images/2021-09-01-Python-Summary/2.png">
+<meta property="og:image" content="http://n0el4kls.github.io/images/2021-09-01-Python-Summary/3.png">
+<meta property="og:image" content="http://n0el4kls.github.io/images/2021-09-01-Python-Summary/4.jpg">
+<meta property="article:published_time" content="2021-08-31T17:15:25.000Z">
+<meta property="article:modified_time" content="2022-12-22T15:54:05.985Z">
+<meta property="article:author" content="Noel">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="代码审计">
+<meta property="article:tag" content="总结">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://n0el4kls.github.io/images/2021-09-01-Python-Summary/image-20210901041140726.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Python_Summary</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/categories">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags">Tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2021/10/26/2021-10-26-flaskssti/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2021/08/15/NodejsSummary/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&text=Python_Summary"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&is_video=false&description=Python_Summary"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Python_Summary&body=Check out this article: http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&name=Python_Summary&description=&lt;p&gt;本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  &lt;code&gt;Python&lt;/code&gt; 类型的题目&lt;/p&gt;
+&lt;p&gt;以及对此类型题目所以需要的知识点进行总结,分类,可点击 &lt;code&gt;相关题目&lt;/code&gt;中的链接以查看题目的具体解答过程.&lt;/p&gt;
+&lt;p&gt;这些&lt;code&gt;Trick&lt;/code&gt;在代码审计中帮助了我很多.&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&t=Python_Summary"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-Flask-SSTI"><span class="toc-number">1.</span> <span class="toc-text">0x01 Flask SSTI</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-Bypass"><span class="toc-number">2.</span> <span class="toc-text">0x02 Bypass</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-os-path-join"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 os.path.join</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-SSRF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 SSRF</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-Pickle-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">3.</span> <span class="toc-text">0x03 Pickle 反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1"><span class="toc-number">3.1.</span> <span class="toc-text">3.1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2"><span class="toc-number">3.2.</span> <span class="toc-text">3.2</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-Pyc-%E8%80%83%E7%82%B9"><span class="toc-number">4.</span> <span class="toc-text">0x04 Pyc 考点</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Python_Summary
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Noel</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-08-31T17:15:25.000Z" itemprop="datePublished">2021-09-01</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/CTF/" rel="tag">CTF</a>, <a class="tag-link-link" href="/tags/python/" rel="tag">python</a>, <a class="tag-link-link" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">代码审计</a>, <a class="tag-link-link" href="/tags/%E6%80%BB%E7%BB%93/" rel="tag">总结</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  <code>Python</code> 类型的题目</p>
+<p>以及对此类型题目所以需要的知识点进行总结,分类,可点击 <code>相关题目</code>中的链接以查看题目的具体解答过程.</p>
+<p>这些<code>Trick</code>在代码审计中帮助了我很多.</p>
+<span id="more"></span>
+
+
+
+<h1 id="0x01-Flask-SSTI"><a href="#0x01-Flask-SSTI" class="headerlink" title="0x01 Flask SSTI"></a>0x01 Flask SSTI</h1><p>关于ssti的内容我单独写了一篇文章.</p>
+<a href="/2021/10/26/2021-10-26-flaskssti/" title="FLASK_SSTI">FLASK_SSTI</a>
+
+
+
+
+<h1 id="0x02-Bypass"><a href="#0x02-Bypass" class="headerlink" title="0x02 Bypass"></a>0x02 Bypass</h1><h2 id="2-1-os-path-join"><a href="#2-1-os-path-join" class="headerlink" title="2.1 os.path.join"></a>2.1 os.path.join</h2><p>不恰当的使用<code>os.path.join</code>可能会造成任意路经构造</p>
+<pre><code class="hljs python"><span class="hljs-comment"># 假设 传入的 path1 可控</span>
+path = os.path.join(<span class="hljs-string">&#x27;static&#x27;</span>,path1)
+
+<span class="hljs-comment"># 当构造的 path1 以 / 开头便可以实现任意路径构造</span></code></pre>
+
+<p><img src="/images/2021-09-01-Python-Summary/image-20210901041140726.png" alt="image-20210901041140726"></p>
+<p>同样，你可以思考下面这个例子</p>
+<p><img src="/images/2021-09-01-Python-Summary/2.png" alt="image-20210901041140727"></p>
+<blockquote>
+<p>Arbitrary file read due to insufficient validation of filename. The code is using the os.path.join function. An attacker can abuse this function to passing a file like this “&#x2F;etc&#x2F;passwd” absolute path.</p>
+<p>According to docs “If a component is an absolute path, all previous components are thrown away and joining continues from the absolute path component.”</p>
+<p>So, We can achieve an arbitrary file read and bypass the dot check “img&#x3D;&#x2F;etc&#x2F;passwd”</p>
+</blockquote>
+<h2 id="2-2-SSRF"><a href="#2-2-SSRF" class="headerlink" title="2.2 SSRF"></a>2.2 SSRF</h2><p>算是<code>urllib</code>里面的一个trick, 之所以归在<code>SSRF</code> 是应为通常用来做<code>SSRF</code>攻击.</p>
+<p><img src="/images/2021-09-01-Python-Summary/3.png" alt="3"></p>
+<p><img src="/images/2021-09-01-Python-Summary/4.jpg" alt="4"></p>
+<h1 id="0x03-Pickle-反序列化"><a href="#0x03-Pickle-反序列化" class="headerlink" title="0x03 Pickle 反序列化"></a>0x03 Pickle 反序列化</h1><h2 id="3-1"><a href="#3-1" class="headerlink" title="3.1"></a>3.1</h2><h2 id="3-2"><a href="#3-2" class="headerlink" title="3.2"></a>3.2</h2><h1 id="0x04-Pyc-考点"><a href="#0x04-Pyc-考点" class="headerlink" title="0x04 Pyc 考点"></a>0x04 Pyc 考点</h1><blockquote>
+<p>pyc是一种二进制文件，是由py文件经过编译后，生成的文件，是一种byte code，py文件变成pyc文件后，加载的速度有所提高，而且pyc是一种跨平台的字节码，是由Python的虚拟机来执行的，这个是类似于Java或者.NET的虚拟机的概念。pyc的内容，是跟python的版本相关的，不同版本编译后的pyc文件是不同的，2.5编译的pyc文件，2.4版本的python是无法执行的。</p>
+</blockquote>
+<p>在 <code>Python3</code> 后,只要使用了 <code>import</code> 导入了包,就会在当前目录生成<code>__pychache__</code> 目录,里面就存放了pyc文件.</p>
+<p>举例:</p>
+<pre><code class="hljs python"><span class="hljs-comment"># python3.5  app.py</span>
+<span class="hljs-keyword">import</span> secret
+
+content_key  = scret.KEY</code></pre>
+<p>那么运行 <code>python3 app.py</code> 后,会在当前目录生成 <code>__pycahche__</code>目录:</p>
+<pre><code class="hljs python">__pychache__
+	secret.cpython-<span class="hljs-number">35.</span>pyc</code></pre>
+
+
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/categories">Categories</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-Flask-SSTI"><span class="toc-number">1.</span> <span class="toc-text">0x01 Flask SSTI</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-Bypass"><span class="toc-number">2.</span> <span class="toc-text">0x02 Bypass</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-os-path-join"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 os.path.join</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-SSRF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 SSRF</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-Pickle-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">3.</span> <span class="toc-text">0x03 Pickle 反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1"><span class="toc-number">3.1.</span> <span class="toc-text">3.1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2"><span class="toc-number">3.2.</span> <span class="toc-text">3.2</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-Pyc-%E8%80%83%E7%82%B9"><span class="toc-number">4.</span> <span class="toc-text">0x04 Pyc 考点</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&text=Python_Summary"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&is_video=false&description=Python_Summary"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Python_Summary&body=Check out this article: http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&title=Python_Summary"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&name=Python_Summary&description=&lt;p&gt;本篇 Blog 的内容更像是一页目录,主要记录在做题过程中所遇到的关于  &lt;code&gt;Python&lt;/code&gt; 类型的题目&lt;/p&gt;
+&lt;p&gt;以及对此类型题目所以需要的知识点进行总结,分类,可点击 &lt;code&gt;相关题目&lt;/code&gt;中的链接以查看题目的具体解答过程.&lt;/p&gt;
+&lt;p&gt;这些&lt;code&gt;Trick&lt;/code&gt;在代码审计中帮助了我很多.&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://n0el4kls.github.io/2021/09/01/2021-09-01-Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/&t=Python_Summary"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2022
+    Noel
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/categories">Categories</a></li><!--
+     --><!--
+       --><li><a href="/tags">Tags</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

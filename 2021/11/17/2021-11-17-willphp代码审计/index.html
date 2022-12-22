@@ -69,6 +69,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -83,13 +93,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -187,10 +197,21 @@
 <span id="more"></span>
 
 <p>相关工具</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">willphp 源码版本 v2.1.5</span><br><span class="line">phpstudypro</span><br><span class="line">php7.3.4</span><br><span class="line">wind10</span><br><span class="line">vscode</span><br><span class="line">xdebug</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">willphp 源码版本 v2.1.5
+phpstudypro
+php7.3.4
+wind10
+vscode
+xdebug</code></pre>
 
 <p>这道题目对willphp中的<code>app/controller/IndexController.php</code>中的<code>index()</code>方法进行了部分添加，师傅们再下载完<code>willphp</code>后记得在<code>app/controller/IndexController.php</code>中修改部分代码：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexController</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">index</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">        <span class="title function_ invoke__">assign</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;name&#x27;</span>],<span class="variable">$_GET</span>[<span class="string">&#x27;value&#x27;</span>]);</span><br><span class="line">		<span class="keyword">return</span> <span class="title function_ invoke__">view</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IndexController</span></span>&#123;
+	<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">index</span>(<span class="hljs-params"></span>)</span>&#123;
+		<span class="hljs-title function_ invoke__">highlight_file</span>(<span class="hljs-keyword">__FILE__</span>);
+        <span class="hljs-title function_ invoke__">assign</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;name&#x27;</span>],<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;value&#x27;</span>]);
+		<span class="hljs-keyword">return</span> <span class="hljs-title function_ invoke__">view</span>();
+	&#125;
+&#125;</code></pre>
 
 
 
@@ -255,13 +276,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -315,13 +336,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

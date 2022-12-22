@@ -64,6 +64,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -78,13 +88,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -211,14 +221,14 @@
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220801172920017.png" alt="image-20220801172920017"></p>
 <h2 id="CobaltStrike-配置"><a href="#CobaltStrike-配置" class="headerlink" title="CobaltStrike 配置"></a>CobaltStrike 配置</h2><p>接下来配置<code>cobaltstrike</code></p>
 <p>将上面保存的公钥和私钥分别保存到 <code>server.pem</code>以及<code>server.key</code>的文件中,在保存文件的目录打开终端,执行以下命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo openssl pkcs12 -export -in server.pem -inkey server.key -out cfcert.p12 -name cloudflare_cert -passout pass:123456</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell">sudo openssl pkcs12 -export -in server.pem -inkey server.key -out cfcert.p12 -name cloudflare_cert -passout pass:123456</code></pre>
 
 <blockquote>
 <p>注:上诉的密码可以自行更改,但需要记住,后面还需要使用</p>
 </blockquote>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220801195631654.png" alt="image-20220801195631654"></p>
 <p>下一步使用以下命令创建<code>cfcert.store</code></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo keytool -importkeystore -deststorepass 123456 -destkeypass 123456 -destkeystore cfcert.store -srckeystore cfcert.p12 -srcstoretype PKCS12 -srcstorepass 123456 -alias cloudflare_cert</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell">sudo keytool -importkeystore -deststorepass 123456 -destkeypass 123456 -destkeystore cfcert.store -srckeystore cfcert.p12 -srcstoretype PKCS12 -srcstorepass 123456 -alias cloudflare_cert</code></pre>
 
 <blockquote>
 <p>如果在上一个命令中修改了密码, 同样在这个命令也需要将 123456 修改为对应值</p>
@@ -226,7 +236,57 @@
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220801174104694.png" alt="image-20220801174104694"></p>
 <p>下一步,创建配置文件<code>cnd.profile</code></p>
 <p>创建一个<code>cdn.profile</code>,内容为下:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">set sleeptime &quot;5000&quot;;</span><br><span class="line">https-certificate &#123;</span><br><span class="line">	set keystore &quot;cfcert.store&quot;;</span><br><span class="line">	set password &quot;123456&quot;;</span><br><span class="line">&#125;</span><br><span class="line">http-config &#123;</span><br><span class="line">	header &quot;Content-Type&quot; &quot;application&quot;;</span><br><span class="line">&#125;</span><br><span class="line">http-stager &#123;</span><br><span class="line">	set uri_x86 &quot;/api/1&quot;;</span><br><span class="line">	set uri_x64 &quot;/api/2&quot;;</span><br><span class="line">	client &#123;</span><br><span class="line">		&#125;</span><br><span class="line">	server &#123;</span><br><span class="line">		output&#123;</span><br><span class="line">		print;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">		&#125;</span><br><span class="line">http-get &#123;</span><br><span class="line">	set uri &quot;/api/3&quot;;</span><br><span class="line">	client &#123;</span><br><span class="line">		</span><br><span class="line">		metadata &#123;</span><br><span class="line">			base64;</span><br><span class="line">			header &quot;Cookie&quot;;</span><br><span class="line">		&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	server &#123;</span><br><span class="line">		output&#123;</span><br><span class="line">		print;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">		&#125;</span><br><span class="line">http-post &#123;</span><br><span class="line">	set uri &quot;/api/4&quot;;</span><br><span class="line">	client &#123;</span><br><span class="line">		</span><br><span class="line">		id &#123;</span><br><span class="line">			uri-append;</span><br><span class="line">		&#125;</span><br><span class="line">		output&#123;</span><br><span class="line">		print;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	server &#123;</span><br><span class="line">		output&#123;</span><br><span class="line">		print;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">set sleeptime &quot;5000&quot;;
+https-certificate &#123;
+	set keystore &quot;cfcert.store&quot;;
+	set password &quot;123456&quot;;
+&#125;
+http-config &#123;
+	header &quot;Content-Type&quot; &quot;application&quot;;
+&#125;
+http-stager &#123;
+	set uri_x86 &quot;/api/1&quot;;
+	set uri_x64 &quot;/api/2&quot;;
+	client &#123;
+		&#125;
+	server &#123;
+		output&#123;
+		print;
+		&#125;
+	&#125;
+		&#125;
+http-get &#123;
+	set uri &quot;/api/3&quot;;
+	client &#123;
+		
+		metadata &#123;
+			base64;
+			header &quot;Cookie&quot;;
+		&#125;
+		&#125;
+	server &#123;
+		output&#123;
+		print;
+		&#125;
+	&#125;
+		&#125;
+http-post &#123;
+	set uri &quot;/api/4&quot;;
+	client &#123;
+		
+		id &#123;
+			uri-append;
+		&#125;
+		output&#123;
+		print;
+		&#125;
+	&#125;
+	server &#123;
+		output&#123;
+		print;
+		&#125;
+	&#125;
+&#125;</code></pre>
 
 <blockquote>
 <p>第四行的密码需要和生成证书的密码相同</p>
@@ -234,17 +294,28 @@
 <p>将<code>cdn.profile</code> 和 <code>cfcert.store</code> 复制到 <code>vps</code> 的<code>teamserver</code> 目录下.</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220801174644113.png" alt="image-20220801174644113"></p>
 <p>下一步,以指定配置文件启动<code>teamserver</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./teamserver 192.168.0.123 123456 cnd.profile</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">./teamserver 192.168.0.123 123456 cnd.profile</code></pre>
 
 <p>下一步,创建监听器,</p>
 <p>在创建监听器时,在以下位置填你域名就行了</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220801180717354.png" alt="image-20220801180717354"></p>
 <p>完工!</p>
 <h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>注意 <code>http port</code> 端口只能设置成以下几个：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">80</span><br><span class="line">8080</span><br><span class="line">8880</span><br><span class="line">2052</span><br><span class="line">2082</span><br><span class="line">2086</span><br><span class="line">2095</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">80
+8080
+8880
+2052
+2082
+2086
+2095</code></pre>
 
 <p>如果是 <code>https</code> 的监听端口只能设置成以下几个：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">443</span><br><span class="line">2053</span><br><span class="line">2083</span><br><span class="line">2087</span><br><span class="line">2096</span><br><span class="line">8443</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">443
+2053
+2083
+2087
+2096
+8443</code></pre>
 
 
 
@@ -265,13 +336,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -322,13 +393,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

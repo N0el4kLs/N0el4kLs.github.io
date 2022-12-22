@@ -53,6 +53,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -67,13 +77,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -170,10 +180,22 @@
 <p><code>TT RSS</code>一款基于 PHP 的免费开源 RSS 聚合阅读器,<code>Awesome TTRSS</code>提供一个 「一站式容器化」 的 Tiny Tiny RSS 解决方案，通过提供简易的部署方式以及一些额外插件，以提升用户体验</p>
 <p>项目地址: <a target="_blank" rel="noopener" href="https://ttrss.henry.wang/zh/#%E9%80%9A%E8%BF%87-docker-compose-%E9%83%A8%E7%BD%B2">Awesome TTRSS</a></p>
 <p>这里我选择使用 <code>docker-compose</code> 的方式进行部署.<br>先用以下命令将 <code>docker-compose.yml</code> 文件拉取到本地</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/HenryQW/Awesome-TTRSS/main/docker-compose.yml</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">wget https://raw.githubusercontent.com/HenryQW/Awesome-TTRSS/main/docker-compose.yml</code></pre>
 
 <p>拉取之后,我们需要对其中的进行一部分的更改,</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">SELF_URL_PATH=http://localhost:181/ # please change to your own domain</span><br><span class="line">需要将这里的地址设置为你 vps 的地址.</span><br><span class="line"></span><br><span class="line">- DB_PASS=ttrss # use the same password defined in `database.postgres`</span><br><span class="line"></span><br><span class="line">environment:</span><br><span class="line">  - POSTGRES_PASSWORD=ttrss # feel free to change the password</span><br><span class="line">为了安全性,这两处的密码也需要进行更改, 注意 这两处的密码需要一致.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">volumes:</span><br><span class="line">      - ~/postgres/data/:/var/lib/postgresql/data # persist postgres data to ~/postgres/data/ on the host</span><br><span class="line">这里我将 `~/postgres/data/` 改成了 `./postgres/data/`, 防止目录结构混乱</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">SELF_URL_PATH=http://localhost:181/ # please change to your own domain
+需要将这里的地址设置为你 vps 的地址.
+
+- DB_PASS=ttrss # use the same password defined in `database.postgres`
+
+environment:
+  - POSTGRES_PASSWORD=ttrss # feel free to change the password
+为了安全性,这两处的密码也需要进行更改, 注意 这两处的密码需要一致.
+
+
+volumes:
+      - ~/postgres/data/:/var/lib/postgresql/data # persist postgres data to ~/postgres/data/ on the host
+这里我将 `~/postgres/data/` 改成了 `./postgres/data/`, 防止目录结构混乱</code></pre>
 
 <p>修改保存后,直接使用 <code>docker-compose up -d</code> 启动就好了. 随后访问 vps 的 <code>181</code> 端口就好了.</p>
 <p>登录的默认账户和密码为 <code>admin</code> 和 <code>password</code>.进去之后记得修改密码.</p>
@@ -206,13 +228,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -263,13 +285,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

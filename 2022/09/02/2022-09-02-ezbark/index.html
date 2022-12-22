@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="看见好玩儿的东西就想折腾折腾  前言bark 是一款 IOS 的消息推送软件.他在Github 上开源,支持 docker-compose搭建. 相较于 Wechat feishu等软件, 使用 bark 最好的理由就是能够自己搭建,保证数据的隐私安全. 作者也在博客中提到他是如何确保隐私安全. 123456789一条推送从发送到接收经过路线是：发送端 →服务端① → 苹果APNS服务器 → 你">
+    <meta name="description" content="看见好玩儿的东西就想折腾折腾  前言bark 是一款 IOS 的消息推送软件.他在Github 上开源,支持 docker-compose搭建. 相较于 Wechat feishu等软件, 使用 bark 最好的理由就是能够自己搭建,保证数据的隐私安全. 作者也在博客中提到他是如何确保隐私安全. 一条推送从发送到接收经过路线是： 发送端 →服务端① → 苹果APNS服务器 → 你的设备 → Ba">
 <meta property="og:type" content="article">
 <meta property="og:title" content="消息推送-Bark">
 <meta property="og:url" content="http://n0el4kls.github.io/2022/09/02/2022-09-02-ezbark/index.html">
 <meta property="og:site_name" content="Noel&#39;s Blog">
-<meta property="og:description" content="看见好玩儿的东西就想折腾折腾  前言bark 是一款 IOS 的消息推送软件.他在Github 上开源,支持 docker-compose搭建. 相较于 Wechat feishu等软件, 使用 bark 最好的理由就是能够自己搭建,保证数据的隐私安全. 作者也在博客中提到他是如何确保隐私安全. 123456789一条推送从发送到接收经过路线是：发送端 →服务端① → 苹果APNS服务器 → 你">
+<meta property="og:description" content="看见好玩儿的东西就想折腾折腾  前言bark 是一款 IOS 的消息推送软件.他在Github 上开源,支持 docker-compose搭建. 相较于 Wechat feishu等软件, 使用 bark 最好的理由就是能够自己搭建,保证数据的隐私安全. 作者也在博客中提到他是如何确保隐私安全. 一条推送从发送到接收经过路线是： 发送端 →服务端① → 苹果APNS服务器 → 你的设备 → Ba">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-09-02T04:38:36.000Z">
 <meta property="article:modified_time" content="2022-09-01T15:58:50.078Z">
@@ -50,6 +50,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -64,13 +74,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -164,7 +174,15 @@
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>bark</code> 是一款 <code>IOS</code> 的消息推送软件.他在<code>Github</code> 上开源,支持 <code>docker-compose</code>搭建.</p>
 <p>相较于 <code>Wechat</code> <code>feishu</code>等软件, 使用 <code>bark</code> 最好的理由就是能够自己搭建,保证数据的隐私安全.</p>
 <p>作者也在<a target="_blank" rel="noopener" href="https://day.app/2021/06/barkfaq/">博客</a>中提到他是如何确保隐私安全.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">一条推送从发送到接收经过路线是：</span><br><span class="line">发送端 →服务端① → 苹果APNS服务器 → 你的设备 → Bark客户端②。</span><br><span class="line">红色的两处地方可能泄露隐私，以下两个方法用于解决这两处的隐私泄露问题</span><br><span class="line"></span><br><span class="line">你可以使用开源的后端代码，自行搭建后端服务并开启https。</span><br><span class="line">为确保 Bark App 是安全的，Bark应用设置内可以查看到 GitHub Run Id。</span><br><span class="line">可在里面找到当前版本构建所使用的配置文件、编译时的源代码、上传到 App Store 的版本 build 号 等等信息。</span><br><span class="line">同一个版本 build 号仅能上传到 App Store 一次，所以这个号是唯一的。可用此号对比从商店下载的 Bark App，</span><br><span class="line">如果一致则证明从 App Store 下载的 App 是完全由开源代码构建。</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">一条推送从发送到接收经过路线是：
+发送端 →服务端① → 苹果APNS服务器 → 你的设备 → Bark客户端②。
+红色的两处地方可能泄露隐私，以下两个方法用于解决这两处的隐私泄露问题
+
+你可以使用开源的后端代码，自行搭建后端服务并开启https。
+为确保 Bark App 是安全的，Bark应用设置内可以查看到 GitHub Run Id。
+可在里面找到当前版本构建所使用的配置文件、编译时的源代码、上传到 App Store 的版本 build 号 等等信息。
+同一个版本 build 号仅能上传到 App Store 一次，所以这个号是唯一的。可用此号对比从商店下载的 Bark App，
+如果一致则证明从 App Store 下载的 App 是完全由开源代码构建。</code></pre>
 
 <h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><p>关于如何搭建与使用,师傅们可以查看这篇文章:<a target="_blank" rel="noopener" href="https://www.ioiox.com/archives/150.html">https://www.ioiox.com/archives/150.html</a>,由于<a target="_blank" rel="noopener" href="https://github.com/Finb/bark-server">源码搭建</a>支持<code>docker-compose</code>,所以这里就不再赘述.</p>
 <p>为了方便在日常生活中使用 <code>bark</code>. 我简单写了一个脚本,地址在 <a target="_blank" rel="noopener" href="https://github.com/N0el4kLs/ez-bark">https://github.com/N0el4kLs/ez-bark</a>.</p>
@@ -197,13 +215,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -254,13 +272,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

@@ -52,6 +52,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -66,13 +76,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -165,14 +175,16 @@
 </blockquote>
 <h1 id="0x00-正文"><a href="#0x00-正文" class="headerlink" title="0x00 正文"></a>0x00 正文</h1><h2 id="0x01-测试账号"><a href="#0x01-测试账号" class="headerlink" title="0x01 测试账号"></a>0x01 测试账号</h2><p>在最近的几次系统测试中,发现了测试账号 <code>123456</code>, 虽然密码未知,但还是通过了<a href="#0x02-%E4%BB%BB%E6%84%8F%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81%E6%89%BE%E5%9B%9E">任意用户密码找回</a>,重置了账户<br>密码,并且此用户还是管理权限,虽然最后没有 <code>Getshell</code>,但还是发现了很严重的数据信息泄露漏洞.</p>
 <p>这里也顺便做一个测试账号的收集字典,估摸着以后能够起到帮助:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">123456</span><br><span class="line">100000</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">123456
+100000</code></pre>
 
 <h2 id="0x02-任意用户密码找回"><a href="#0x02-任意用户密码找回" class="headerlink" title="0x02 任意用户密码找回"></a>0x02 任意用户密码找回</h2><p>这个漏洞思路算是比较简单了,利用 <code>Burp Suite</code> 抓取请求包,并拦截请求的响应,通过修改响应数据包从而绕过判断.</p>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C23592ec7c12ec04861c3f1a911f0ae3c.png" alt="20220511021921"></p>
 <p>更改 返回的相应包 中的 2 为 1,成功绕过了电话号码的检测,</p>
 <p>同样,修改响应信息,成功绕过了电话验证码检测</p>
 <p>同样这里也对修改成功后的状态码进行一个记录:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">一般如果错误响应码为 2,-1...等一位数的的时候,可以尝试修改其为 0;</span><br><span class="line">如果错误响应码为 100,300...等三位数的时候,可以修改其为 200</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">一般如果错误响应码为 2,-1...等一位数的的时候,可以尝试修改其为 0;
+如果错误响应码为 100,300...等三位数的时候,可以修改其为 200</code></pre>
   </div>
 </article>
 
@@ -187,13 +199,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -244,13 +256,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

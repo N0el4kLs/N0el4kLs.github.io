@@ -53,6 +53,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -67,13 +77,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -198,27 +208,49 @@
 <p><strong>.htaccess</strong></p>
 <p><code>.htaccess</code> 是 <code>Apache</code>的又一特色。一般来说，配置文件的作用范围都是全局的，但 <code>Apache</code> 提供了一种很方便的、可作用于当前目录及其子目录的配置文件——<code>.htaccess（分布式配置文件）。</code></p>
 <p>要想使.htaccess文件生效，需要两个条件，一是在Apache的配置文件中写上：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AllowOverride All</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">AllowOverride All</code></pre>
 <p>二是Apache要加载mod_Rewrite模块。加载该模块，需要在Apache的配置文件中写上：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LoadModule rewrite_module /usr/lib/apache2/modules/mod_rewrite.so</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">LoadModule rewrite_module /usr/lib/apache2/modules/mod_rewrite.so</code></pre>
 
 <p><code>.htaccess</code>文件可以配置很多事情，如是否开启站点的图片缓存、自定义错误页面、自定义默认文档、设置WWW域名重定向、设置网页重定向、设置图片防盗链和访问权限控制。<br>但我们这里只关心 <code>.htaccess</code>文件的一个作用——MIME类型修改。如在 <code>.htaccess</code> 文件中写入：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AddType application/x-httpd-php xxx</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">AddType application/x-httpd-php xxx</code></pre>
 
 <p>就成功地使该<code>.htaccess</code>文件所在目录及其子目录中的后缀为.xxx的文件被Apache当做php文件。另一种写法是：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;FilesMatch &quot;shell.jpg&quot;&gt;</span><br><span class="line">  SetHandler application/x-httpd-php</span><br><span class="line">&lt;/FilesMatch&gt;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">&lt;FilesMatch &quot;shell.jpg&quot;&gt;
+  SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;</code></pre>
 
 
 <h3 id="0x04-3-Nginx-解析漏洞"><a href="#0x04-3-Nginx-解析漏洞" class="headerlink" title="0x04-3 Nginx 解析漏洞"></a>0x04-3 Nginx 解析漏洞</h3><p>该漏洞与<code>nginx</code>、<code>php</code>版本无关,属于用户配置不当造成的解析漏洞</p>
 <p>原理: 由于<code>nginx.conf</code>的如下配置导致<code>nginx</code>把以<code>.php</code>结尾的文件交给<code>fastcgi</code>处理,为此可以构造<code>http://ip/uploadfiles/test.png/.php</code> (url结尾不一定是<code>.php</code>,任何服务器端不存在的php文件均可,比如<code>a.php</code>),其中<code>test.png</code>是我们上传的包含PHP代码的照片文件。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">配置</span><br><span class="line">server &#123;</span><br><span class="line">     listen       80;</span><br><span class="line">     server_name  test.local;</span><br><span class="line"></span><br><span class="line">     access_log  /work/www/logs/test.access.log  main;</span><br><span class="line">     error_log  /work/www/logs/test.error.log;</span><br><span class="line"></span><br><span class="line">     location / &#123;</span><br><span class="line">         root   /work/www/test;</span><br><span class="line">         index  index.html index.htm index.php;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     location ~ \.php$ &#123;</span><br><span class="line">         root           /work/www/test;</span><br><span class="line">         fastcgi_index  index.php;</span><br><span class="line">         fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;</span><br><span class="line">         include        fastcgi_params;</span><br><span class="line">         fastcgi_pass   unix:/tmp/php-fpm.sock;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">配置
+server &#123;
+     listen       80;
+     server_name  test.local;
+
+     access_log  /work/www/logs/test.access.log  main;
+     error_log  /work/www/logs/test.error.log;
+
+     location / &#123;
+         root   /work/www/test;
+         index  index.html index.htm index.php;
+     &#125;
+
+     location ~ \.php$ &#123;
+         root           /work/www/test;
+         fastcgi_index  index.php;
+         fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;
+         include        fastcgi_params;
+         fastcgi_pass   unix:/tmp/php-fpm.sock;
+     &#125;
+&#125;</code></pre>
 
 <p>但是，在<code>php-fpm.conf</code>配置文件中的<code>security.limit_extensions</code>配置项限制了<code>fastcgi</code>要解析的文件类型（如果该选项未开启，默认只解析<code>.php</code>）</p>
 <p><code>cgi.fix_pathinfo</code></p>
 <p>该选项位于配置文件<code>php.ini</code>中，默认值为<code>1</code>，表示开启。当<code>php</code>遇到文件路径<code>/test.png/x.php</code>时，若<code>/test.png/x.php</code>不存在，则会去掉最后的<code>/x.php</code>，然后判断<code>/test.png</code>是否存在，若存在，则把<code>/test.png</code>当做文件&#x2F;<code>test.png/x.php</code>解析，如若<code>test.png</code>还不存在如果在其前面还有后缀，继续前面的步骤，以此类推。若是关闭该选项，访问<code>/test.jpg/x.php</code> 只会返回找不到文件。</p>
 <p><code>security.limit_extensions</code></p>
 <p>在我的配置文件中，它位于<code>/etc/php-fpm.d/www.conf</code>中<br>这个选项开始是被注释了的也就是默认只允许执行php文件，可以在后面添加其它后缀，比如</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">security.limit_extensions .jpg .php</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">security.limit_extensions .jpg .php</code></pre>
 <p>像这样添加 <code>.jpg</code>之后，<code>.jpg</code>文件也能以<code>php</code>格式来执行<br>修改了后需要 <code>service php-fpm restart</code>重启php</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/265245.html">https://www.freebuf.com/articles/web/265245.html</a></p>
 
@@ -236,13 +268,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -293,13 +325,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

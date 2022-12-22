@@ -50,6 +50,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -64,13 +74,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -203,27 +213,37 @@
 <p>也可以使用 <code>sc queryex eventlog</code>.</p>
 <p>之后使用 <code> taskkill /f /pid 进程id</code> 强制删除日志服务进程.</p>
 <p><strong>清理日志内容</strong></p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// powershell</span><br><span class="line"><span class="built_in">Clear-Eventlog</span> <span class="literal">-LogName</span> Security</span><br><span class="line"><span class="built_in">Clear-Eventlog</span> <span class="literal">-LogName</span> System</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs powershell">// powershell
+<span class="hljs-built_in">Clear-Eventlog</span> <span class="hljs-literal">-LogName</span> Security
+<span class="hljs-built_in">Clear-Eventlog</span> <span class="hljs-literal">-LogName</span> System</code></pre>
 
 
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// cmd</span><br><span class="line">// 删除应用日志</span><br><span class="line">cmd /c wevtutil cl application</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">// cmd
+// 删除应用日志
+cmd /c wevtutil cl application</code></pre>
 
 
 
 <p><strong>删除近期访问过的文件和网页记录</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">del /f /s /q %userprofile%\Recent *.*</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">del /f /s /q %userprofile%\Recent *.*</code></pre>
 
 
 
 <p><strong>删除  RDP 日志</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 删除 RDP 日志记录</span><br><span class="line">reg delete &quot;HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Default&quot; /va /f</span><br><span class="line">reg delete &quot;HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers&quot; /f</span><br><span class="line">reg add &quot;HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers&quot;</span><br><span class="line">cd %userprofile%\documents\</span><br><span class="line">attrib Default.rdp -s -h</span><br><span class="line">del Default.rdp</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext"># 删除 RDP 日志记录
+reg delete &quot;HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Default&quot; /va /f
+reg delete &quot;HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers&quot; /f
+reg add &quot;HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Servers&quot;
+cd %userprofile%\documents\
+attrib Default.rdp -s -h
+del Default.rdp</code></pre>
 
 
 
 <h2 id="数据覆盖"><a href="#数据覆盖" class="headerlink" title="数据覆盖"></a>数据覆盖</h2><p>删除文件后，通过<code>Windows</code> 自带的命令工具 <code>cipher</code>,对删除文件的数据空间进行数据覆盖,实现真正的文件删除操作.</p>
 <p>假设删除了 <code>d:\tool</code>下的文件,我们可以执行以下命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cipher /w:d:\tool</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">cipher /w:d:\tool</code></pre>
 
 <p>这样就实现了真正的删除.</p>
 <h2 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h2><p>除了上文提到了<a target="_blank" rel="noopener" href="https://github.com/lintstar/LSTAR">LSTAR</a>，这里推荐一个自己使用的 <code> 日志清理插件</code>:<a target="_blank" rel="noopener" href="https://github.com/QAX-A-Team/EventLogMaster">EventLogMaster</a></p>
@@ -244,13 +264,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -301,13 +321,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>

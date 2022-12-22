@@ -63,6 +63,16 @@
     
 	<!-- mathjax -->
 	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -77,13 +87,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </span>
@@ -184,7 +194,13 @@
 
 <h1 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h1><p>西湖论剑的题目,比赛时没做出来,赛后又花了点时间还是没做出来.最后看了wp,又去复现了下审计过程,学习到很多知识点.</p>
 <p>相关工具:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">信呼oa v2.3.1题目源码</span><br><span class="line">seay源代码审计系统</span><br><span class="line">phpstudypro</span><br><span class="line">php7.3.4</span><br><span class="line">wind10</span><br><span class="line">vscode</span><br><span class="line">xdebug</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">信呼oa v2.3.1题目源码
+seay源代码审计系统
+phpstudypro
+php7.3.4
+wind10
+vscode
+xdebug</code></pre>
 
 
 
@@ -195,25 +211,25 @@
 <p>在本文件的<code>第71和72行</code>发现了变量定义和赋值的操作.</p>
 <p><strong>先对<code>第71行</code>的代码进行分析:</strong></p>
 <p>由图 2 可以清楚的看到变量<code>$mpathname</code>由其他两个变量<code>$tplpaths</code>和<code>$tplname</code>决定.回溯这两个变量,分别在本文件的<code>第67行</code>和<code>第70</code>行发现最近赋值操作:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$tplpaths</span> = <span class="string">&#x27;&#x27;</span>.<span class="variable">$temppath</span>.<span class="string">&#x27;&#x27;</span>.<span class="variable">$d</span>.<span class="string">&#x27;&#x27;</span>.<span class="variable">$m</span>.<span class="string">&#x27;/&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$tplpaths</span> = <span class="hljs-string">&#x27;&#x27;</span>.<span class="hljs-variable">$temppath</span>.<span class="hljs-string">&#x27;&#x27;</span>.<span class="hljs-variable">$d</span>.<span class="hljs-string">&#x27;&#x27;</span>.<span class="hljs-variable">$m</span>.<span class="hljs-string">&#x27;/&#x27;</span>;</code></pre>
 
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$tplname</span> .= <span class="string">&#x27;.&#x27;</span>.<span class="variable">$xhrock</span>-&gt;tpldom.<span class="string">&#x27;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$tplname</span> .= <span class="hljs-string">&#x27;.&#x27;</span>.<span class="hljs-variable">$xhrock</span>-&gt;tpldom.<span class="hljs-string">&#x27;&#x27;</span>;</code></pre>
 
 <p>回溯<code>$temppath</code>,在<code>66行</code>找到最近赋值操作</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$temppath</span> = <span class="string">&#x27;&#x27;</span>.ROOT_PATH.<span class="string">&#x27;/&#x27;</span>.<span class="variable">$p</span>.<span class="string">&#x27;/&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$temppath</span> = <span class="hljs-string">&#x27;&#x27;</span>.ROOT_PATH.<span class="hljs-string">&#x27;/&#x27;</span>.<span class="hljs-variable">$p</span>.<span class="hljs-string">&#x27;/&#x27;</span>;</code></pre>
 
 <p>回溯<code>$p</code>,在本文件的<code>第4行</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$p = PROJECT;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">$p = PROJECT;</code></pre>
 
 <p>到这里大概可以感觉到<code>$tplpaths</code>的路径是写死了的,所以就暂时放弃变量<code>$tplpaths</code>去回溯<code>$tplname</code>.</p>
 <p>回溯<code>$xhrock</code>,在本文件的<code>第37行</code>发现<code>$xhrock</code>的定义:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$xhrock</span> = <span class="keyword">new</span> <span class="variable">$clsname</span>();</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$xhrock</span> = <span class="hljs-keyword">new</span> <span class="hljs-variable">$clsname</span>();</code></pre>
 
 <p>回溯<code>$clsname</code>,在本文件<code>第36行</code>发现定义</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$clsname</span> = <span class="string">&#x27;&#x27;</span>.<span class="variable">$m</span>.<span class="string">&#x27;ClassAction&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$clsname</span> = <span class="hljs-string">&#x27;&#x27;</span>.<span class="hljs-variable">$m</span>.<span class="hljs-string">&#x27;ClassAction&#x27;</span>;</code></pre>
 
 <p>回溯<code>$m</code>,在<code>第8行</code>发现最近一次赋值操作:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$m</span> = <span class="variable">$rock</span>-&gt;<span class="title function_ invoke__">get</span>(<span class="string">&#x27;m&#x27;</span>, <span class="variable">$m</span>);</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$m</span> = <span class="hljs-variable">$rock</span>-&gt;<span class="hljs-title function_ invoke__">get</span>(<span class="hljs-string">&#x27;m&#x27;</span>, <span class="hljs-variable">$m</span>);</code></pre>
 
 <p>跟进<code>get()</code>这个函数,最后发现其核心调用在<code>include/class/rockClass.php</code>的<code>第105</code>行,</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211124013648041.png" alt="image-20211124013648041"></p>
@@ -230,7 +246,7 @@
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211124015247019.png" alt="image-20211124015247019"></p>
 <p>可以看到这个文件中的<code>$displayfile</code>是以<code>.php</code>为后缀的变量,而变量<code>$displayfile</code>最后可以决定我们文件包含<code>$mpathname</code>的取值,也就是说这里可能存在一个<code>.php</code>的文件包含.</p>
 <p>继续回溯<code>$surl</code>,发现其最近赋值在本文件的<code>第250行</code></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$surl</span> = <span class="variable language_">$this</span>-&gt;jm-&gt;<span class="title function_ invoke__">base64decode</span>(<span class="variable">$this</span>-&gt;<span class="title function_ invoke__">get</span>(<span class="string">&#x27;surl&#x27;</span>));</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$surl</span> = <span class="hljs-variable language_">$this</span>-&gt;jm-&gt;<span class="hljs-title function_ invoke__">base64decode</span>(<span class="hljs-variable">$this</span>-&gt;<span class="hljs-title function_ invoke__">get</span>(<span class="hljs-string">&#x27;surl&#x27;</span>));</code></pre>
 
 <p>跟进<code>get()</code>,最后同样来到<code>include/class/rockClass.php</code>的<code>第105</code>行,和<code>$m</code>赋值时调用的函数一样,也就意味着这里传入<code>base64decode()</code>函数的内容可控.</p>
 <p>再来分析分析外面的<code>base64decode()</code>函数,其函数体位于<code>include/chajian/jmChajian.php</code>的<code>第93行</code></p>
@@ -239,7 +255,7 @@
 <p>这里就存在一个很明显的逻辑错误：很明显base64加密后的字符是不存在<code>! . :</code>,所以对恶意内容进行<code>base64</code>编码后传入最后是可以被还原的.也就是说这里的<code>$surl</code>是可以被控制的.</p>
 <p>回到<code>include/View.php</code>的<code>第72行</code>,看看是否存在一个利用点使之能得到 <code>/webmain/index/indexAction.php</code>下的<code>indexClassAction-&gt;displayfile</code>.这里需要跟踪的变量是<code>$xhrock</code>,而前面以及分析过了<code>$xhrock</code>的构造流程也得出结论<code>$xhrock</code>部分可控.</p>
 <p>这里<code>$xhrock</code>可控还存在一个前提是存在文件<code>$actfile</code>,跟踪<code>$actfile</code>,其定义在此文件下的<code>第30行</code>:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$actfile</span> = <span class="variable">$rock</span>-&gt;<span class="title function_ invoke__">strformat</span>(<span class="string">&#x27;?0/?1Action.php&#x27;</span>,<span class="variable">$actpath</span>, <span class="variable">$m</span>);</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$actfile</span> = <span class="hljs-variable">$rock</span>-&gt;<span class="hljs-title function_ invoke__">strformat</span>(<span class="hljs-string">&#x27;?0/?1Action.php&#x27;</span>,<span class="hljs-variable">$actpath</span>, <span class="hljs-variable">$m</span>);</code></pre>
 
 <p>跟进<code>strformat()</code>方法,来到<code>include/class/rockClass.php</code>下的<code>第551行</code>:</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211124121116899.png" alt="image-20211124121116899"></p>
@@ -247,23 +263,23 @@
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211124121404209.png" alt="image-20211124121404209"></p>
 <p>通过阅读<code>strformat()</code>以及<code>stingformat()</code>的代码可以了解到<code>strformat</code>函数的逻辑为找到<code>$m</code>操作对应的php文件.而可控变量<code>$displayfile</code>位于<code>/webmain/index/indexAction.php</code>中,这里可以构造<code>$m</code>的值为<code>index</code>.在回过来看看变量<code>$xhrock</code>就已经等于<code>new indexClassAction</code>了.一切都是这么流畅!</p>
 <p>在<code>第42行</code>,发现一个调用成员方法:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$actbstr</span> = <span class="variable">$xhrock</span>-&gt;<span class="variable">$actname</span>();</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$actbstr</span> = <span class="hljs-variable">$xhrock</span>-&gt;<span class="hljs-variable">$actname</span>();</code></pre>
 
 <p>跟踪<code>$actname</code>,发现其定义在<code>38行</code>:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$actname</span> = <span class="string">&#x27;&#x27;</span>.<span class="variable">$a</span>.<span class="string">&#x27;Action&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$actname</span> = <span class="hljs-string">&#x27;&#x27;</span>.<span class="hljs-variable">$a</span>.<span class="hljs-string">&#x27;Action&#x27;</span>;</code></pre>
 
 <p>跟踪<code>$a</code>,</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = <span class="variable">$rock</span>-&gt;<span class="title function_ invoke__">get</span>(<span class="string">&#x27;a&#x27;</span>, <span class="variable">$a</span>);</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-variable">$a</span> = <span class="hljs-variable">$rock</span>-&gt;<span class="hljs-title function_ invoke__">get</span>(<span class="hljs-string">&#x27;a&#x27;</span>, <span class="hljs-variable">$a</span>);</code></pre>
 
 <p>可以看到<code>$a</code>赋值所使用的方法同变量<code>$m</code>相同,也就意味着<code>$a</code>也可控,那我们可以直接给控制<code>$a</code>为<code>getshtml</code>.从而实现调用<code>webmain/index/indexAction.php</code>中<code>indexClassAction</code>的<code>getshtmlAction()</code>函数,在配合<code>$surl</code>可控,就可以实现任意.php文件读取.</p>
 <h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>现存在文件<code>phpinfo.php</code>,内容为:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="title function_ invoke__">phpinfo</span>();</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-title function_ invoke__">phpinfo</span>();</code></pre>
 
 <p>与<code>include/View.php</code>之间的目录关系为</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">view.php/../../phpinfo.php</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">view.php/../../phpinfo.php</code></pre>
 
 <p>先登录进信呼协同办公系统后台,再构造url参数,访问</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?m=index&amp;a=getshtml&amp;surl=Li4vLi4vcGhwaW5mbw==</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">?m=index&amp;a=getshtml&amp;surl=Li4vLi4vcGhwaW5mbw==</code></pre>
 
 <p>其中,<code>Li4vLi4vcGhwaW5mbw==</code>为<code>../../phpifo</code>base64编码后的结果.</p>
 <p><img src="https://particles.oss-cn-beijing.aliyuncs.com/img/image-20211124124142906.png" alt="image-20211124124142906"></p>
@@ -286,13 +302,13 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articles</a></li>
          
-          <li><a href="/categories/">categories</a></li>
+          <li><a href="/categories">Categories</a></li>
          
-          <li><a href="/tags/">tags</a></li>
+          <li><a href="/tags">Tags</a></li>
          
-          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li>
+          <li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li>
         
       </ul>
     </div>
@@ -347,13 +363,13 @@
         <!--
        --><li><a href="/">Home</a></li><!--
      --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
+       --><li><a href="/archives/">Articles</a></li><!--
      --><!--
-       --><li><a href="/categories/">categories</a></li><!--
+       --><li><a href="/categories">Categories</a></li><!--
      --><!--
-       --><li><a href="/tags/">tags</a></li><!--
+       --><li><a href="/tags">Tags</a></li><!--
      --><!--
-       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projectes</a></li><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/N0el4kLs">Projects</a></li><!--
      -->
       </ul>
     </nav>
