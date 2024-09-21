@@ -9,8 +9,11 @@ tags:
  - Codeql
  - 网络安全
 description: 
-  最近在学习 Codeql python, 用来自动化挖一些漏洞，但是查资料的时候发现中文版要么是Java居多，要么就是存官方的英文版翻译，有帮助，但真不多。于是将自己的学习过程整理一下分享给大家。
+  最近在学习 Codeql python, 用来自动化挖一些漏洞，但是查资料的时候发现中文版要么是Java居多，要么就是存官方的英文版翻译，有帮助，但真不多。于是将自己的学习过程整理一下分享给大家。文章首发于[先知社区](https://xz.aliyun.com/t/15512)
 ---
+
+文章首发于[先知社区](https://xz.aliyun.com/t/15512)
+微信公众号[地址](https://mp.weixin.qq.com/s/qFdviHKe2glj3Wed-_hwng)
 
 最近在学习 `Python`的 `Codeql`, 打算用来辅助得进行一些漏洞自动化挖掘。但是学习的过程非常痛苦，主要有以下两点原因：
 
@@ -359,3 +362,9 @@ select f, "Path is:" + f.getLocation().getFile().getRelativePath()
 [Formulas --- CodeQL](https://codeql.github.com/docs/ql-language-reference/formulas/)
 
 [CodeQL zero to hero part 1: The fundamentals of static analysis for vulnerability research - The GitHub Blog](https://github.blog/developer-skills/github/codeql-zero-to-hero-part-1-the-fundamentals-of-static-analysis-for-vulnerability-research/)
+
+如果觉得文章写得不错,可以前往我们的公众号，或许那会有更多你感兴趣的内容!🫴
+
+<div>
+  <img src="/assets/wechat.jpg" class="sm:w-1/2 mx-auto" alt="coding dev illustration">
+</div>
