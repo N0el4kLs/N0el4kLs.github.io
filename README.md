@@ -4,7 +4,8 @@
 
 Here is the places where I share my learnings and thoughts. Hope you enjoy it! 
 
-
+* [第 18 期 - 近期思考](https://N0el4kLs.github.io/posts/18-%E8%BF%91%E6%9C%9F%E6%80%9D%E8%80%83)
+* [第 17 期 - "Set Boundaries,Find Peace:A Guide to Reclaiming Yourself"读后感](https://N0el4kLs.github.io/posts/17-set-boundariesfind-peacea-guide-to-reclaiming-yourself%E8%AF%BB%E5%90%8E%E6%84%9F)
 * [第 16 期 - 初探CodeQL之Python篇](https://N0el4kLs.github.io/posts/16-%E5%88%9D%E6%8E%A2codeql%E4%B9%8Bpython%E7%AF%87-%E4%BD%BF%E7%94%A8ast%E4%B8%80)
 * [第 15 期 - PHPFilterChainStudy](https://N0el4kLs.github.io/posts/15-phpfilterchainstudy)
 * [第 14 期 - JSHunter](https://N0el4kLs.github.io/posts/14-jshunter-%E4%B8%80%E6%AC%BE%E9%92%88%E5%AF%B9%E4%BA%8E%E5%89%8D%E7%AB%AF%E7%9A%84%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7)
