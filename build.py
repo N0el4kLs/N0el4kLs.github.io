@@ -20,11 +20,17 @@ if __name__ == "__main__":
             filenames = sorted(filenames, key=lambda x: float(re.findall(r"(\d+)-", x)[0]), reverse=True)
 
         for index, name in enumerate(filenames):
+            need_removed_remarks = ['(', ')', '"', ',', ':']
             
             if name.endswith('.md'):
                 file_path = urllib.parse.quote(name)
                 old_title = name.split('.md')[0]
-                url = f'https://N0el4kLs.github.io/posts/{urllib.parse.quote(old_title.lower().replace("(","").replace(")",""))}'
+                fixed_title_url = old_title.lower()
+                for remark in need_removed_remarks:
+                    fixed_title_url = fixed_title_url.replace(remark,"")
+                fixed_title_url = fixed_title_url.replace(" ","-")
+                
+                url = f'https://N0el4kLs.github.io/posts/{urllib.parse.quote(fixed_title_url)}'
                 title = f'第 {old_title.split("-")[0]} 期 - {old_title.split("-")[1]}'
                 readme_md = f'* [{title}]({url})\n'
                 num = int(old_title.split('-')[0])
