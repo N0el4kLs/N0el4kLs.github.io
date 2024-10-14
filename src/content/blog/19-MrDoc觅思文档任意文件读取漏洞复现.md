@@ -25,7 +25,7 @@ commit提交记录是2月一号，但是最近一次 release版本时 2个月前
 
 [https://gitee.com/zmister/MrDoc/commit/b634cf84eedb669fc1f11ce87558b0b045301af1](https://gitee.com/zmister/MrDoc/commit/b634cf84eedb669fc1f11ce87558b0b045301af1)
 
-![Untitled](../../assets/images/19/Untitled.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232147588-7e297.png)
 
 ## 漏洞分析:
 
@@ -40,7 +40,7 @@ git checkout d1ce
 
 定位一下漏洞位置 `app_doc/report_utils.py#152`：
 
-![Untitled](../../assets/images/19/Untitled%201.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221122-f6c9a.png)
 
 这段代码就是从markdown文件中去查找静态资源,然后对查找到的每个静态资源进行路径处理，最后移动到一个文件中进行下载。
 
@@ -52,7 +52,7 @@ git checkout d1ce
 
 格式的字符串, 当然如果你对正则不熟悉，直接去问AI也行：
 
-![Untitled](../../assets/images/19/Untitled%202.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-de5af.png)
 
 接着会从匹配到的每个字符串中取出括号() 中的内容, 并进行资源目录查找，其中主要球了这个资源地址是以 `/media` 开头就行, 到这里基本上都能猜到payload的形式了, 无非就是  `/media/../../../xxx` ,
 
@@ -91,21 +91,21 @@ for media in media_list:
         print("new_file_path is", new_file_path)
 ```
 
-![Untitled](../../assets/images/19/Untitled%203.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-5e85b.png)
 
 可以看到解析的路径是可以存在 `../` 路径穿越的，随后就使用 `shutil.copy` 对这个资源进行的复制操作.
 
-![Untitled](../../assets/images/19/Untitled%204.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-87673.png)
 
 ## 漏洞复现：
 
 接下来我们去找漏洞出发点,调用栈如下：
 
-![Untitled](../../assets/images/19/Untitled%205.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-2feca.png)
 
 最后找到是在这个地方，根据注释 `导出文集MD文件` ,去官网找一下这个功能：
 
-![Untitled](../../assets/images/19/Untitled%206.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-c18b3.png)
 
 搜索结果如下：[https://doc.mrdoc.pro/doc/45554/](https://doc.mrdoc.pro/doc/45554/)
 
@@ -113,15 +113,15 @@ for media in media_list:
 
 先注册账号编辑一便文章，资源路径为 `![example_image](/media/../requirements.txt)`,然后保存到文集下面，这里我的文集是test2:
 
-![Untitled](../../assets/images/19/Untitled%207.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-b4264.png)
 
 然后来到 `我的文集----文集管理----选择文集----批量导出`
 
-![Untitled](../../assets/images/19/Untitled%208.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-94ad2.png)
 
 然后下载压缩包，解压就能发现里面有requirements.txt
 
-![Untitled](../../assets/images/19/Untitled%209.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-bdf1f.png)
 
 除此之外 img标签也是可以的
 `<img src="/media/../../../etc/passwd"/>`
@@ -134,23 +134,23 @@ for media in media_list:
 
 跳过环境搭建，先来黑盒测试一下功能，我先上传了一张照片，按照同样的逻辑加入了一个带有穿越路径的资源，如下，接着导出：
 
-![Untitled](../../assets/images/19/Untitled%2010.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-86514.png)
 
-![Untitled](../../assets/images/19/Untitled%2011.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-1f60c.png)
 
 结果并没有出现类似的问题，我们再去看看相关的处理代码逻辑`app/controllers/page.go:367` ,发现打包的图片附件地址是从数据库检索的，然后使用了 `filepath.Join` 来拼接，那如果我们`attachment[”path”]` 是存在 `../` 这种穿越字符，那就能够造成目录穿越.因此接下来去查看下上传图片这个逻辑。
 
-![Untitled](../../assets/images/19/Untitled%2012.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-fb2f0.png)
 
 图片上传的代码位于 `app/controllers/image.go:23` 
 
-![Untitled](../../assets/images/19/Untitled%2013.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-7872c.png)
 
-![Untitled](../../assets/images/19/Untitled%2014.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-c5d54.png)
 
 可以看到, 在上传处使用了 `path.Join` 直接将上传的文件名进行了，因此在此处是存在目录穿越的，但是由于在保存文件之前进行了文件是否存在校验，所以及时存在目录穿越漏洞，也无法进行文件覆盖，从而也不能将数据插入到数据库中
 
-![Untitled](../../assets/images/19/Untitled%2015.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-d0dea.png)
 
 所以最后该项目不存在类似的漏洞.
 
@@ -192,16 +192,16 @@ typora:
 
 以一个在线网站网站为例，尝试最简单的payload都没啥反应
 
-![Untitled](../../assets/images/19/Untitled%2016.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-fc2d8.png)
 
 换了个 `embed`  `iframe` 一下就出了，当然这个反射性没啥用，只是给各位平时做漏洞挖掘起到一点启发。
 
-![Untitled](../../assets/images/19/Untitled%2017.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-2b114.png)
 
-![Untitled](../../assets/images/19/Untitled%2018.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-4fa16.png)
 
 当然mm-wiki上也是存在xss的,
 
-![Untitled](../../assets/images/19/Untitled%2019.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-7dbe6.png)
 
-![Untitled](../../assets/images/19/Untitled%2020.png)
+![Untitled](https://particles.oss-cn-beijing.aliyuncs.com/blog_img/20241014232221123-4e656.png)
