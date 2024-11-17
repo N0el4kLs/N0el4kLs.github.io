@@ -3,7 +3,7 @@ author: Noel
 pubDatetime: 2024-8-10T23:42:31.000+08:00
 modDatetime: 2024-8-10T23:42:31.000+08:00
 title: PHP Filter chain Study
-featured: true
+featured: false
 draft: false
 tags:
   - PHP
@@ -48,7 +48,7 @@ include($filter_chain);
 https://www.php.net/manual/en/wrappers.php.php
 
 1. convert.iconv…
-    
+   
     ```php
     convert.iconv.UTF8.CSISO2022KR
     ```

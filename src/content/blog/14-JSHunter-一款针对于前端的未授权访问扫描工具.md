@@ -7,7 +7,7 @@ featured: true
 draft: false
 tags:
   - 网络安全
-  - Coding
+  - 安全工具开发
   - Golang
 description: 
    从JSHunter探究 AI辅助挖掘+前端未授权扫描... 文章首发于公众号https://mp.weixin.qq.com/s/heHRbbemwVAMcEYX2NhQuQ

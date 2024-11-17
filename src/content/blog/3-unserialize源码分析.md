@@ -12,7 +12,6 @@ description:
    本文尝试通过调试 unserialize 源码来理解PHP FAST GC的原理...
 ---
 
-
 # PHP GC
 
 全称`Garbage Collection`, 垃圾回收. 我们都知道 `PHP` 的底层是使用`C`语言实现的. 在C语言中的内存申请与释放都需要编程者手动的实现. 如果未将没有使用的空间释放`free()`掉, 就会出现内存泄露的问题.
@@ -45,8 +44,6 @@ typedef struct _zend_refcounted_h {
 
 可以前往这边文章快速了解引用计数的工作方式: [浅析PHP GC垃圾回收机制及常见利用方式](https://xz.aliyun.com/t/11843#toc-0)
 
-
-
 # Fast Destruct 分析
 
 上一篇对`Fast Destruct ` 进行学习后,得到了一个猜想:
@@ -66,10 +63,8 @@ typedef struct _zend_refcounted_h {
 去百度了一下,这个函数的大致功能为:
 
 > `zval_ptr_dtor`首先会将它的`refcount`减一，如果减一后`refcount`为0了，便会再调用`zval_dtor`把`tmp->value`给释放掉，然后再调用`efree_rel()`函数把自己`tmp`所指的`zval类型结构体`所占的内存空间给释放掉。
->
+> 
 > 如果减一后不为0,那`zval_ptr_dtor`便不会释放`tmp->value`和`tmp`1本身，而是通知一下GC垃圾回收器，然后返回.
-
-
 
 对比了正常反序列化代码和错误反序列化代码在此处的相关变量 ，发现正常反序列化字符串：
 
@@ -88,8 +83,6 @@ typedef struct _zend_refcounted_h {
 ![image-20221127122601202](https://particles.oss-cn-beijing.aliyuncs.com/img/image-20221127122601202.png)
 
 ![image-20221127122456305](https://particles.oss-cn-beijing.aliyuncs.com/img/image-20221127122456305.png)
-
-
 
 继续向上跟踪,在 `ext\standard\var.c` 的`第1110行` 发现正常序列化字符串与错误序列化字符串会出现此处的判断语句中进入不同逻辑语句:
 
@@ -113,8 +106,6 @@ typedef struct _zend_refcounted_h {
 
 > 如果序列化正确,  refcount=2,  序列化错误, refcount=1
 
-
-
 那么接下里就去分析序列化是怎样发生错误的.
 
 # Unserialize 语法分析
@@ -125,8 +116,6 @@ typedef struct _zend_refcounted_h {
 
 ![image-20221127232205158](https://particles.oss-cn-beijing.aliyuncs.com/img/image-20221127232205158.png)
 
-
-
 语法分析函数大概过一遍,要求总结如下:
 
 1. 类名正确(包括序列化字符串类名前面的数字), 以确保能够查找以及初始化该类.
@@ -134,8 +123,6 @@ typedef struct _zend_refcounted_h {
 3. 破坏类中属性结构.
 4. 将 序列化字符中的对象 `O` 改为`C` 也可以.
 5. 破坏类中属性的个数.(没找到,但是确实能实现)
-
-
 
 # 总结
 
@@ -145,8 +132,6 @@ typedef struct _zend_refcounted_h {
 
 1. PHP 中的内置函数在 `C`中都是以 `PHP_FUNCTION(function_name)`定义的.
 2. PHP 中 `zval` 以及 `gc` 相关的数据结构.
-
-
 
 # 参考
 
