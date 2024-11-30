@@ -43,10 +43,14 @@ jobs:
         git diff
         git config --global user.email "1332210141@qq.com"
         git config --global user.name "noelblog-bot"
-        git pull
-        git add -A
-        git commit -m "Updated content" || exit 0
-        git push
+        if git diff --quiet -- README.md; then
+           echo "jREADME.md has not been modified."
+        else
+          git pull
+          git add -A
+          git commit -m "Updated README.md" || exit 0
+          git push
+        fi
 
 
   build:
