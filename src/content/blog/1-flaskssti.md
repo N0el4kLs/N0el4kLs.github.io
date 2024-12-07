@@ -266,7 +266,7 @@ exp_flask = '__builtins__'
 number = 0
 for i in "".__class__.__base__.__subclasses__():
 	try:
-		if "__import__()" in i.__init__.__globals__.keys():
+		if exp_flask in i.__init__.__globals__.keys():
 			print(number,"-->>",i)
 	except :
 		pass
