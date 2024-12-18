@@ -4,6 +4,7 @@
 
 Here is the places where I share my learnings and thoughts. Hope you enjoy it! 
 
+* [第 24 期 - 公式化Go逆向之指纹提取](https://N0el4kLs.github.io/posts/24-%E5%85%AC%E5%BC%8F%E5%8C%96go%E9%80%86%E5%90%91%E4%B9%8B%E6%8C%87%E7%BA%B9%E6%8F%90%E5%8F%96)
 * [第 23 期 - 安全风险,安全漏洞以及安全威胁](https://N0el4kLs.github.io/posts/23-%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E4%BB%A5%E5%8F%8A%E5%AE%89%E5%85%A8%E5%A8%81%E8%83%81)
 * [第 22 期 - 城通网盘代码审计](https://N0el4kLs.github.io/posts/22-%E5%9F%8E%E9%80%9A%E7%BD%91%E7%9B%98%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1)
 * [第 21 期 - phar反序列化漏洞挖掘](https://N0el4kLs.github.io/posts/21-phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98)
