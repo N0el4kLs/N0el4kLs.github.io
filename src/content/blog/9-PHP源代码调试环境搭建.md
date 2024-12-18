@@ -43,6 +43,7 @@ git clone https://github.com/Microsoft/php-sdk-binary-tools.git php-sdk
 
 
 > 注意: 在正式编译之前需要安装 C语言相关环境， 如下：
+> 2024年回来备注：vs2022 编译失败了，使用 vs2017 可以编译成功.
 >
 > ![image-20221121141428311](https://particles.oss-cn-beijing.aliyuncs.com/img/image-20221121141428311.png)
 
