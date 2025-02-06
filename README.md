@@ -4,6 +4,7 @@
 
 Here is the places where I share my learnings and thoughts. Hope you enjoy it! 
 
+* [第 26 期 - 发现网页特征快人一步](https://N0el4kLs.github.io/posts/26-%E5%8F%91%E7%8E%B0%E7%BD%91%E9%A1%B5%E7%89%B9%E5%BE%81%E5%BF%AB%E4%BA%BA%E4%B8%80%E6%AD%A5-finger2fq)
 * [第 25 期 - 使用docker](https://N0el4kLs.github.io/posts/25-%E4%BD%BF%E7%94%A8docker-compose%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BAphp%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E7%8E%AF%E5%A2%83)
 * [第 24 期 - 公式化Go逆向之指纹提取](https://N0el4kLs.github.io/posts/24-%E5%85%AC%E5%BC%8F%E5%8C%96go%E9%80%86%E5%90%91%E4%B9%8B%E6%8C%87%E7%BA%B9%E6%8F%90%E5%8F%96)
 * [第 23 期 - 安全风险,安全漏洞以及安全威胁](https://N0el4kLs.github.io/posts/23-%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E4%BB%A5%E5%8F%8A%E5%AE%89%E5%85%A8%E5%A8%81%E8%83%81)
