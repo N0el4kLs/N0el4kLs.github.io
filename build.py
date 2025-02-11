@@ -31,8 +31,9 @@ if __name__ == "__main__":
                 fixed_title_url = fixed_title_url.replace(" ","-")
                 
                 url = f'https://N0el4kLs.github.io/posts/{urllib.parse.quote(fixed_title_url)}'
-                title = f'第 {old_title.split("-")[0]} 期 - {old_title.split("-")[1]}'
+                title = f'第 {old_title.split("-")[0]} 期 - {"".join(old_title.split("-")[1:])}'
                 readme_md = f'* [{title}]({url})\n'
+                print(readme_md)
                 num = int(old_title.split('-')[0])
 
                 readme_file.write(readme_md)
