@@ -1,0 +1,54 @@
+---
+import { getAlbumImages } from "../../utils/albums";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro"; // 根据您的项目结构调整路径
+
+export async function getStaticPaths() {
+  const albums = await getCollection("albums");
+
+  return albums.map((album) => ({
+    params: { id: album.id },
+    props: { album },
+  }));
+}
+
+const { album } = Astro.props;
+const images = await getAlbumImages(album.id);
+---
+
+<Layout title={album.data.title}>
+  <main class="mx-auto max-w-7xl px-4 py-12">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold">{album.data.title}</h1>
+      {album.data.description && (
+        <p class="text-xl text-gray-600 mt-4">{album.data.description}</p>
+      )}
+    </header>
+
+    <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+      {
+        images.map((image) => (
+          <div class="break-inside-avoid">
+            <Image
+              src={image}
+              alt={`${album.data.title}相册中的图片`}
+              width={800}
+              height={600}
+              class="rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
+            />
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="text-center mt-12">
+      <a
+        href="/gallery/"
+        class="inline-block px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+      >
+        返回相册列表
+      </a>
+    </div>
+  </main>
+</Layout>
