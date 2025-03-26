@@ -1,0 +1,132 @@
+---
+import { getAlbumImages } from "../../utils/albums";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro"; // 根据您的项目结构调整路径
+
+export async function getStaticPaths() {
+  const albums = await getCollection("albums");
+
+  return albums.map((album) => ({
+    params: { id: album.id },
+    props: { album },
+  }));
+}
+
+const { album } = Astro.props;
+const images = await getAlbumImages(album.id);
+---
+
+<Layout title={album.data.title}>
+  <div class="text-center">
+    <h1 class="text-5xl font-bold">
+      {album.data.title}
+    </h1>
+    <p class="text-xl my-4">
+      {album.data.description}
+    </p>
+
+    <div
+      class="mx-auto max-w-screen-xl px-4 my-8 sm:columns-3 md:columns-4 lg:columns-4 xl:columns-5"
+    >
+      {
+        images.map((image, index) => (
+          <div class="break-inside-avoid mb-4">
+            <a 
+              href="#" 
+              class="gallery-item" 
+              data-index={index}
+            >
+              <Image
+                src={image}
+                alt={`Image from ${album.data.title} album`}
+                format="avif"
+                quality={50}
+                class="rounded-sm border border-transparent hover:border-gray-300 transition-all duration-300 ease-in-out hover:shadow-lg"
+                loading="lazy"
+                data-album-image
+              />
+            </a>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- 灯箱组件 -->
+    <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden">
+      <button id="close-lightbox" class="absolute top-5 right-5 text-white text-4xl">&times;</button>
+      <button id="prev-image" class="absolute left-5 top-1/2 transform -translate-y-1/2 text-white text-4xl">&lt;</button>
+      <button id="next-image" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-white text-4xl">&gt;</button>
+      <div class="flex items-center justify-center h-full">
+        <img id="lightbox-img" src="" alt="放大图片" class="max-h-[90vh] max-w-[90vw] object-contain">
+      </div>
+    </div>
+
+    <p class="text-lg my-4 text-center">
+      <a href="/gallery/" class="hover:underline">View other albums</a>
+    </p>
+  </div>
+</Layout>
+
+<script>
+  // 等待DOM加载完成
+  document.addEventListener('DOMContentLoaded', () => {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeLightbox = document.getElementById('close-lightbox');
+    const prevImage = document.getElementById('prev-image');
+    const nextImage = document.getElementById('next-image');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    
+    let currentIndex = 0;
+    const imageUrls = Array.from(galleryItems).map(item => {
+      const img = item.querySelector('img');
+      return img.src;
+    });
+    
+    // 打开灯箱
+    galleryItems.forEach((item, index) => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        currentIndex = index;
+        lightboxImg.src = imageUrls[currentIndex];
+        lightbox.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // 防止背景滚动
+      });
+    });
+    
+    // 关闭灯箱
+    closeLightbox.addEventListener('click', () => {
+      lightbox.classList.add('hidden');
+      document.body.style.overflow = ''; // 恢复背景滚动
+    });
+    
+    // 上一张图片
+    prevImage.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
+      lightboxImg.src = imageUrls[currentIndex];
+    });
+    
+    // 下一张图片
+    nextImage.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % imageUrls.length;
+      lightboxImg.src = imageUrls[currentIndex];
+    });
+    
+    // 键盘导航
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.classList.contains('hidden')) return;
+      
+      if (e.key === 'Escape') {
+        lightbox.classList.add('hidden');
+        document.body.style.overflow = '';
+      } else if (e.key === 'ArrowLeft') {
+        currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
+        lightboxImg.src = imageUrls[currentIndex];
+      } else if (e.key === 'ArrowRight') {
+        currentIndex = (currentIndex + 1) % imageUrls.length;
+        lightboxImg.src = imageUrls[currentIndex];
+      }
+    });
+  });
+</script>

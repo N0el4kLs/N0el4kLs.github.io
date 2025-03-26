@@ -1,0 +1,55 @@
+---
+import Breadcrumbs from "@components/Breadcrumbs.astro";
+import Footer from "@components/Footer.astro";
+import Header from "@components/Header.astro";
+
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro"; 
+import Main from "@layouts/Main.astro";
+
+const albums = await getCollection("albums");
+---
+
+<Layout title="Photo Gallery">
+  <Header activeNav="gallery" />
+  <Breadcrumbs />
+  <Main
+    pageTitle="Gallery"
+    pageDesc="All the photography I shot/collected."
+    >
+    <div class="mx-auto max-w-5xl px-4">
+      <div class="grid grid-cols-2 gap-4 sm:gap-6 py-4">
+        {
+          albums.map((item) => (
+            <a
+              href={`/gallery/${item.id}`}
+              class="group block bg-white dark:bg-gray-800 overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
+            >
+              <div class="aspect-[4/3] overflow-hidden">
+                <Image
+                  src={item.data.cover}
+                  alt={item.data.title}
+                  width={400}
+                  height={300}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                  format="avif"
+                  quality={70}
+                />
+              </div>
+              <div class="p-3 sm:p-4">
+                <h2 class="text-lg sm:text-xl font-bold truncate">{item.data.title}</h2>
+                {item.data.description && (
+                  <p class="text-gray-600 dark:text-gray-300 mt-1 text-sm sm:text-base line-clamp-2">{item.data.description}</p>
+                )}
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </Main>
+  
+  <Footer />
+</Layout>
