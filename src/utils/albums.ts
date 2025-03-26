@@ -23,6 +23,6 @@ export async function getAlbumImages(albumId: string) {
   );
 
   // 4. 随机排序图片（可选）
-  resolvedImages.sort(() => Math.random() - 0.5);
+  // resolvedImages.sort(() => Math.random() - 0.5);
   return resolvedImages;
 }
