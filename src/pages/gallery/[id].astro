@@ -7,7 +7,7 @@ import Layout from "../../layouts/Layout.astro"; // 根据您的项目结构调�
 export async function getStaticPaths() {
   const albums = await getCollection("albums");
 
-  return albums.map((album) => ({
+  return albums.map(album => ({
     params: { id: album.id },
     props: { album },
   }));
@@ -22,27 +22,23 @@ const images = await getAlbumImages(album.id);
     <h1 class="text-5xl font-bold">
       {album.data.title}
     </h1>
-    <p class="text-xl my-4">
+    <p class="my-4 text-xl">
       {album.data.description}
     </p>
 
     <div
-      class="mx-auto max-w-screen-xl px-4 my-8 sm:columns-3 md:columns-4 lg:columns-4 xl:columns-5"
+      class="max-w-screen-xl md:columns-4 lg:columns-4 xl:columns-5 mx-auto my-8 px-4 sm:columns-3"
     >
       {
         images.map((image, index) => (
-          <div class="break-inside-avoid mb-4">
-            <a 
-              href="#" 
-              class="gallery-item" 
-              data-index={index}
-            >
+          <div class="mb-4 break-inside-avoid">
+            <a href="#" class="gallery-item" data-index={index}>
               <Image
-                src={image}
+                src={image as unknown as ImageMetadata}
                 alt={`Image from ${album.data.title} album`}
                 format="avif"
                 quality={50}
-                class="rounded-sm border border-transparent hover:border-gray-300 transition-all duration-300 ease-in-out hover:shadow-lg"
+                class="rounded-sm border border-transparent transition-all duration-300 ease-in-out hover:border-gray-300 hover:shadow-lg"
                 loading="lazy"
                 data-album-image
               />
@@ -53,79 +49,107 @@ const images = await getAlbumImages(album.id);
     </div>
 
     <!-- 灯箱组件 -->
-    <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden">
-      <button id="close-lightbox" class="absolute top-5 right-5 text-white text-4xl">&times;</button>
-      <button id="prev-image" class="absolute left-5 top-1/2 transform -translate-y-1/2 text-white text-4xl">&lt;</button>
-      <button id="next-image" class="absolute right-5 top-1/2 transform -translate-y-1/2 text-white text-4xl">&gt;</button>
-      <div class="flex items-center justify-center h-full">
-        <img id="lightbox-img" src="" alt="放大图片" class="max-h-[90vh] max-w-[90vw] object-contain">
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-black bg-opacity-90">
+      <button
+        id="close-lightbox"
+        class="absolute right-5 top-5 text-4xl text-white">&times;</button
+      >
+      <button
+        id="prev-image"
+        class="absolute left-5 top-1/2 -translate-y-1/2 transform text-4xl text-white"
+        >&lt;</button
+      >
+      <button
+        id="next-image"
+        class="absolute right-5 top-1/2 -translate-y-1/2 transform text-4xl text-white"
+        >&gt;</button
+      >
+      <div class="flex h-full items-center justify-center">
+        <img
+          id="lightbox-img"
+          src=""
+          alt="放大图片"
+          class="max-h-[90vh] max-w-[90vw] object-contain"
+        />
       </div>
     </div>
 
-    <p class="text-lg my-4 text-center">
+    <p class="my-4 text-center text-lg">
       <a href="/gallery/" class="hover:underline">View other albums</a>
     </p>
   </div>
 </Layout>
 
 <script>
-  // 等待DOM加载完成
-  document.addEventListener('DOMContentLoaded', () => {
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeLightbox = document.getElementById('close-lightbox');
-    const prevImage = document.getElementById('prev-image');
-    const nextImage = document.getElementById('next-image');
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    
+  document.addEventListener("DOMContentLoaded", () => {
+    const lightbox = document.getElementById("lightbox")!;
+    const lightboxImg = document.getElementById("lightbox-img")!;
+    const closeLightbox = document.getElementById("close-lightbox")!;
+    const prevImage = document.getElementById("prev-image")!;
+    const nextImage = document.getElementById("next-image")!;
+    const galleryItems = document.querySelectorAll(".gallery-item")!;
+
     let currentIndex = 0;
     const imageUrls = Array.from(galleryItems).map(item => {
-      const img = item.querySelector('img');
-      return img.src;
+      const img = item.querySelector("img");
+      return img?.src || "";
     });
-    
+
     // 打开灯箱
     galleryItems.forEach((item, index) => {
-      item.addEventListener('click', (e) => {
+      item.addEventListener("click", e => {
         e.preventDefault();
         currentIndex = index;
-        lightboxImg.src = imageUrls[currentIndex];
-        lightbox.classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // 防止背景滚动
+        if (lightbox && lightboxImg instanceof HTMLImageElement) {
+          lightboxImg.src = imageUrls[currentIndex];
+          lightbox.classList.remove("hidden");
+          document.body.style.overflow = "hidden"; // 防止背景滚动
+        }
       });
     });
-    
+
     // 关闭灯箱
-    closeLightbox.addEventListener('click', () => {
-      lightbox.classList.add('hidden');
-      document.body.style.overflow = ''; // 恢复背景滚动
+    closeLightbox.addEventListener("click", () => {
+      if (lightbox instanceof HTMLElement) {
+        lightbox.classList.add("hidden");
+        document.body.style.overflow = ""; // 恢复背景滚动
+      }
     });
-    
+
     // 上一张图片
-    prevImage.addEventListener('click', () => {
+    prevImage.addEventListener("click", () => {
       currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
-      lightboxImg.src = imageUrls[currentIndex];
+      if (lightboxImg instanceof HTMLImageElement) {
+        lightboxImg.src = imageUrls[currentIndex];
+      }
     });
-    
+
     // 下一张图片
-    nextImage.addEventListener('click', () => {
+    nextImage.addEventListener("click", () => {
       currentIndex = (currentIndex + 1) % imageUrls.length;
-      lightboxImg.src = imageUrls[currentIndex];
+      if (lightboxImg instanceof HTMLImageElement) {
+        lightboxImg.src = imageUrls[currentIndex];
+      }
+      // lightboxImg.src = imageUrls[currentIndex];
     });
-    
+
     // 键盘导航
-    document.addEventListener('keydown', (e) => {
-      if (lightbox.classList.contains('hidden')) return;
-      
-      if (e.key === 'Escape') {
-        lightbox.classList.add('hidden');
-        document.body.style.overflow = '';
-      } else if (e.key === 'ArrowLeft') {
+    document.addEventListener("keydown", e => {
+      if (lightbox.classList.contains("hidden")) return;
+
+      if (e.key === "Escape") {
+        lightbox.classList.add("hidden");
+        document.body.style.overflow = "";
+      } else if (e.key === "ArrowLeft") {
         currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
-        lightboxImg.src = imageUrls[currentIndex];
-      } else if (e.key === 'ArrowRight') {
+        if (lightboxImg instanceof HTMLImageElement) {
+          lightboxImg.src = imageUrls[currentIndex];
+        }
+      } else if (e.key === "ArrowRight") {
         currentIndex = (currentIndex + 1) % imageUrls.length;
-        lightboxImg.src = imageUrls[currentIndex];
+        if (lightboxImg instanceof HTMLImageElement) {
+          lightboxImg.src = imageUrls[currentIndex];
+        }
       }
     });
   });
