@@ -35,7 +35,7 @@ const images = await getAlbumImages(album.id);
             <a href="#" class="gallery-item" data-index={index}>
               <Image
                 src={image as unknown as ImageMetadata}
-                alt={`Image from ${album.data.title} album`}
+                // alt={`Image from ${album.data.title} album`}
                 format="avif"
                 quality={50}
                 class="rounded-sm border border-transparent transition-all duration-300 ease-in-out hover:border-gray-300 hover:shadow-lg"
