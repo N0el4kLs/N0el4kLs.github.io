@@ -81,7 +81,7 @@ const images = await getAlbumImages(album.id);
 </Layout>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  function initLightbox() {
     const lightbox = document.getElementById("lightbox")!;
     const lightboxImg = document.getElementById("lightbox-img")!;
     const closeLightbox = document.getElementById("close-lightbox")!;
@@ -152,5 +152,10 @@ const images = await getAlbumImages(album.id);
         }
       }
     });
-  });
+  }
+
+  // 使用 astro:after-swap 事件监听
+  document.addEventListener("astro:after-swap", initLightbox);
+  // 初始加载也执行一次
+  document.addEventListener("DOMContentLoaded", initLightbox);
 </script>
