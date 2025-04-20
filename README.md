@@ -4,6 +4,7 @@
 
 Here is the places where I share my learnings and thoughts. Hope you enjoy it! 
 
+* [第 30 期 - MCP自动化扫描思考以及mcpscan源码阅读](https://N0el4kLs.github.io/posts/30-mcp%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%AB%E6%8F%8F%E6%80%9D%E8%80%83%E4%BB%A5%E5%8F%8Amcp-scan%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB)
 * [第 29 期 - 聊聊安全与MCP](https://N0el4kLs.github.io/posts/29-%E8%81%8A%E8%81%8A%E5%AE%89%E5%85%A8%E4%B8%8Emcp)
 * [第 28 期 - 深信服2023年财报分析](https://N0el4kLs.github.io/posts/28-%E6%B7%B1%E4%BF%A1%E6%9C%8D2023%E5%B9%B4%E8%B4%A2%E6%8A%A5%E5%88%86%E6%9E%90)
 * [第 27 期 - 使用AI进行代码审计测试](https://N0el4kLs.github.io/posts/27-%E4%BD%BF%E7%94%A8ai%E8%BF%9B%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%B5%8B%E8%AF%95)
