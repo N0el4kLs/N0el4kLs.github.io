@@ -1,7 +1,7 @@
 ---
 author: Noel
 pubDatetime: 2025-04-06T09:00:11.000+08:00
-modDatetime: 2025-06-06T09:00:11.000+08:00
+modDatetime: 2025-04-06T09:00:11.000+08:00
 title: 聊聊安全与MCP
 featured: false
 draft: false
@@ -9,7 +9,7 @@ tags:
   - AI
   - MCP
 description: |
-   https://mp.weixin.qq.com/s/8ylk996b2b3wBw3ehI7XbA
+   文章首发与微信公众号: https://mp.weixin.qq.com/s/8ylk996b2b3wBw3ehI7XbA
 ---
 
 
@@ -19,6 +19,8 @@ description: |
 借这个机会，来谈谈对MCP相关的一些内容。
 
 
+
+## Table of Contents
 
 ## MCP是什么
 
