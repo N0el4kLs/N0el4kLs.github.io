@@ -4,6 +4,7 @@
 
 Here is the places where I share my learnings and thoughts. Hope you enjoy it! 
 
+* [第 32 期 - 在‘有损’中保持‘高保真](https://N0el4kLs.github.io/posts/32-%E5%9C%A8%E2%80%98%E6%9C%89%E6%8D%9F%E2%80%99%E4%B8%AD%E4%BF%9D%E6%8C%81%E2%80%98%E9%AB%98%E4%BF%9D%E7%9C%9F)
 * [第 31 期 - 使用 CodeQL 挖掘 Spring 中的 大量赋值漏洞](https://N0el4kLs.github.io/posts/31-%E4%BD%BF%E7%94%A8-codeql-%E6%8C%96%E6%8E%98-spring-%E4%B8%AD%E7%9A%84-%E5%A4%A7%E9%87%8F%E8%B5%8B%E5%80%BC%E6%BC%8F%E6%B4%9E)
 * [第 30 期 - MCP自动化扫描思考以及mcpscan源码阅读](https://N0el4kLs.github.io/posts/30-mcp%E8%87%AA%E5%8A%A8%E5%8C%96%E6%89%AB%E6%8F%8F%E6%80%9D%E8%80%83%E4%BB%A5%E5%8F%8Amcp-scan%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB)
 * [第 29 期 - 聊聊安全与MCP](https://N0el4kLs.github.io/posts/29-%E8%81%8A%E8%81%8A%E5%AE%89%E5%85%A8%E4%B8%8Emcp)
